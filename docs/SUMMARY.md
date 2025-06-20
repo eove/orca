@@ -4,6 +4,13 @@
     - [Architecture of the vault system](./architecture.md)
     - [Secret sharing system](./secret_sharing.md)
 
+- [Jules Brown, Hole-in-one's CTO](./story/README.md)
+    - [Foreword](./story/foreword.md)
+    - [The big idea](./story/the-big-idea.md)
+    - [Meet the team](./story/meet-the-team.md)
+    - [Security first !](./story/security-first.md)
+    - [Afterword](./story/afterword.md)
+
 - [Before planning a ceremony](./workflow/creating_a_team.md)
     - [Note on scripts](./note-on-scripts.md)
     - [Verifying public keys](./verifying_public_keys.md)
