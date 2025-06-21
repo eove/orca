@@ -17,3 +17,9 @@ Adira, the admin.
 Adira will be perfect to keep the Hole-in-one's ship flying !
 They are well versed in computer administration and complement it brillantly with their coding skills.
 They will ensure that every known security issue is taken into account.
+
+Jules is not an expert in any of these subjects but, as CTO, he wants to understand most of it.
+The team may have a lot of explaining to do !
+
+Vernes decided to hire a production team as soon as the first hardware prototype is ready.
+That way, they will have plainty of time to train and test their workflow in order to be as efficient as possible once the first version is ready.
