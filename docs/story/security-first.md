@@ -81,7 +81,13 @@ Correct ?"
 
 "And that's totally the way we are going to secure the communication on the second arrow of my drawing !", added Shuri.
 
-"Ok, but, what about the first arrow ? Can't we do exactly the same thing ?", asked Jules, puzzled.
+"What happens it a Intermediate CA is hacked ?", asked Jules.
+
+"Then the Root CA create a document saying that this Intermediate CA is not  valid anymore and publish it for everyone to see.", answered Adira.
+
+"That's what we call revoking a certificate. When we validate a certificate, we regularly check if it had been revoked.", completed Shuri.
+
+"Ok, I thing I understant. But, what about the first arrow ? Can't we do exactly the same thing ?", asked Jules, puzzled.
 
 "Yes, we can, but we can do even better !", answerd Shuri, "The issue with the password it that we still have to send it to the server. That means that if the server is compromised, all passwords needs to be changed because the server saw them."
 
@@ -93,7 +99,7 @@ Correct ?"
 
 "I understand. This is key to the security of our whole system. However, we clearly don't have the means to protect it the way you described it.", Jules said, a bit worried.
 
-"Well, we won't have the fate of the whole internet on our shoulders !", started Adria, "Any issue with the Root CA will only impact us. That would be a bumper for us but won't create an apocalypse. I think we can lower the security to something we can afford."
+"Well, we won't have the fate of the whole internet on our shoulders !", started Adira, "Any issue with the Root CA will only impact us. That would be a bumper for us but won't create an apocalypse. I think we can lower the security to something we can afford."
 
 "Ok, that's quite a meeting already and I need a bit of time to wrap my head around all that.", interrupted Jules, "I understand that the main subject that we have to discuss now is the protection of our Root CA. What about we tackle that subject another day ? Once my brain rested a bit ? Next Monday for exemple ?"
 
