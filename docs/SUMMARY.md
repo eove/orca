@@ -17,7 +17,6 @@
     - [Need backup !](./story/need-backup.md)
     - [Verifiable Operating System](./story/verifiable-os.md)
     - [All USB keys are not created equals](./story/readonly-usb.md)
-    - [Big brother](./story/big-brother.md)
     - [One factor of authentication is not enough](./story/mfa.md)
     - [Is this for real ?](./story/verify-workflow.md)
     - [What did we do ?](./story/create-and-verify-report.md)

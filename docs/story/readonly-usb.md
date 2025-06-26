@@ -16,16 +16,24 @@
 
 "Indeed.", remarked Adira, "and that will simplify things at the same time."
 
-Five years later, Shuri comes to Jules house.
+"What if someone makes a corrupted key and volonteer to verify it.", started Jules, "They could fake the verification couldn't they ?"
+
+"That's a good point", answered Adira, "Then the person and the computer that creates the key and the one that verify it should be different."
+
+"And to make prepared attacks even harder, we could pick the computer we use at random.", said Shuri.
+
+"That looks like a great ideas to me !", said Jules, "Let's add all that to our process".
+
+Five years later, Leiko comes to Jules house.
 
 "I had no choice Jules, I am sorry.", she said.
 
 "Sorry about what ?", asked Jules.
 
-"I stole the root CA for Evil Corp.", started Shuri, "They came to my home a year ago and told me to steal it or face the concequences. I created a corrupted key with a keylogger and a fake binary on my computer to verify it that actually did nothing. Then I volonteered to verify it."
+"I stole the root CA for Evil Corp.", started Leiko, "They came to my home a year ago and told me to steal it or face the concequences. I concealed cameras in my glasses and stole the shares."
 
-"You can stop there Shuri", interupted Jules, "I understand. You have nothing to be sorry about, you did what you have to do. Now, the important thing is to take care of you."
+"You can stop there Leiko", interupted Jules, "I understand. You have nothing to be sorry about, you did what you had to do. Now, the important thing is to take care of you."
 
-Shuri wanted to continue to talk though, and Jules listened. She felt releive to finally express the rage, fear and sadness she was keeping for herself since a year.
+Leiko wanted to continue to talk though, and Jules listened. She felt releive to finally express the rage, fear and sadness she was keeping for herself since a year.
 
 Late that night, Jules went back in time. Protecting his friends from harm will always be a good reason to tickle the spacetime continuum.
