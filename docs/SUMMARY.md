@@ -19,7 +19,6 @@
     - [All USB keys are not created equals](./story/readonly-usb.md)
     - [One factor of authentication is not enough](./story/mfa.md)
     - [Is this for real ?](./story/verify-workflow.md)
-    - [What did we do ?](./story/create-and-verify-report.md)
     - [Afterword](./story/afterword.md)
 
 - [Before planning a ceremony](./workflow/creating_a_team.md)
