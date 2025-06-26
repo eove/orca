@@ -6,15 +6,15 @@ He ran to his brother's house and started to pitch his idea.
 
 "Did you ever wonder about the quality of the water you use to cook ?
 What about the quality of the food you cook ?
-What if you had a smart strainer that analyze the water going through it and gives you all the relevent data ?
+What if you had a smart strainer that would analyze the water going through it and give you all the relevent data ?
 Are your pasta really gluten-free ?
 Is your water contaminated with heavy metals ?
 Are you eating too much carbs ?
 All your questions answered in one app."
 
-"Interesting idea" said Vernes. "If you want to move forward with it, you'll need a catchy name and investment".
+"Interesting idea" said Vernes. "If you want to move forward with it, you'll need a catchy name and some investment".
 
-"I don't have a good name yet, but for the invesment, I don't want to share this new market with anyone I don't trust a hundred percent. I am pretty sure I can bring half it so I only need one person that can bring as much as me on the table."
+"I don't have a good name yet, but for the investment, I don't want to share this new market with anyone I don't trust a hundred percent. I am pretty sure I can bring half of it so I only need one person that can bring as much as me on the table."
 
 "I see where you are going with this. Give me a week to think about it. Meanwhile, find a good name."
 
