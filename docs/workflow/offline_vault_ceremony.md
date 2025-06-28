@@ -1,3 +1,23 @@
+# Using the Offline PKI
+
+
+Document created from repository [@ORCA@gitremote@](@ORCA@gitremote@) at commit :  
+`@ORCA@commit@`
+
+## Verifying this document
+
+Please follow your organisation's way of verifing a document to make sure this document has not been tempered with.
+A hand made one can be found at the [signing and verifying annex](../signing_and_verifying.md)
+
+## Introduction
+
+This document explains how to use the Offline Root CA from preparing the ceremony until a report is signed and shared.
+That event is called a *ceremony*.
+
+All commands are given for Linux using a bash shell. Please adapt acording to your environment.
+
+{{#include ../IN/common/glossary.md}}
+
 ## Overview
 
 ### Architecture of the vault system

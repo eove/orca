@@ -24,7 +24,8 @@
 
 -------------------
 
-[IN65 - Cérémonie d'ouverture de la PKI offline d'entreprise](./IN/65/IN65-ceremonie-d-ouverture-de-la-pki-offline-preprod-d-entreprise.md)
+[Signing and verifying a document](./signing_and_verifying.md)
+[Ceremony to use the Offline Root CA](./workflow/offline_vault_ceremony.md)
 [IN69 - Vérifications récurrentes de la PKI](./IN/69/IN69-verifications-recurrentes-de-la-pki.md)
 [Why so many steps in the IN65](./IN/65/explanation-IN65.md)  
 [Providing your GPG public key](./gpg_public_key.md)  
