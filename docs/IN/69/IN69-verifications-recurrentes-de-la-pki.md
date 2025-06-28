@@ -1,5 +1,3 @@
-![Eove's logo](http://eove.fr/cms/wp-content/uploads/logo-1.png)
-
 # IN69 Cérémonie de vérifications récurrentes de la PKI d'entreprise
 
 

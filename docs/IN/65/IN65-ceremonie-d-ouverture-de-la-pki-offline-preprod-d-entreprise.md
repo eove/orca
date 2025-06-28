@@ -1,5 +1,3 @@
-![Eove's logo](http://eove.fr/cms/wp-content/uploads/logo-1.png)
-
 # IN65 Cérémonie d'ouverture de la PKI Offline d'entreprise
 
 
