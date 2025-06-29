@@ -34,7 +34,15 @@ And finally, you can verify what they are, like their fingerprint".
 
 "And we'll use that oportunity to enable a second factor of authentication everytime it's possible" Adira added.
 
-"Perfect!" Jules concluded.
+"Perfect !", Jules said.
+
+"We'll also need to add a step at the verification of the OS to make sure the public keys are legit and indeed do belong to whom they claim to belong.", Leiko said.
+
+"A signed commit should do the trick. Then we'll have to verify the signature.", Shuri said.
+
+"Indeed." Leiko answered.
+
+"Let's do this !" Jules concluded.
 
 Six years later, the company grew quite a lot and a hardware token is given to every new person joining the research and development team.
 
