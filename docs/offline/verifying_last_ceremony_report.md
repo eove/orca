@@ -1,6 +1,4 @@
-Get the last IN65 report from:
-* Google Drive's `Eove_RnD/PKI/Eove_offline_prod_CAs/` for prod offline CAs
-* Google Drive's `Eove_RnD/PKI/Eove_offline_preprod_CAs/` for preprod offline CAs
+Get the last report for the corresponding environment.
 
 In that document, search for the value of the `trusted commit` that was used during the last IN65 ceremony. We'll call this the `previous IN65 trusted commit`.
 

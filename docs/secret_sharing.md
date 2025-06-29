@@ -6,7 +6,7 @@ Each share is securely given to a different human being that *must* keep it secr
 To decrypt (aka unseal) vault's database, a number of shares higher than a threshold is necessary.
 This is called a quorum.
 
-At Eove, we want the encryption key to be split among at least 5 share holders (the more the merrier) and a quorum of at least 3 people.
+A good starting point is to be split among at least 5 share holders (the more the merrier) and a quorum of at least 3 people.
 
 The downside of that technique is that we *must* verify regularly that we can reach a quorum.
 If we lose our ability to reach a quorum, then the whole PKI is lost forever.

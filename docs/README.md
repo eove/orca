@@ -1,6 +1,6 @@
 # Introduction
 
-In this document, we will explain how to work with Eove's Public-Key Infrastructure (PKI).
+In this document, we will explain how to work with the Public-Key Infrastructure (PKI).
 
 If you directly want to generate a one-page html-formatted IN65 or IN69 workflow, please see [here](./IN/common/html_gen_and_signature.md).
 

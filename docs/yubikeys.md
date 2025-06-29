@@ -101,7 +101,7 @@ N
 # Enter the user PIN
 # Enter the validity (see the recommendations in IN69, you can also use the tip below to ease the calculation)
 # Enter your identity name `Firstname Lastname`
-# Enter your Email address @eove.fr
+# Enter your Email address
 # Enter a comment, for example `Yubikey`, important when you have multiple GPG keys linked to the same email
 # Enter the admin PIN+user PIN as many times as required
 quit

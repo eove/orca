@@ -159,9 +159,7 @@ The bootable live media should be created by one 👥`team member` *before* the 
 > [!Warning]  
 > The rest of this section should not be executed at the first initialisation of the vault because we have no previous backup. In that case, please skip to the next section.
 
-Fetch offline CA private data backup from :
-* Google Drive's `Eove_RnD/PKI/Eove_offline_prod_CAs/` for prod offline CAs
-* Google Drive's `Eove_RnD/PKI/Eove_offline_preprod_CAs/` for preprod offline CAs
+Fetch offline CA private data backup for the correspond environment.
 
 {{#include ../offline/loading_backup.md}}
 
@@ -459,12 +457,9 @@ One of the 👥`team members` inserts the USB key on their own computer.
 > Indeed, if it is the 📝`reporter`, then as soon as the archive is sent (see the lines below), the report can be completed and signed by the 📝`reporter` asynchronously while the other 👥`team member` perform verifications.
 
 The 👥`team member` that inserted the USB key, immediately:
-1. copies the tar archive from the `VAULT_WRITABLE` partition to Google Drive:
-   * `Eove_RnD/PKI/Eove_offline_prod_CAs/` for prod offline CAs
-   * `Eove_RnD/PKI/Eove_offline_preprod_CAs/` for preprod offline CAs
+1. copies the tar archive from the `VAULT_WRITABLE` partition to the backup destination corresponding to the environment:
 2. sends the tar archive from the `VAULT_WRITABLE` partition to all the participants as an attached file via e-mail
 3. gets the AIA data in folder `orca/aia/` of the current environment (prod/preprod) from `VAULT_WRITABLE` partition data and makes it available on the online vault.
-   For Eove, this means committing the new files to the matching environment directory in https://github.com/eove/eove-nixos-machines/tree/main/vault/static_aia
 
 > [!Note]  
 > We use a tar format here because it allows for deduplication during the enterprise-wide backup process (that includes all Google Drive content)
