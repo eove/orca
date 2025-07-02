@@ -397,14 +397,22 @@ If not, a new offline CA should be generated, the fix below should be applied.
 
 #### Fix
 
-A new device signing offline CA should be created, which also probably means a new root offline CA should be created as well.\
-This is a brand new start of the Eove CA and you should re-initialize a new vault, start from an empty backup etc.\
-The old PKI is still valid for at least 6 months, so you can use it up to the end of its validity. After its validity, the old offline PKI should be kept as read-only and won't be brought up anymore (except if revokation is required).\
-Please read [the documentation on how to setup a new PKI](../offline/PKI_INit/md).
-You may as well evaluate the following aspects:
-- is the crypto used for the trust chain still up-to-date or should it be updated
-- is hashicorp vault still up-to-date and maintained, in general and in NixOS or should the PKI be setup using new tools
-- you have 6 months...
+We will need a new device signing offline CA, which also probably implies that a new root offline CA should be created as well.
+You have two options there:
+- Either the current offline root CA can be rotated (see https://developer.hashicorp.com/vault/tutorials/pki/pki-engine#step-7-rotate-root-ca)\
+  This requires writing scripts for this to be run on the offline *ephemeral vault*.
+- Or you can create a brand new offline root CA.\
+  This would be a brand new start of the root CA and this means re-initializing a new vault, start from an empty backup etc.\
+  Please read [the documentation on how to setup a new PKI](../offline/PKI_INit/md).
+
+> [!Note]  
+> In any case, the old PKI (and offline CAs) are still valid for at least 6 months, so you can use them up to the end of their validity. After their validity has elapsed, the expired CAs should be kept as read-only and won't be used anymore (except if revokation is required).
+
+> [!Tip]  
+> When renewing the root CA, you may as well evaluate the following aspects:
+> - is the crypto used for the trust chain still up-to-date or should it be updated?
+> - is hashicorp vault still up-to-date and maintained, in general and in NixOS or should the PKI be setup using new tools?
+> - you have 6 months...
 
 ### The next IN69 iteration is planned
 
