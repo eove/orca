@@ -412,6 +412,10 @@ You have two options there:
 > When renewing the root CA, you may as well evaluate the following aspects:
 > - is the crypto used for the trust chain still up-to-date or should it be updated?
 > - is hashicorp vault still up-to-date and maintained, in general and in NixOS or should the PKI be setup using new tools?
+> - the environment in which the vault has been created initially has been progressively migrated from an initialization state 30 years before, it's maybe time to clean-up and start from scratch.
+> - restarting from scratch allows to detach the currently active PKI from all history of previously chained reports and audit trails.
+> - we may want to start with better security ecosystem (better crypto, improved initialisation in both hashicorp vault and our own scripts) after 30 years, it's probably time to review the whole setup in depth, including scripts, hashicorp vault, tools (hardware tokens, NixOS bootable media), and where and how backups+reports are saved.
+> - after 30 years, it would be good to get new people own the whole system, including setup from scratch
 > - you have 6 months...
 
 ### The next IN69 iteration is planned
