@@ -47,9 +47,9 @@ Adira looked a bit in the emails that arrived around the date they found and qui
 
 "Do you remember that email? Did you click on the link? If so, what happened?"
 
-"Ho, yes! That's a failed email. I tried to get the document, but after I logged in, nothing happened. I coudn't get the document" Jules replied.
+"Ho, yes! That's link to get a demo version of a software I wanted to test ! I installed it but the demo was very limited and buggy so I gave up quickly." Jules replied.
 
-"That's because it's not legit!" Adira remarked, "I seems it comes from Evil Corp. It's a fishing email. By loggin, you gave them your password. They used it to log in your computer and installed the key logger. Then they waited for you to use the root CA which you did 6 month ago to renew the Intermediate CA. At that point they got the password for the root CA and signed they certificate."
+"That's because it's not a legit software !" Adira remarked, "I seems it comes from Evil Corp. It's a fishing email. By installing the pretend demo, you actually installed the keylogger, it probably also duplicated everything on your computer. Then they waited for you to use the root CA which you did 6 month ago to renew the Intermediate CA. At that point they got the password for the root CA and signed they certificate."
 
 "Well, let's revoke their intermediate CA then!" Jules thought.
 
