@@ -235,7 +235,7 @@ The start of validity date will be called *D<sub>start</sub>*, it can be found i
 The expiry date will be called *D<sub>expiry</sub>*, it can be found in the `Validity`'s `Not After` attribute displayed by the command above.
 
 The following statement should be true:
-*D<sub>start</sub>*>*D<sub>now</sub>* **and** *D<sub>expiry</sub>*>*D<sub>min</sub>*.
+*D<sub>start</sub>*<*D<sub>now</sub>* **and** *D<sub>expiry</sub>*>*D<sub>min</sub>*.
 If this is the case, this test is a PASS.  
 If not, a new online CA should be generated, the fix below should be applied.
 
