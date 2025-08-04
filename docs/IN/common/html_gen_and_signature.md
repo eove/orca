@@ -15,18 +15,20 @@ export ORCA_WF_REV= # Set this variable correctly
 
 cd /path/to/orca
 export GIT_REMOTE_URL=$(git remote -v | sed -n -E -e 's|^.*git@(.+):(.+)\.git.*|https://\1/\2|p' -e '1q')
-
+export GIT_CURRENT_HASH=$(git log --pretty=format:'%H' -n 1)
 unset SANITY_CHECKS_OK;nix develop --command mdbook build
 
 if test -z $ORCA_WF_REV; then echo "ERROR: no ORCA_WF_REV set">&2; false; else \
  if test -z $ORCA_WF_TITLE; then echo "ERROR: no ORCA_WF_TITLE set">&2; false; else \
  if test -z $ORCA_WF_AS_MD; then echo "ERROR: no ORCA_WF_AS_MD set">&2; false; else \
-  SANITY_CHECKS_OK=true; fi; fi; fi
+ if test -z $GIT_CURRENT_HASH; then echo "ERROR: no GIT_CURRENT_HASH set">&2; false; else \
+ if test -z $GIT_REMOTE_URL; then echo "ERROR: no GIT_REMOTE_URL set">&2; false; else \
+  SANITY_CHECKS_OK=true; fi; fi; fi; fi; fi
 
 unset TMP_OUTPUT_DIR;TMP_OUTPUT_DIR=$(mktemp -p ~ -d)
 
 test -n $SANITY_CHECKS_OK && \
- sed -e "s|\@ORCA\@commit\@|$(git log --pretty=format:'%H' -n 1)|g" \
+ sed -e "s|\@ORCA\@commit\@|${GIT_CURRENT_HASH}|g" \
      -e "s|\@ORCA\@gitremote\@|${GIT_REMOTE_URL}|g" \
      -e "s|\@ORCA\@rev\@|${ORCA_WF_REV}|g" \
    "$ORCA_WF_AS_MD" > "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}_with_commit.md"
