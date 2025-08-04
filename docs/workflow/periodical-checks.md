@@ -45,7 +45,7 @@ Document généré depuis les sources dans le dépôt git [@ORCA@gitremote@/tree
 
 ## Introduction
 
-Ce document décrit le déroulement de la cérémonie de vérifications récurrentes de la PKI d'Eove (chaîne de confiance basée sur des certificats digitaux).
+Ce document décrit le déroulement de la cérémonie de vérifications récurrentes de la PKI (chaîne de confiance basée sur des certificats digitaux).
 Ce processus implique l'ouverture de la PKI offline si des opérations doivent être effectuées sur cette dernière et dépend donc de l'exécution de la fiche de ceremonie.
 
 ## Historique des révisions
@@ -60,7 +60,7 @@ Ce processus implique l'ouverture de la PKI offline si des opérations doivent �
 
 ### Objectif
 
-Le protocole détaillé ci-dessous indique les étapes à suivre pour vérifier que la PKI Eove est toujours utilisable de façon pérenne.
+Le protocole détaillé ci-dessous indique les étapes à suivre pour vérifier que la PKI est toujours utilisable de façon pérenne.
 Cela inclut des vérifications sur la CA online et la CA offline.
 
 Le reste de ce document est rédigé en anglais.
@@ -180,7 +180,7 @@ An unseal share rotation should be run also on the online vault.
 
 ### All target shared holders should have a hardware token attributed
 
-Every shareholder should have a Yubikey, and these Yubikey's GPG keys' details should match their owner's name and e-mail address at Eove.
+Every shareholder should have a Yubikey, and these Yubikey's GPG keys' details should match their owner's name and e-mail address at the company.
 
 Every share holder runs the following tests with their Yubikey inserted
 
@@ -197,7 +197,7 @@ The following command will get the username and email address associated with yo
 gpg --card-status  | sed -n -e '/^General key info/,//p' | sed -n -e 's@^.*pub[[:blank:]][[:blank:]]*@@p'
 ```
 
-The username should match your identity, the e-mail address should be yours (@eove.fr).
+The username should match your identity, the e-mail address should be yours (@company.com).
 
 If this is the case, this test is a PASS.  
 If not, the Yubikey owner should notify the organiser.  
@@ -309,10 +309,10 @@ PKID=$(cat "$CSR" | openssl asn1parse -i -strparse $SUBJECT_PUBLIC_KEY_OFFS -noo
 # Login to vault
 case $TARGET_VAULT in
     "prod")
-        export VAULT_ADDR="https://vault.eove.fr:8200"
+        export VAULT_ADDR="https://vault.url.company.com:8200"
         ;;
     "preprod")
-        export VAULT_ADDR="https://preprod.vault.eove.fr:8200"
+        export VAULT_ADDR="https://preprod.url.company.com:8200"
         ;;
 esac
 vault login -method=github
@@ -366,9 +366,9 @@ vault read -format=json devices_pki/issuer/default/json | jq -r '.data.issuer_id
 The offline root CA signs offline intermediate CAs that last for many years.
 Before the offline root CA becomes obsolete and thus cannot sign new intermediate CAs, a new offline root CA should be generated.
 
-In such a case (a new offline root CA is generated), then all trust chain down to the device certification authority should be re-generated as well. This is tedious and should be done in advance (not in emergency), and well before the new offline root CA is actually used, so that all third parties (telemonitoring services) have time to update their list of trusted Eove CAs (add the new one alongside the existing one).
+In such a case (a new offline root CA is generated), then all trust chain down to the device certification authority should be re-generated as well. This is tedious and should be done in advance (not in emergency), and well before the new offline root CA is actually used, so that all third parties (telemonitoring services) have time to update their list of trusted CAs (add the new one alongside the existing one).
 
-Only when all third parties are trusting the new chain, Eove will be free to swap the existing offline tree with a new one.
+Only when all third parties are trusting the new chain will we be free to swap the existing offline tree with a new one.
 
 #### Test
 
