@@ -117,12 +117,14 @@ nix build src/.#iso-offline
 
 Compute the size of the verifiable bytes (total size - 512) that we will call *N<sub>iso</sub>*:
 ```bash
-export Niso=$(expr $(stat --format=%s --dereference result/iso/orca-*.iso) - 512) && echo "Niso=$Niso"
+export Niso=$(expr $(stat --format=%s -L result/iso/orca-*.iso) - 512) && \
+ echo "Niso=$Niso"
 ```
 
 Compute a sha256 checksum *C<sub>iso</sub>* of the verifiable bytes:
 ```bash
-dd status=none if=$(command ls result/iso/orca-*.iso | head -n 1) bs=512 skip=1 | sha256sum -b | sed -E 's/^([[:xdigit:]]*).*$/Ciso=\1/'
+dd status=none if=$(command ls result/iso/orca-*.iso | head -n 1) bs=512 skip=1 | \
+ sha256sum -b | sed -E 's/^([[:xdigit:]]*).*$/Ciso=\1/'
 ```
 
 Communicate the values of *N<sub>iso</sub>* and *C<sub>iso</sub>* to the other 👥`team members`.
@@ -255,7 +257,9 @@ To check the key:
 - The following steps must be performed without booting on the USB key, with the USB key still in *read-only* mode, and directly on the installed Linux OS of the 👀`observer`'s computer.
 - An environment variable `Niso` should be set with the correct value, then the key is verified by the 👀`observer` (number of partitions, *N<sub>iso</sub>* checksum):
 ```bash
-sudo fdisk -l /dev/sda && sudo dd if=/dev/sda bs=512 skip=1 count=$(expr $Niso / 512) | sha256sum -b
+sudo fdisk -l /dev/sda && \
+ sudo dd if=/dev/sda bs=512 skip=1 count=$(expr $Niso / 512) | \
+ sha256sum -b
 ```
 - the result sha256 should match the value *C<sub>iso</sub>* computed from the ✅`trusted commit`.
 
@@ -448,7 +452,10 @@ All 👥`team members` should now:
 On both these archives, they should perform a checksum of this data with the following command:
 ```bash
 export VAULT_BACKUP=/path/to/ORCA_backup.tar
-(export TMP_DIR="$(mktemp -d)" && cd "$TMP_DIR" && sudo tar --same-owner -xf "$VAULT_BACKUP" -C . && sudo find . -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum -)
+(export TMP_DIR="$(mktemp -d)" && \
+ cd "$TMP_DIR" && \
+ sudo tar --same-owner -xf "$VAULT_BACKUP" -C . && \
+ sudo find . -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum -)
 ```
 
 The value displayed should match *C<sub>vault</sub>* grabbed from the QR code above.
@@ -479,9 +486,13 @@ The 📝`reporter`, 💻`operator`, and 👀`observer` will all sign the report.
 In sequence, each of them will run the following command and transfer the resulting signed file (which name is displayed on the console) to the next person:
 ```bash
 export REPORT=/path/to/IN65_report.txt
-export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status | sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi')
-sed -e '/^@GPG@SIGNATURES@$/q' "$REPORT" | gpg --armor --output - -u "$GPG_HW_TOKEN_KEY_ID" --detach-sign > "$REPORT.sig.asc" && \
- cat "$REPORT" "$REPORT.sig.asc" > "$REPORT".signed && rm "$REPORT.sig.asc" && command ls "$REPORT".signed >&2
+export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status | \
+ sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi')
+sed -e '/^@GPG@SIGNATURES@$/q' "$REPORT" | \
+ gpg --armor --output - -u "$GPG_HW_TOKEN_KEY_ID" --detach-sign > "$REPORT.sig.asc" && \
+ cat "$REPORT" "$REPORT.sig.asc" > "$REPORT".signed && \
+ rm "$REPORT.sig.asc" && \
+ command ls "$REPORT".signed >&2
 ```
 > [!Note]  
 > In the shell snippet above, we catch the hardware token public key ID from the signing key ID in the token, and store this inside variable `GPG_HW_TOKEN_KEY_ID`.  

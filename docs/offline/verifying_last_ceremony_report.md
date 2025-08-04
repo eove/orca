@@ -14,7 +14,10 @@ Get the name of the reporter, observer and operator that were running the last c
 ```bash
 export TMP_GPG_HOME=$(mktemp -d)
 gpg --home="$TMP_GPG_HOME" --import /path/to/src/share_holders_keys/env/*
-gpg --home="$TMP_GPG_HOME" --list-keys --keyid-format LONG --with-colons | sed -n -e '/^pub/{n;p}' | sed -n -E 's/^fpr:([^:]*:){8}([^:]*).*$/\2:6:/p' | gpg --home="$TMP_GPG_HOME" --import-ownertrust
+gpg --home="$TMP_GPG_HOME" --list-keys --keyid-format LONG --with-colons | \
+ sed -n -e '/^pub/{n;p}' | \
+ sed -n -E 's/^fpr:([^:]*:){8}([^:]*).*$/\2:6:/p' | \
+ gpg --home="$TMP_GPG_HOME" --import-ownertrust
 ```
 
 With the environment variable `TMP_GPG_HOME` set above, verify each detached signature of the previous IN65 with:
@@ -24,7 +27,8 @@ export REPORT_UNSIGNED=$(mktemp -u)
 export REPORT_SIGNATURES=$(mktemp -u)
 sed -e '1,/^@GPG@SIGNATURES@$/ d' "$REPORT" > "$REPORT_SIGNATURES"
 sed -e '/^@GPG@SIGNATURES@$/q' "$REPORT" > "$REPORT_UNSIGNED"
-gpg --home="$TMP_GPG_HOME" --verify "$REPORT_SIGNATURES" "$REPORT_UNSIGNED" && echo "All signatures verified"
+gpg --home="$TMP_GPG_HOME" --verify "$REPORT_SIGNATURES" "$REPORT_UNSIGNED" && \
+ echo "All signatures verified"
 ```
 
 An example of what you should get (correct signature):
