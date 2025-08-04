@@ -11,8 +11,8 @@ export ORCA_WF_TITLE="ceremony_workflow"
 
 * For IN69:
 ```bash
-export ORCA_WF_AS_MD="book/markdown/IN/69/IN69-verifications-recurrentes-de-la-pki.md"
-export ORCA_WF_TITLE="IN69"
+export ORCA_WF_AS_MD="book/markdown/workflow/periodical_checks.md"
+export ORCA_WF_TITLE="periodical_checks"
 ```
 
 Next, let's setup our environment:
@@ -60,8 +60,8 @@ command mv "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" "/tmp/${ORCA_WF_TITLE}.html
 > If you have several private GPG keys, you may need to specify which one to use for signing with `-u` when running the commands below.
 
 First, we need to set an environment variable specifying the workflow we are working on:
-* For ceremony workflow: `export ORCA_WF_TITLE="ceremony_workflow"`
-* For IN69: `export ORCA_WF_TITLE="IN69"`
+* For the ceremony workflow: `export ORCA_WF_TITLE="ceremony_workflow"`
+* For the periodical checks: `export ORCA_WF_TITLE="periodical_checks"`
 
 The editor can now sign the document inline using the signing key in their own hardware token:
 ```bash

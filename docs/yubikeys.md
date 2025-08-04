@@ -99,7 +99,7 @@ key-attr
 generate
 N
 # Enter the user PIN
-# Enter the validity (see the recommendations in IN69, you can also use the tip below to ease the calculation)
+# Enter the validity (see the recommendations in the periodical check workflow, you can also use the tip below to ease the calculation)
 # Enter your identity name `Firstname Lastname`
 # Enter your Email address
 # Enter a comment, for example `Yubikey`, important when you have multiple GPG keys linked to the same email
