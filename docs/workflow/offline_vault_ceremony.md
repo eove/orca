@@ -181,7 +181,7 @@ For the rest of the procedure below, you can consider references to 👥`team me
 
 ```report
 Name of the organiser:
-................................................................................
+...............................................................................
 
 Revision of the ceremony workflow used:
 @ORCA@rev@
@@ -190,51 +190,51 @@ Version (commit) of the workflow document:
 @ORCA@commit@
 
 Names of the team members that participate to the ceremony:
-Operator: ......................................................................
-Reporter: ......................................................................
-Observer: ......................................................................
-These 3 roles are handled by 3 different people .............. PASS [] / FAIL []
-These 3 people are located in the same physical room ......... PASS [] / FAIL []
+Operator: .....................................................................
+Reporter: .....................................................................
+Observer: .....................................................................
+These 3 roles are handled by 3 different people ............. PASS [] / FAIL []
+These 3 people are located in the same physical room ........ PASS [] / FAIL []
 
 Date of the ceremony:
-................................................................................
+...............................................................................
 
 Target environment:
-........................................................... preprod [] / prod []
+.......................................................... preprod [] / prod []
 Trusted commit for the new ceremony:
-................................................................................
+...............................................................................
 
 Date of the previous ceremony:
-................................................................................
+...............................................................................
 Previous trusted commit (as read from the previous ceremony's report):
-................................................................................
+...............................................................................
 Previous backup sha256 checksum (as read from the previous ceremony's report):
-................................................................................
+...............................................................................
 
 The ceremony's workflow document (valid rev, signatures) have been checked by:
-the operator ................................................. PASS [] / FAIL []
-the reporter ................................................. PASS [] / FAIL []
+the operator ................................................ PASS [] / FAIL []
+the reporter ................................................ PASS [] / FAIL []
 
 The previous ceremony's report signatures have been verified by:
-the operator ................................................ PASS [] / FAIL* []
-the reporter ................................................ PASS [] / FAIL* []
+the operator ............................................... PASS [] / FAIL* []
+the reporter ............................................... PASS [] / FAIL* []
 
 The verifiable bytes of the iso are (value of *Niso*):
-................................................................................
+...............................................................................
 The sha256 checksum of the *N* verifiable bytes is (value of *Ciso*):
-................................................................................
+...............................................................................
 
 The review of changes/content of the bootable live media has been performed by:
-the operator ................................................. PASS [] / FAIL []
-the reporter ................................................. PASS [] / FAIL []
-All (possible) changes are legitimate ........................ PASS [] / FAIL []
+the operator ................................................ PASS [] / FAIL []
+the reporter ................................................ PASS [] / FAIL []
+All (possible) changes are legitimate ....................... PASS [] / FAIL []
 
-A bootable live media has been generated for this ceremony ... PASS [] / FAIL []
+A bootable live media has been generated for this ceremony .. PASS [] / FAIL []
 Identity of the team member who brings the bootable media (the key owner):
-.............................................. the operator [] / the reporter []
+............................................. the operator [] / the reporter []
 
 The offline CA private data has been restored from the following archive file:
-................................................................................
+...............................................................................
 ```
 
 </td></table>
@@ -276,20 +276,20 @@ When booting *ephemeral vault*, a NixOS logo will appear with a boot menu mentio
 <table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
 
 ```report
-The key with the vault iso image is set as read only ......... PASS [] / FAIL []
+The key with the vault iso image is set as read only ........ PASS [] / FAIL []
 
 The operator's machine:
-can select the key as boot device ............................ PASS [] / FAIL []
-can successfully complete boot on the readonly key ..........  PASS [] / FAIL []
+can select the key as boot device ........................... PASS [] / FAIL []
+can successfully complete boot on the readonly key .......... PASS [] / FAIL []
 
 While performing the USB key content check on the operator's machine:
-the first partition is the only one marked as bootable ....... PASS [] / FAIL []
-the checksum *Ciso* is correct ............................... PASS [] / FAIL []
-the computer has been powered off while the key was still read-only ............
-.............................................................. PASS [] / FAIL []
+the first partition is the only one marked as bootable ...... PASS [] / FAIL []
+the checksum *Ciso* is correct .............................. PASS [] / FAIL []
+the computer has been powered off while the key was still read-only ...........
+............................................................. PASS [] / FAIL []
 
-The key for the ephemeral vault is then set as read/write and the ephemeral ....
-vault is immediately booted .................................. PASS [] / FAIL []
+The key for the ephemeral vault is then set as read/write and the ephemeral ...
+vault is immediately booted ................................. PASS [] / FAIL []
 ```
 
 </td></table>
@@ -311,11 +311,11 @@ Before the very first shell prompt after booting, that computed checksum is disp
 <table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
 
 ```report
-The vault private data checksum displayed at boot (_Cvault_) matches the .......
-previous ceremony's backup sha256 checksum .................. PASS [] / FAIL* []
-0 token exists in the vault private data at startup .......... PASS [] / FAIL []
-The vault service status returns "Initialized" = true ....... PASS [] / FAIL* []
-The vault service status returns "Sealed" = true ............. PASS [] / FAIL []
+The vault private data checksum displayed at boot (_Cvault_) matches the ......
+previous ceremony's backup sha256 checksum ................. PASS [] / FAIL* []
+0 token exists in the vault private data at startup ......... PASS [] / FAIL []
+The vault service status returns "Initialized" = true ...... PASS [] / FAIL* []
+The vault service status returns "Sealed" = true ............ PASS [] / FAIL []
 ```
 
 </td></table>
@@ -327,14 +327,16 @@ The vault service status returns "Sealed" = true ............. PASS [] / FAIL []
 
 {{#include ../offline/unseal.md}}
 
+&nbsp;<br>
+
 <table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
 
 ```report
-The offline vault has been unsealed ......................... PASS [] / FAIL* []
+The offline vault has been unsealed ........................ PASS [] / FAIL* []
 Share holders that participated to the unseal process:
-................................................................................
-................................................................................
-................................................................................
+...............................................................................
+...............................................................................
+...............................................................................
 ```
 
 </td></table>
@@ -353,13 +355,13 @@ The 📝`reporter` communicates the list of scripts that will be run to the 👀
 
 ```report
 Scripts executed during the maintenance phase:
-................................................................................
-................................................................................
-................................................................................
-................................................................................
-................................................................................
-................................................................................
-Only the scripts initially planned have been executed ........ PASS [] / FAIL []
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
+Only the scripts initially planned have been executed ....... PASS [] / FAIL []
 ```
 
 </td></table>
@@ -393,8 +395,8 @@ count-tokens
 <table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
 
 ```report
-The vault has been sealed .................................... PASS [] / FAIL []
-0 token exists in the vault private data before backup ....... PASS [] / FAIL []
+The vault has been sealed ................................... PASS [] / FAIL []
+0 token exists in the vault private data before backup ...... PASS [] / FAIL []
 ```
 
 </td></table>
@@ -469,10 +471,10 @@ The value displayed should match *C<sub>vault</sub>* grabbed from the QR code ab
 <table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
 
 ```report
-The vault private data archive has been safely stored ........ PASS [] / FAIL []
-The checksum of the tar file content matches _Cvault_ ........ PASS [] / FAIL []
+The vault private data archive has been safely stored ....... PASS [] / FAIL []
+The checksum of the tar file content matches _Cvault_ ....... PASS [] / FAIL []
 Value of the full sha256 checksum of the vault private data folder (_Cvault_):
-................................................................................
+...............................................................................
 ```
 
 </td></table>
