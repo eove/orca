@@ -303,6 +303,8 @@ In order to be sure that offline private data has not been tampered with (or dow
 
 Before the very first shell prompt after booting, that computed checksum is displayed on the screen, as well as the existing root token count (that should be 0) and the vault status.
 
+<table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
+
 ```report
 The vault private data checksum displayed at boot (_Cvault_) matches the previous ......
 ceremony's backup sha256 checksum ................................... PASS [] / FAIL* []
@@ -310,6 +312,8 @@ ceremony's backup sha256 checksum ................................... PASS [] / 
 The vault service status returns "Initialized" = true ............... PASS [] / FAIL* []
 The vault service status returns "Sealed" = true ..................... PASS [] / FAIL []
 ```
+
+</td></table>
 
 ### Unsealing the *ephemeral vault*
 
