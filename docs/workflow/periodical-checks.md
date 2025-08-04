@@ -12,19 +12,12 @@ A hand made one can be found at the [signing and verifying annex](../signing_and
 
 ## Introduction
 
-Ce document décrit le déroulement de la cérémonie de vérifications récurrentes de la PKI (chaîne de confiance basée sur des certificats digitaux).
-Ce processus implique l'ouverture de la PKI offline si des opérations doivent être effectuées sur cette dernière et dépend donc de l'exécution de la fiche de ceremonie.
+This document explains how to periodically verify the PKI and its usability.
+This workflow may need to work on the offline PKI and this depends on the offline PKI workflow.
 
 {{#include ../common/glossary.md}}
 
 ## Protocole de vérification
-
-### Objectif
-
-Le protocole détaillé ci-dessous indique les étapes à suivre pour vérifier que la PKI est toujours utilisable de façon pérenne.
-Cela inclut des vérifications sur la CA online et la CA offline.
-
-Le reste de ce document est rédigé en anglais.
 
 ## Overview
 
