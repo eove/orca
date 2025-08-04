@@ -19,28 +19,28 @@ export GIT_CURRENT_HASH=$(git log --pretty=format:'%H' -n 1)
 
 unset SANITY_CHECKS_OK
 
-if test -z $ORCA_WF_REV; then echo "ERROR: no ORCA_WF_REV set">&2; false; else \
- if test -z $ORCA_WF_TITLE; then echo "ERROR: no ORCA_WF_TITLE set">&2; false; else \
- if test -z $ORCA_WF_AS_MD; then echo "ERROR: no ORCA_WF_AS_MD set">&2; false; else \
- if test -z $GIT_CURRENT_HASH; then echo "ERROR: no GIT_CURRENT_HASH set">&2; false; else \
- if test -z $GIT_REMOTE_URL; then echo "ERROR: no GIT_REMOTE_URL set">&2; false; else \
+if test -z $ORCA_WF_REV; then echo "ERROR: no ORCA_WF_REV set">&2; false; else\
+ if test -z $ORCA_WF_TITLE; then echo "ERROR: no ORCA_WF_TITLE set">&2; false; else\
+ if test -z $ORCA_WF_AS_MD; then echo "ERROR: no ORCA_WF_AS_MD set">&2; false; else\
+ if test -z $GIT_CURRENT_HASH; then echo "ERROR: no GIT_CURRENT_HASH set">&2; false; else\
+ if test -z $GIT_REMOTE_URL; then echo "ERROR: no GIT_REMOTE_URL set">&2; false; else\
   SANITY_CHECKS_OK=true; fi; fi; fi; fi; fi
 
 unset TMP_OUTPUT_DIR;TMP_OUTPUT_DIR=$(mktemp -p ~ -d)
 
 nix develop --command mdbook build
-test -n $SANITY_CHECKS_OK && \
- sed -e "s|\@ORCA\@commit\@|${GIT_CURRENT_HASH}|g" \
-     -e "s|\@ORCA\@gitremote\@|${GIT_REMOTE_URL}|g" \
-     -e "s|\@ORCA\@rev\@|${ORCA_WF_REV}|g" \
+test -n $SANITY_CHECKS_OK &&\
+ sed -e "s|\@ORCA\@commit\@|${GIT_CURRENT_HASH}|g"\
+     -e "s|\@ORCA\@gitremote\@|${GIT_REMOTE_URL}|g"\
+     -e "s|\@ORCA\@rev\@|${ORCA_WF_REV}|g"\
    "$ORCA_WF_AS_MD" > "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}_with_commit.md"
 
-nix develop --command md-to-html "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}_with_commit.md" "${ORCA_WF_TITLE} rev${ORCA_WF_REV}" | \
- sed -e '$a<hr>\n<!-- @GPG@SIGNATURES@ --><pre>' > "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" && \
+nix develop --command md-to-html "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}_with_commit.md" "${ORCA_WF_TITLE} rev${ORCA_WF_REV}" |\
+ sed -e '$a<hr>\n<!-- @GPG@SIGNATURES@ --><pre>' > "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" &&\
  rm "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}_with_commit.md"
 
-command mv "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" "/tmp/${ORCA_WF_TITLE}.html" && \
- command ls "/tmp/${ORCA_WF_TITLE}.html" && \
+command mv "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" "/tmp/${ORCA_WF_TITLE}.html" &&\
+ command ls "/tmp/${ORCA_WF_TITLE}.html" &&\
  rm -rf "${TMP_OUTPUT_DIR}" && unset TMP_OUTPUT_DIR
 ```
 
@@ -56,9 +56,9 @@ First, we need to set an environment variable specifying the workflow we are wor
 The editor can now sign the document inline using the signing key in their own hardware token:
 ```bash
 export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status | sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi')
-sed -e '/^<!-- @GPG@SIGNATURES@ --><pre>$/q' "/tmp/${ORCA_WF_TITLE}.html" | \
- gpg --armor --output - -u "$GPG_HW_TOKEN_KEY_ID" --detach-sign > /tmp/${ORCA_WF_TITLE}.html.sig.asc && \
- cat "/tmp/${ORCA_WF_TITLE}.html" "/tmp/${ORCA_WF_TITLE}.html.sig.asc" > "/tmp/${ORCA_WF_TITLE}_signed.html" && \
+sed -e '/^<!-- @GPG@SIGNATURES@ --><pre>$/q' "/tmp/${ORCA_WF_TITLE}.html" |\
+ gpg --armor --output - -u "$GPG_HW_TOKEN_KEY_ID" --detach-sign > /tmp/${ORCA_WF_TITLE}.html.sig.asc &&\
+ cat "/tmp/${ORCA_WF_TITLE}.html" "/tmp/${ORCA_WF_TITLE}.html.sig.asc" > "/tmp/${ORCA_WF_TITLE}_signed.html" &&\
  rm "/tmp/${ORCA_WF_TITLE}.html.sig.asc"
 ```
 
