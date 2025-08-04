@@ -33,9 +33,11 @@ fa:fa-hourglass 30yrs"]
         VAULT_PKI>"<b>Online intermediate CA</b>
 *.subdomain.example.fr
 fa:fa-hourglass 14yrs"]
-        VAULT_PKI -->|signs| EOCON1("fa:fa-barcode XXX.subdomain.example.fr
+        VAULT_PKI -->|signs| EOCON1("fa:fa-barcode
+        XXX.subdomain.example.fr
 fa:fa-hourglass 12yrs")
-        VAULT_PKI -->|signs| EOCON2("fa:fa-barcode YYY.subdomain.example.fr
+        VAULT_PKI -->|signs| EOCON2("fa:fa-barcode
+        YYY.subdomain.example.fr
 fa:fa-hourglass 12yrs")
     end
 ```
