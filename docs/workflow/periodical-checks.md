@@ -15,7 +15,7 @@ A hand made one can be found at the [signing and verifying annex](../signing_and
 This document explains how to periodically verify the PKI and its usability.
 This workflow may need to work on the offline PKI and this depends on the offline PKI workflow.
 
-{{#include ../common/glossary.md}}
+{{#include ./common/glossary.md}}
 
 ## Protocole de vérification
 
@@ -23,11 +23,11 @@ This workflow may need to work on the offline PKI and this depends on the offlin
 
 ### Architecture of the vault system
 
-{{#include ../../architecture.md}}
+{{#include ../architecture.md}}
 
 ### Note on scripts
 
-{{#include ../../note-on-scripts.md}}
+{{#include ../note-on-scripts.md}}
 
 ## Prerequisites
 
