@@ -16,7 +16,7 @@ That event is called a *ceremony*.
 
 All commands are given for Linux using a bash shell. Please adapt acording to your environment.
 
-{{#include ../IN/common/glossary.md}}
+{{#include ./common/glossary.md}}
 
 ## Overview
 
@@ -180,7 +180,7 @@ These 3 persons should be **physically present during the whole ceremony**, and 
    This person has their own copy of this ceremony workflow document.\
    During the whole ceremony, this person will fill in the sections framed with a <span style="border:2px dotted dodgerblue;padding-left:2px;padding-right:2px;">dotted-blue border</span>.\
    To extract these sections from the html version of the ceremony's workflow, use the following filter:\
-   `cat /path/to/IN65.html | sed -e 's|<\([/]\)*code class="language-report">|\n<\1\@ORCA\@report\@>\n|g' | sed -n -e '/<\@ORCA\@report\@>/,/<\/\@ORCA\@report\@>/{s/<[/]*\@ORCA\@report\@>//;p}' | sed -e '$a\@GPG\@SIGNATURES\@' | tee /tmp/blank_report.txt`
+   `cat /path/to/ceremory_workflow.html | sed -e 's|<\([/]\)*code class="language-report">|\n<\1\@ORCA\@report\@>\n|g' | sed -n -e '/<\@ORCA\@report\@>/,/<\/\@ORCA\@report\@>/{s/<[/]*\@ORCA\@report\@>//;p}' | sed -e '$a\@GPG\@SIGNATURES\@' | tee /tmp/blank_report.txt`
 
 3. The third role is the `observer` (👀).\
    This person should be [randomly](https://www.random.org/lists/) picked among all share holders except the two other 👥`team members`. The random draw will be performed by either the 💻`operator` or 📝`reporter`.\
@@ -504,7 +504,7 @@ Before signing the report, please verify its content, specifically:
 The 📝`reporter`, 💻`operator`, and 👀`observer` will all sign the report.\
 In sequence, each of them will run the following command and transfer the resulting signed file (which name is displayed on the console) to the next person:
 ```bash
-export REPORT=/path/to/IN65_report.txt
+export REPORT=/path/to/ceremony_report.txt
 export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status |\
  sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi')
 sed -e '/^@GPG@SIGNATURES@$/q' "$REPORT" |\
@@ -518,7 +518,7 @@ sed -e '/^@GPG@SIGNATURES@$/q' "$REPORT" |\
 > You might also do it manually (for example using `gpg --card-status` or `gpg --list-keys --fingerprint`) if this sed oneliner doesn't do the job properly
 
 The last 👥`team member` that signs takes the resulting signed report file and:
-1. renames it to contain the date of the ceremony, for example: *IN65-ceremonie-d-ouverture-de-la-pki-offline-preprod-d-entreprise-2025-03-17.signed.txt*
+1. renames it to contain the date of the ceremony, for example: *ceremonie-d-ouverture-de-la-pki-offline-preprod-d-entreprise-2025-03-17.signed.txt*
 2. sends it to all the participants as an attached file via e-mail
 3. copies it to Google Drive next to the backup
 

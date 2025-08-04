@@ -46,7 +46,7 @@ Document généré depuis les sources dans le dépôt git [@ORCA@gitremote@/tree
 ## Introduction
 
 Ce document décrit le déroulement de la cérémonie de vérifications récurrentes de la PKI d'Eove (chaîne de confiance basée sur des certificats digitaux).
-Ce processus implique l'ouverture de la PKI offline si des opérations doivent être effectuées sur cette dernière et dépend donc de l'exécution de la fiche IN65.
+Ce processus implique l'ouverture de la PKI offline si des opérations doivent être effectuées sur cette dernière et dépend donc de l'exécution de la fiche de ceremonie.
 
 ## Historique des révisions
 
@@ -80,14 +80,14 @@ Le reste de ce document est rédigé en anglais.
 In order to execute the current document, you will need:
 * An initialised offline vault
 * An initialised and running online vault
-* To fulfill all the prerequisites to run an IN65 ceremony
+* To fulfill all the prerequisites to run an ceremony
 
 ## Recurrent checks
 
 On a regular basis, the whole PKI usability should be assessed, this means that **all** the following checks should pass or be fixed by an action described in each chapter.
 
 Checks (and fixes) below should be performed first on the preprod environment, then on prod.
-If fixes are needed, this means running an IN65 on preprod, and then an IN65 on prod.
+If fixes are needed, this means running a ceremony on preprod, and then a ceremony on prod.
 
 > [!Warning]  
 > In order to use scripts on the offline vault, they should be copied and adapted from the directory `templates/` to `src/scripts/`, then added to git and only then, the build of the live bootable media will make these scripts available from the command line on the offline terminal.
@@ -124,7 +124,7 @@ Where:
 * `firstname.lastname@email.com` is the email address of the owner of this Yubikey
 * `62413455` is the serial number of the Yubikey (as displayed, for example using `gpg --card-status`)
 
-Once all relevant GPG keys have been renewed and their public key commited to the repository, the following script should be run in an IN65 workflow for the offline vault:  
+Once all relevant GPG keys have been renewed and their public key commited to the repository, the following script should be run in a ceremony for the offline vault:  
 `templates/unauthenticated/rotate-seal-shares.sh`
 
 An unseal share rotation should be run also on the online vault.
@@ -173,7 +173,7 @@ The process is detailed [here](@ORCA@gitremote@/blob/main/docs/yubikeys.md#gener
 
 Once a new keypair has been set up on the Yubikey, extract your public key and update the env-specific directory located under folder `src/share_holders_keys/` in this repository.
 
-Finally, force an unseal share rotation by executing the following script. It should be run in an IN65 workflow for the offline vault:  
+Finally, force an unseal share rotation by executing the following script. It should be run in a ceremony for the offline vault:  
 `templates/unauthenticated/rotate-seal-shares.sh`
 
 An unseal share rotation should be run also on the online vault.
@@ -211,7 +211,7 @@ The process is detailed [here](@ORCA@gitremote@/blob/main/docs/yubikeys.md#gener
 
 Once a new keypair has been setup on the Yubikey, extract your public key and update the env-specific directory located under folder `src/share_holders_keys/` in this repository.
 
-Finally, force an unseal share rotation by executing the following script. It should be run in an IN65 workflow for the offline vault:  
+Finally, force an unseal share rotation by executing the following script. It should be run in a ceremony for the offline vault:  
 `templates/unauthenticated/rotate-seal-shares.sh`
 
 An unseal share rotation should be run also on the online vault.
@@ -275,9 +275,9 @@ Generate a new **internal** CA CSR on the online vault, by running the following
 
 Copy the template `templates/authenticated/sign-csr.sh` into `src/scripts/authenticated` and embed the CSR content inside that copied version of the script.
 
-This CSR content (PEM-formatted file) will be reviewed during the verification phase of the IN65 workflow.
+This CSR content (PEM-formatted file) will be reviewed during the verification phase of the ceremony workflow.
 
-Finally, on the offline vault, organise an IN65 workflow to execute the updated sign-csr script. The organiser should also direct all team members to the instructions below. Indeed, these provide step-by-step instructions on how to make sure the CSR comes from the online vault.
+Finally, on the offline vault, organise an ceremony to execute the updated sign-csr script. The organiser should also direct all team members to the instructions below. Indeed, these provide step-by-step instructions on how to make sure the CSR comes from the online vault.
 
 > [!Note]  
 > Because the online vault has been configured to only generate internal CSR (the associated private key never leaves the vault), we are sure that if the CSR is coming from the online vault, then only that vault can use it and is seen as trusted by the offline vault.
@@ -345,7 +345,7 @@ exit -42
 > This means that, if that script succeeds, you can trust that CSR.
 > However, if it fails, then it can either be a wrong CSR **or** a change in vault. Please check accordingly.
 
-Once the check have been performed, the IN65 is executed on the offline CA and the CSR is signed, we should get a certificate chain output PEM file, let's store it into `/tmp/online_cert.pem`.
+Once the check have been performed, a ceremony is executed on the offline CA and the CSR is signed, we should get a certificate chain output PEM file, let's store it into `/tmp/online_cert.pem`.
 We now enable the signed private/public key pair for online PKI by running the following script against the **online vault**:
 ```bash
 ./scripts/maintenance/import-signed-devices-certificate.sh /tmp/online_cert.pem
@@ -359,7 +359,7 @@ vault read -format=json devices_pki/issuer/default/json | jq -r '.data.issuer_id
 > [!Important]  
 > If the default issuer ID has not been updated, there may be a security risk. The imported PEM certificate could have been generated by another machine than the online vault and trust chain may be at risk.  
 > This is even more important if the CSR PKID property (aka `subject_key_id`) could not be properly verified in the previous steps above.  
-> In such situations, you should immediately [revoke (and publish) the PEM that the offline vault just signed](../../revocation.md). This requires running a new IN65.
+> In such situations, you should immediately [revoke (and publish) the PEM that the offline vault just signed](../../revocation.md). This requires running a new ceremony.
 
 ### The offline CA can sign new online intermediate CAs for their whole lifetime during the next 12 months to come
 
