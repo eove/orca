@@ -16,7 +16,7 @@ export ORCA_WF_REV= # Set this variable correctly
 cd /path/to/orca
 export GIT_REMOTE_URL=$(git remote -v | sed -n -E -e 's|^.*git@(.+):(.+)\.git.*|https://\1/\2|p' -e '1q')
 nix develop --command mdbook build
-if test -z $ORCA_WF_REV; then echo "ERROR: no ORCA_WF_REV set">&2; false; else if test -z ORCA_WF_TITLE; then echo "ERROR: no ORCA_WF_TITLE set">&2; false; else sed -e "s|\@ORCA\@commit\@|$(git log --pretty=format:'%H' -n 1)|g" -e "s|\@ORCA\@gitremote\@|${GIT_REMOTE_URL}|g" -e "s|\@ORCA\@rev\@|${ORCA_WF_REV}|g" "$ORCA_WF_AS_MD" > "/tmp/${ORCA_WF_TITLE}_with_commit.md" && \
+if test -z $ORCA_WF_REV; then echo "ERROR: no ORCA_WF_REV set">&2; false; else if test -z $ORCA_WF_TITLE; then echo "ERROR: no ORCA_WF_TITLE set">&2; false; else sed -e "s|\@ORCA\@commit\@|$(git log --pretty=format:'%H' -n 1)|g" -e "s|\@ORCA\@gitremote\@|${GIT_REMOTE_URL}|g" -e "s|\@ORCA\@rev\@|${ORCA_WF_REV}|g" "$ORCA_WF_AS_MD" > "/tmp/${ORCA_WF_TITLE}_with_commit.md" && \
  nix develop --command md-to-html "/tmp/${ORCA_WF_TITLE}_with_commit.md" "${ORCA_WF_TITLE} rev${ORCA_WF_REV}" | sed -e '$a<hr>\n<!-- @GPG@SIGNATURES@ --><pre>' > "/tmp/${ORCA_WF_TITLE}.html" && rm "/tmp/${ORCA_WF_TITLE}_with_commit.md" && command ls "/tmp/${ORCA_WF_TITLE}.html" >&2; fi; fi
 ```
 
