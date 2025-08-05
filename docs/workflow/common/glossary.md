@@ -1,57 +1,56 @@
-## Glossaire
+## Glossary
 
-Certificat : Identifiant numérique d'une machine/d'un service. Le certificat est publique mais ne peut être exploité qu'à la condition d'être en possession d'une clé privée/secrète associée.
+[Certificat](https://en.wikipedia.org/wiki/Public_key_certificate) : Digital identifier for a machine or a service. The certificat is public but can only be used when in possesion of the associated private key. 
 
-PKI : Public-key infrastructure/[Infrastructure à clés publiques](https://fr.wikipedia.org/wiki/Infrastructure_%C3%A0_cl%C3%A9s_publiques)
+PKI : [Public-key infrastructure](https://en.wikipedia.org/wiki/Public_key_infrastructure)
 
-CA : Certificate Authority/[Autorité de certification](https://fr.wikipedia.org/wiki/Autorit%C3%A9_de_certification)
+CA : [Certificate Authority](https://en.wikipedia.org/wiki/Certificate_authority)
 
-CSR/Certificate Signing Request : Certificat proposé à la signature par une CA.
+CSR/[Certificate Signing Request](https://en.wikipedia.org/wiki/Certificate_signing_request) : Certificate offered to be signed by a CA. 
 
-Cryptosystème à seuil : [https://fr.wikipedia.org/wiki/Cryptosyst%C3%A8me_%C3%A0_seuil](https://fr.wikipedia.org/wiki/Cryptosyst%C3%A8me_%C3%A0_seuil)
+[Secret Sharing](https://en.wikipedia.org/wiki/Secret_sharing) : an algorithm to split a secret between multiple people 
 
 SSS : [Shamir Secret Sharing](https://fr.wikipedia.org/wiki/Partage_de_cl%C3%A9_secr%C3%A8te_de_Shamir)
 
-Offline : hors-ligne, non connecté au réseau.
+GPG/GnuPG : [GNU Privacy Guard](https://en.wikipedia.org/wiki/GNU_Privacy_Guard). This tool can sign and cypher messages and files this ensuring their authenticity, integrity and/or confidentiality.
 
-Online : en-ligne (accessible depuis l'Internet)
+[Digital signature](https://en.wikipedia.org/wiki/Digital_signature)/Cryptographic signature : Verifiable signature of a digital document. This ensure the authenticity and integrity of the document.
 
-GPG/GnuPG : GNU Privacy Guard. Équivalent ouvert de l'outil PGP. Ce logiciel permet la signature et le chiffrement de messages et de fichiers, garantissant ainsi leur authenticité, leur intégrité et/ou leur confidentialité.
+GPG keyring : GPG database containing all the known public keys, private key when known and their trustworthyness.
 
-Signature numérique/signature cryptographique : Signature cryptographiquement vérifiable d'un document numérique à l'aide de l'outil GPG. La vérification de cette signature requiert l'utilisation de la clé publique du signataire, et utilise ainsi la fonctionnalité d'authenticité et d'intégralité de GPG.
+[Checksum](https://en.wikipedia.org/wiki/Checksum) : In this documentation, we use the sha256 [cryptographic hashing function](https://en.wikipedia.org/wiki/Cryptographic_hash_function) as a secure checksum. A secure checksum is necessary to ensure that the input is not tampered.
 
-GPG keyring/trousseau de clés GPG : Base de donnée GPG contentant l'ensemble des clés connues par GPG, leur éventuels secrets rattachés, et le niveau de confiance accordé à chaque clé.
+Hardware Token/[Security token](https://en.wikipedia.org/wiki/Security_token) : a physical device that can securely store secrets (like private keys). This is useful to securely use a secret on any computer.
 
-Checksum : Somme de contrôle. Dans cette documentation, on utilise de façon extensive des hachages cryptographiquement sécurisés (non falsifiables), qui seront appelés "checksums sha256" par abus de langage. L'avantage apporté par une fonction de hachage par rapport à simple une somme de contrôle est qu'il n'est pas possible de manipuler les données d'entrées en visant par avance un résultat numérique arbitraire.
+[Yubikey](https://en.wikipedia.org/wiki/YubiKey) : Affordable hardware token that can be plugged on a USB port and is compatible with GPG.
 
-Hardware Token : un équipement électronique permettant d'enfouir des secrets (par exemple des clés privées GPG) dans un produit physique plutôt que dans un fichier sur un disque dur.
+Vault/[Hashicorp Vault](https://github.com/hashicorp/vault) : Web service to handle secret and use cryptographic primitives (like CA automation).
 
-Yubikey : Hardware token accessible à un prix abordable, s'interfaçant nativement avec GPG en le branchant sur un port USB.
+Vault Private Data : Database of Hashicorp Vault at rest. These data contains the state of the Vault and **must** be backed up to ensure the vault and the managed PKI is not lost.
 
-Vault/Hashicorp Vault : Service logiciel combinant un grand nombre de fonctionalités de manipulations de secrets, et de primitive cryptographiques (comme l'automatisation d'une CA).
+Unseal share : A part of a secret that allows access to Hashicorp Vault. Multiple shares are necessary in order to unseal a vault. Reaching that threshold is called reaching a quorum.
 
-Vault Private Data : Contenu de la base de données (état au repos) d'un Vault Hashicorp. Ce sont ces données qui constituent l'état du Vault, et qui doivent donc être sauvegardée pour assurer la pérénité du Vault et de la PKI qu'il contient.
+Unseal Hashicorp Vault : A sealed vault cannot be used because it doesn't know the key to decypher the private data. To get that secret, a quorum is necessary and the vault is then unsealed.
 
-Unseal share : Portion d'un secret permettant de déverouiller la base de données d'un Vault Hashicorp. Plusieurs "shares" doivent être réunies pour pouvoir dévérouiller totalement un Vault.
+Seal Hashicorp Vault : An unsealed vault can be sealed by anyone having the corresponding right in Vault.
 
-Unseal/Dévérouiller un Vault Hashicorp : Un Vault vérouillé n'est pas utilisable, ses données sont chiffrées et inexploitables en l'état. L'action de dévérouiller nécessite un quorum minimum de personnes disposant d'une "unseal share" (quorum assuré à l'aide de la technologie de cryptosystème à seuil "SSS").
+Token : An access token generated after a proof of identity (via login or certifcate).
 
-Seal/Vérouiller un Vault Hashicorp : Un Vault dévérouillé peut être vérouillé par toute personne ayant une autorisation valide sur le Vault.
+Root token : A token with **every rights** on Hashicorp Vault.
 
-Token : Jeton d'accès à un Vault Hashicorp, généré suite à la preuve de son identité (via un login ou un certificat par exemple).
+Ephemeral Vault : A Hashicorp Vault started for a one-time usage on a machine. Private data may be given when starting the vault and are saved one the vault is stopped. This is used to handle the Offline part of the PKI, thus the machine running the ephemeral vault should also be offline.
 
-Root token : Jeton d'accès disposant de l'intégralité des droits sur un Vault Hashicorp.
+Ceremony : An event during which the offline part of the PKI is handled. This event is formalized, planned and produce an auditable report.
 
-Ephemeral Vault/Vault éphémère : Service Hashicorp Vault temporaire lancé sur une base de données existante ou non. La machine et le logiciel Hashicorp Vault sont dans ce cas là complètement temporaires, voire jetables. Seule la base de donnée Vault Private Data du Vault contient l'état du Vault (en entrée avant le démarrage du Vault éphémère, et en sortie après l'arrête du Vault éphémère).
+Ceremony report : Auditable document, cryptographically signed, describing the context, the people involved and the actions that occured during a ceremony.
 
-Cérémonie : Évènement durant lequel est effectuée une session de travail sur la PKI. Cette session est officialisée, planifiée, et donne lieu à un rapport auditable.
+Trusted commit : The sha of a git commit which has been audited and that can be trusted.
 
-Rapport de cérémonie : Document auditable, signé numériquement, retraçant le contexte, l'ensemble des participants, et des actions effectuées durant une cérémonie.
+ISO/[ISO9660](https://en.wikipedia.org/wiki/ISO_9660) : file system format for optical disc (extanded for bootable USB sticks).
+For an ephemeral vault, that image contains the whole operating system and script. It is thus umutable and self contained.
 
-Trusted commit : État arrêté d'un dépôt git (commit), pour lequel le contenu du dépôt a été audité comme étant de confiance.
+Bootable live media : Mass storage with a ISO9660 image loaded.
 
-ISO/ISO9660 : format de système de fichier en lecture seule pour les disques optiques (étendu aux clés USB bootables). Dans le cadre du Vault éphémère, ce système de fichier contient l'intégralité du système d'exploitation, qui est donc figé et autosuffisant.
-
-Bootable live media : Support de masse programmé avec une image ISO9660.
-
-Vault writable partition : partition secondaire sur le media bootable du Vault éphémère. Cette partition, à la différence de la partition ISO, contient les données modifiables du Vault (par exemple, la partie Vault Private Data, les fichiers de journal, les certificats générés etc.)
+Vault writable partition : secondary partition on the ephemeral vault bootable live media.
+Unlike the ISO partition, this partition is in read/write mode.
+It contains everything that change during a ceremony (e.g. the vault private data, logs, certificates…)
