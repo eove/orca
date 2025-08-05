@@ -57,7 +57,7 @@ Your next step will be to [apply the signed certificate to the online vault's PK
 ## Exporting the revocation list
 
 Because the CA(s) we handle here is/are offline, we will need to put the revocation list online.
-We will publish this on the main eove website: https://www.eove.fr/
+We will publish this at the adressed indicated in the AIA field of the corresponding certificates.
 
 Revoking a given certificate from its serial number can be done using, for example:
 ```
@@ -82,5 +82,5 @@ If you want to have a look inside this CRL:
 openssl crl -in crl.pem -text
 ```
 
-This CRL file then needs to be transferred to the appropriate place on https://vault.eove.fr (for production) or https://preprod.vault.eove.fr (for preprod)
+This CRL file then needs to be transferred to the appropriate place.
 

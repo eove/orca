@@ -9,7 +9,7 @@
     - [Verifying public keys](./verifying_public_keys.md)
 
 - [The offline vault](./offline/README.md)
-    - [🔁 How to generate and sign an html version of the doc instruction IN65 or IN69](./IN/common/html_gen_and_signature.md)
+    - [🔁 How to generate and sign an html version of the workflow documents](./workflow/common/html_gen_and_signature.md)
     - [🚀 Initialising the offline PKI](./offline/PKI_init.md)
     - [🔁 Manipulating Yubikeys for hardware token](./yubikeys.md)
     - [🔁 Verifying the report of the last ceremony](./offline/verifying_last_ceremony_report.md)
@@ -24,8 +24,8 @@
 
 -------------------
 
-[IN65 - Cérémonie d'ouverture de la PKI offline d'entreprise](./IN/65/IN65-ceremonie-d-ouverture-de-la-pki-offline-preprod-d-entreprise.md)
-[IN69 - Vérifications récurrentes de la PKI](./IN/69/IN69-verifications-recurrentes-de-la-pki.md)
-[Why so many steps in the IN65](./IN/65/explanation-IN65.md)  
+[Signing and verifying a document](./signing_and_verifying.md)
+[Ceremony to use the Offline Root CA](./workflow/offline_vault_ceremony.md)
+[Periodical checks of the PKI](./workflow/periodical-checks.md)
 [Providing your GPG public key](./gpg_public_key.md)  
-[Glossary](./IN/common/glossary.md)  
+[Glossary](./workflow/common/glossary.md)  

@@ -1,3 +1,23 @@
+# Using the Offline PKI
+
+
+Document created from repository [@ORCA@gitremote@](@ORCA@gitremote@) at commit :  
+`@ORCA@commit@`
+
+## Verifying this document
+
+Please follow your organisation's way of verifing a document to make sure this document has not been tampered with.
+A gpg-based one can be found at the [signing and verifying annex](../signing_and_verifying.md)
+
+## Introduction
+
+This document explains how to use the Offline Root CA from preparing the ceremony until a report is signed and shared.
+That event is called a *ceremony*.
+
+All commands are given for Linux using a bash shell. Please adapt acording to your environment.
+
+{{#include ./common/glossary.md}}
+
 ## Overview
 
 ### Architecture of the vault system
@@ -139,9 +159,7 @@ The bootable live media should be created by one 👥`team member` *before* the 
 > [!Warning]  
 > The rest of this section should not be executed at the first initialisation of the vault because we have no previous backup. In that case, please skip to the next section.
 
-Fetch offline CA private data backup from :
-* Google Drive's `Eove_RnD/PKI/Eove_offline_prod_CAs/` for prod offline CAs
-* Google Drive's `Eove_RnD/PKI/Eove_offline_preprod_CAs/` for preprod offline CAs
+Fetch offline CA private data backup for the corresponding environment (eg: prod, preprod etc.).
 
 {{#include ../offline/loading_backup.md}}
 
@@ -162,7 +180,7 @@ These 3 persons should be **physically present during the whole ceremony**, and 
    This person has their own copy of this ceremony workflow document.\
    During the whole ceremony, this person will fill in the sections framed with a <span style="border:2px dotted dodgerblue;padding-left:2px;padding-right:2px;">dotted-blue border</span>.\
    To extract these sections from the html version of the ceremony's workflow, use the following filter:\
-   `cat /path/to/IN65.html | sed -e 's|<\([/]\)*code class="language-report">|\n<\1\@ORCA\@report\@>\n|g' | sed -n -e '/<\@ORCA\@report\@>/,/<\/\@ORCA\@report\@>/{s/<[/]*\@ORCA\@report\@>//;p}' | sed -e '$a\@GPG\@SIGNATURES\@' | tee /tmp/blank_report.txt`
+   `cat /path/to/ceremory_workflow.html | sed -e 's|<\([/]\)*code class="language-report">|\n<\1\@ORCA\@report\@>\n|g' | sed -n -e '/<\@ORCA\@report\@>/,/<\/\@ORCA\@report\@>/{s/<[/]*\@ORCA\@report\@>//;p}' | sed -e '$a\@GPG\@SIGNATURES\@' | tee /tmp/blank_report.txt`
 
 3. The third role is the `observer` (👀).\
    This person should be [randomly](https://www.random.org/lists/) picked among all share holders except the two other 👥`team members`. The random draw will be performed by either the 💻`operator` or 📝`reporter`.\
@@ -439,12 +457,9 @@ One of the 👥`team members` inserts the USB key on their own computer.
 > Indeed, if it is the 📝`reporter`, then as soon as the archive is sent (see the lines below), the report can be completed and signed by the 📝`reporter` asynchronously while the other 👥`team member` perform verifications.
 
 The 👥`team member` that inserted the USB key, immediately:
-1. copies the tar archive from the `VAULT_WRITABLE` partition to Google Drive:
-   * `Eove_RnD/PKI/Eove_offline_prod_CAs/` for prod offline CAs
-   * `Eove_RnD/PKI/Eove_offline_preprod_CAs/` for preprod offline CAs
+1. copies the tar archive from the `VAULT_WRITABLE` partition to the backup destination corresponding to the environment:
 2. sends the tar archive from the `VAULT_WRITABLE` partition to all the participants as an attached file via e-mail
 3. gets the AIA data in folder `orca/aia/` of the current environment (prod/preprod) from `VAULT_WRITABLE` partition data and makes it available on the online vault.
-   For Eove, this means committing the new files to the matching environment directory in https://github.com/eove/eove-nixos-machines/tree/main/vault/static_aia
 
 > [!Note]  
 > We use a tar format here because it allows for deduplication during the enterprise-wide backup process (that includes all Google Drive content)
@@ -489,7 +504,7 @@ Before signing the report, please verify its content, specifically:
 The 📝`reporter`, 💻`operator`, and 👀`observer` will all sign the report.\
 In sequence, each of them will run the following command and transfer the resulting signed file (which name is displayed on the console) to the next person:
 ```bash
-export REPORT=/path/to/IN65_report.txt
+export REPORT=/path/to/ceremony_report.txt
 export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status |\
  sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi')
 sed -e '/^@GPG@SIGNATURES@$/q' "$REPORT" |\
@@ -503,7 +518,7 @@ sed -e '/^@GPG@SIGNATURES@$/q' "$REPORT" |\
 > You might also do it manually (for example using `gpg --card-status` or `gpg --list-keys --fingerprint`) if this sed oneliner doesn't do the job properly
 
 The last 👥`team member` that signs takes the resulting signed report file and:
-1. renames it to contain the date of the ceremony, for example: *IN65-ceremonie-d-ouverture-de-la-pki-offline-preprod-d-entreprise-2025-03-17.signed.txt*
+1. renames it to contain the date of the ceremony, for example: *ceremony-report-preprod-2025-03-17.signed.txt*
 2. sends it to all the participants as an attached file via e-mail
 3. copies it to Google Drive next to the backup
 

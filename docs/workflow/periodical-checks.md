@@ -1,95 +1,47 @@
-![Eove's logo](http://eove.fr/cms/wp-content/uploads/logo-1.png)
-
-# IN69 Cérémonie de vérifications récurrentes de la PKI d'entreprise
+# Periodical checks of the PKI
 
 
 
-
-
-
-
-
-
-
-Révision @ORCA@rev@
-
-
-| Edité par                             | Vérifié par                           | Apprové par                     |
-| ------------------------------------- | ------------------------------------- | ------------------------------- |
-| L. Ains                               | X. Detant                             |                                 |
-| Date 12/05/2025                       | Date 12/05/2025                       |                                 |
-| Signature digitale en fin de document | Signature digitale en fin de document | Visa                            |
-
-Document généré depuis les sources dans le dépôt git [@ORCA@gitremote@/tree/main/vault/docs](@ORCA@gitremote@/tree/main/vault/docs) au commit :  
+Document created from repository [@ORCA@gitremote@](@ORCA@gitremote@) at commit :  
 `@ORCA@commit@`
 
-## Protocole de vérification
+## Verifying this document
 
-> [!Tip]  
-> L'authenticité du contenu de ce document IN69 (au format HTML), doit être vérifié à l'aide de signature cryptographiques avant d'entamer son déroulement.
-> * Retrouver les identités publiques gpg des signataires (éditeur et vérificateur). Pour cela, se placer au commit signalé dans l'entête :
-> `git checkout @ORCA@commit@`
-> * À ce commit, les clés publiques se trouvent dans le répertoire [`src/workflow_signatory_keys/`](@ORCA@gitremote@/tree/main/src/workflow_signatory_keys).
-> * Vérifier que ces clés ont bien été insérées par un **commit signé par leur propriétaire**.
-> * Utiliser un nouveau trousseau gpg vide (toutes les commandes ci-dessous seront ensuite exécutées avec la variable d'environnement) :  
-> `export TMP_GPG_HOME=$(mktemp -d)`
-> * Importer toutes les clés publiques dans ce nouveau trousseau :  
-> `gpg --home="$TMP_GPG_HOME" --import /path/to/src/workflow_signatory_keys/*`
-> * Marquer toutes les clés comme de confiance ultime :  
-> `gpg --home="$TMP_GPG_HOME" --list-keys --keyid-format LONG --with-colons | sed -n -e '/^pub/{n;p}' | sed -n -E 's/^fpr:([^:]*:){8}([^:]*).*$/\2:6:/p' | gpg --home="$TMP_GPG_HOME"  --import-ownertrust`
-> * Extraire les signatures de la fin du document html :  
-> `sed -e '1,/^<!-- @GPG@SIGNATURES@ --><pre>$/ d' /chemin/vers/IN69_signed.html > /tmp/IN69.sig`
-> * Extraire la vestion html d'origine du document (sans signatures) :  
-> `sed -e '/^<!-- @GPG@SIGNATURES@ --><pre>$/q' /chemin/vers/IN69_signed.html > /tmp/IN69_without_signatures.html`
-> * Vérifier toutes les signatures :  
-> `gpg --home="$TMP_GPG_HOME" --verify /tmp/IN69.sig /tmp/IN69_without_signatures.html && echo "All signatures verified"`
-> * La validité des signatures est confirmée par l'affichage de la ligne `Good signature from xxxx` **autant de fois que de signataires du document** et qu'une dernière ligne `All signatures verified` s'affiche.
+Please follow your organisation's way of verifing a document to make sure this document has not been tampered with.
+A gpg-based one can be found at the [signing and verifying annex](../signing_and_verifying.md)
 
 ## Introduction
 
-Ce document décrit le déroulement de la cérémonie de vérifications récurrentes de la PKI d'Eove (chaîne de confiance basée sur des certificats digitaux).
-Ce processus implique l'ouverture de la PKI offline si des opérations doivent être effectuées sur cette dernière et dépend donc de l'exécution de la fiche IN65.
+This document explains how to periodically verify the PKI and its usability.
+Executing this workflow may require performing changes on the offline PKI, and thus executing an offline ceremony.
 
-## Historique des révisions
-
-| Révision |    Date    |   Auteur       | Description |
-| -------- | :--------: | :------------: | ----------: |
-| A        | 12/05/2025 | Lionel Ains    | Création    |
-
-{{#include ../common/glossary.md}}
+{{#include ./common/glossary.md}}
 
 ## Protocole de vérification
-
-### Objectif
-
-Le protocole détaillé ci-dessous indique les étapes à suivre pour vérifier que la PKI Eove est toujours utilisable de façon pérenne.
-Cela inclut des vérifications sur la CA online et la CA offline.
-
-Le reste de ce document est rédigé en anglais.
 
 ## Overview
 
 ### Architecture of the vault system
 
-{{#include ../../architecture.md}}
+{{#include ../architecture.md}}
 
 ### Note on scripts
 
-{{#include ../../note-on-scripts.md}}
+{{#include ../note-on-scripts.md}}
 
 ## Prerequisites
 
 In order to execute the current document, you will need:
 * An initialised offline vault
 * An initialised and running online vault
-* To fulfill all the prerequisites to run an IN65 ceremony
+* To fulfill all the prerequisites to run an ceremony
 
 ## Recurrent checks
 
 On a regular basis, the whole PKI usability should be assessed, this means that **all** the following checks should pass or be fixed by an action described in each chapter.
 
 Checks (and fixes) below should be performed first on the preprod environment, then on prod.
-If fixes are needed, this means running an IN65 on preprod, and then an IN65 on prod.
+If fixes are needed, this means running a ceremony on preprod, and then a ceremony on prod.
 
 > [!Warning]  
 > In order to use scripts on the offline vault, they should be copied and adapted from the directory `templates/` to `src/scripts/`, then added to git and only then, the build of the live bootable media will make these scripts available from the command line on the offline terminal.
@@ -126,7 +78,7 @@ Where:
 * `firstname.lastname@email.com` is the email address of the owner of this Yubikey
 * `62413455` is the serial number of the Yubikey (as displayed, for example using `gpg --card-status`)
 
-Once all relevant GPG keys have been renewed and their public key commited to the repository, the following script should be run in an IN65 workflow for the offline vault:  
+Once all relevant GPG keys have been renewed and their public key commited to the repository, the following script should be run in a ceremony for the offline vault:  
 `templates/unauthenticated/rotate-seal-shares.sh`
 
 An unseal share rotation should be run also on the online vault.
@@ -175,14 +127,14 @@ The process is detailed [here](@ORCA@gitremote@/blob/main/docs/yubikeys.md#gener
 
 Once a new keypair has been set up on the Yubikey, extract your public key and update the env-specific directory located under folder `src/share_holders_keys/` in this repository.
 
-Finally, force an unseal share rotation by executing the following script. It should be run in an IN65 workflow for the offline vault:  
+Finally, force an unseal share rotation by executing the following script. It should be run in a ceremony for the offline vault:  
 `templates/unauthenticated/rotate-seal-shares.sh`
 
 An unseal share rotation should be run also on the online vault.
 
 ### All target shared holders should have a hardware token attributed
 
-Every shareholder should have a Yubikey, and these Yubikey's GPG keys' details should match their owner's name and e-mail address at Eove.
+Every shareholder should have a Yubikey, and these Yubikey's GPG keys' details should match their owner's name and e-mail address at the company.
 
 Every share holder runs the following tests with their Yubikey inserted
 
@@ -199,7 +151,7 @@ The following command will get the username and email address associated with yo
 gpg --card-status  | sed -n -e '/^General key info/,//p' | sed -n -e 's@^.*pub[[:blank:]][[:blank:]]*@@p'
 ```
 
-The username should match your identity, the e-mail address should be yours (@eove.fr).
+The username should match your identity, the e-mail address should be yours (@company.com).
 
 If this is the case, this test is a PASS.  
 If not, the Yubikey owner should notify the organiser.  
@@ -213,7 +165,7 @@ The process is detailed [here](@ORCA@gitremote@/blob/main/docs/yubikeys.md#gener
 
 Once a new keypair has been setup on the Yubikey, extract your public key and update the env-specific directory located under folder `src/share_holders_keys/` in this repository.
 
-Finally, force an unseal share rotation by executing the following script. It should be run in an IN65 workflow for the offline vault:  
+Finally, force an unseal share rotation by executing the following script. It should be run in a ceremony for the offline vault:  
 `templates/unauthenticated/rotate-seal-shares.sh`
 
 An unseal share rotation should be run also on the online vault.
@@ -277,9 +229,9 @@ Generate a new **internal** CA CSR on the online vault, by running the following
 
 Copy the template `templates/authenticated/sign-csr.sh` into `src/scripts/authenticated` and embed the CSR content inside that copied version of the script.
 
-This CSR content (PEM-formatted file) will be reviewed during the verification phase of the IN65 workflow.
+This CSR content (PEM-formatted file) will be reviewed during the verification phase of the ceremony workflow.
 
-Finally, on the offline vault, organise an IN65 workflow to execute the updated sign-csr script. The organiser should also direct all team members to the instructions below. Indeed, these provide step-by-step instructions on how to make sure the CSR comes from the online vault.
+Finally, on the offline vault, organise an ceremony to execute the updated sign-csr script. The organiser should also direct all team members to the instructions below. Indeed, these provide step-by-step instructions on how to make sure the CSR comes from the online vault.
 
 > [!Note]  
 > Because the online vault has been configured to only generate internal CSR (the associated private key never leaves the vault), we are sure that if the CSR is coming from the online vault, then only that vault can use it and is seen as trusted by the offline vault.
@@ -311,10 +263,10 @@ PKID=$(cat "$CSR" | openssl asn1parse -i -strparse $SUBJECT_PUBLIC_KEY_OFFS -noo
 # Login to vault
 case $TARGET_VAULT in
     "prod")
-        export VAULT_ADDR="https://vault.eove.fr:8200"
+        export VAULT_ADDR="https://vault.url.company.com:8200"
         ;;
     "preprod")
-        export VAULT_ADDR="https://preprod.vault.eove.fr:8200"
+        export VAULT_ADDR="https://preprod.url.company.com:8200"
         ;;
 esac
 vault login -method=github
@@ -347,7 +299,7 @@ exit -42
 > This means that, if that script succeeds, you can trust that CSR.
 > However, if it fails, then it can either be a wrong CSR **or** a change in vault. Please check accordingly.
 
-Once the check have been performed, the IN65 is executed on the offline CA and the CSR is signed, we should get a certificate chain output PEM file, let's store it into `/tmp/online_cert.pem`.
+Once the check have been performed, a ceremony is executed on the offline CA and the CSR is signed, we should get a certificate chain output PEM file, let's store it into `/tmp/online_cert.pem`.
 We now enable the signed private/public key pair for online PKI by running the following script against the **online vault**:
 ```bash
 ./scripts/maintenance/import-signed-devices-certificate.sh /tmp/online_cert.pem
@@ -361,16 +313,16 @@ vault read -format=json devices_pki/issuer/default/json | jq -r '.data.issuer_id
 > [!Important]  
 > If the default issuer ID has not been updated, there may be a security risk. The imported PEM certificate could have been generated by another machine than the online vault and trust chain may be at risk.  
 > This is even more important if the CSR PKID property (aka `subject_key_id`) could not be properly verified in the previous steps above.  
-> In such situations, you should immediately [revoke (and publish) the PEM that the offline vault just signed](../../revocation.md). This requires running a new IN65.
+> In such situations, you should immediately [revoke (and publish) the PEM that the offline vault just signed](../../revocation.md). This requires running a new ceremony.
 
 ### The offline CA can sign new online intermediate CAs for their whole lifetime during the next 12 months to come
 
 The offline root CA signs offline intermediate CAs that last for many years.
 Before the offline root CA becomes obsolete and thus cannot sign new intermediate CAs, a new offline root CA should be generated.
 
-In such a case (a new offline root CA is generated), then all trust chain down to the device certification authority should be re-generated as well. This is tedious and should be done in advance (not in emergency), and well before the new offline root CA is actually used, so that all third parties (telemonitoring services) have time to update their list of trusted Eove CAs (add the new one alongside the existing one).
+In such a case (a new offline root CA is generated), then all trust chain down to the device certification authority should be re-generated as well. This is tedious and should be done in advance (not in emergency), and well before the new offline root CA is actually used, so that all third parties (telemonitoring services) have time to update their list of trusted CAs (add the new one alongside the existing one).
 
-Only when all third parties are trusting the new chain, Eove will be free to swap the existing offline tree with a new one.
+Only when all third parties are trusting the new chain will we be free to swap the existing offline tree with a new one.
 
 #### Test
 
@@ -418,6 +370,6 @@ You have two options there:
 > - after 30 years, it would be good to get new people own the whole system, including setup from scratch
 > - you have 6 months...
 
-### The next IN69 iteration is planned
+### The next periodical check is planned
 
-A new IN69 should be planned within 1 year.
+A new periodical check should be planned within 1 year.

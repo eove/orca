@@ -1,8 +1,6 @@
-Get the last IN65 report from:
-* Google Drive's `Eove_RnD/PKI/Eove_offline_prod_CAs/` for prod offline CAs
-* Google Drive's `Eove_RnD/PKI/Eove_offline_preprod_CAs/` for preprod offline CAs
+Get the last report for the corresponding environment.
 
-In that document, search for the value of the `trusted commit` that was used during the last IN65 ceremony. We'll call this the `previous IN65 trusted commit`.
+In that document, search for the value of the `trusted commit` that was used during the last ceremony. We'll call this the `previous trusted commit`.
 
 Checkout [O.R.CA](@IN@gitremote@) at that commit.
 
@@ -20,9 +18,9 @@ gpg --home="$TMP_GPG_HOME" --list-keys --keyid-format LONG --with-colons |\
  gpg --home="$TMP_GPG_HOME" --import-ownertrust
 ```
 
-With the environment variable `TMP_GPG_HOME` set above, verify each detached signature of the previous IN65 with:
+With the environment variable `TMP_GPG_HOME` set above, verify each detached signature of the previous ceremony report with:
 ```bash
-export REPORT=/path/to/IN65_report.txt.signed
+export REPORT=/path/to/ceremony_report.txt.signed
 export REPORT_UNSIGNED=$(mktemp -u)
 export REPORT_SIGNATURES=$(mktemp -u)
 sed -e '1,/^@GPG@SIGNATURES@$/ d' "$REPORT" > "$REPORT_SIGNATURES"
@@ -43,10 +41,10 @@ All signatures verified
 ```
 
 > [!Warning]  
-> All signatures should be valid. The check above should be repeated for at least the 3 👥`team members` of the previous IN65 ceremony.
+> All signatures should be valid. The check above should be repeated for at least the 3 👥`team members` of the previous ceremony.
 >
 > Only **one** invalid/missing signature is enough to **stop the ceremony**. In such a case, the issue should be analysed.
 
-Once all signatures has been verified, to get ready for subsequent steps, extract from the `previous IN65`:
+Once all signatures has been verified, to get ready for subsequent steps, extract from the `previous ceremony report`:
  - the `trusted commit` that was used back then (that we will refer to as `previous trusted commit`)
  - the checksum *C<sub>vault</sub>* of the previous vault private data that was computed when closing down the ceremony back then.

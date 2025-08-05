@@ -16,4 +16,4 @@ sudo tar --same-owner -xvf ORCA_backup.tar -C /VAULT_WRITABLE/mount/point
 > [!Tip]  
 > You can double-check that the data is correct with:  
 > `cd /VAULT_WRITABLE/mount/point && sudo find . -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum -`  
-> You should get the same checksum as the value *C<sub>vault</sub>* indicated in the `previous IN65 report`.
+> You should get the same checksum as the value *C<sub>vault</sub>* indicated in the `previous report`.
