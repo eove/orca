@@ -22,9 +22,6 @@ git checkout <commit> # Replace with the commit or branch you want to use
 export ORCA_WF_REV=<rev> # Set this variable correctly, eg: 'A' or '1.1'
 ```
 
-> [!Warning]  
-> You'll have to adapt each line above to your setup
-
 And finally, let's generate the workflow document as a self-standing file for the subsequent signature process.
 ```bash
 export GIT_REMOTE_URL=$(git remote -v | sed -n -E -e 's|^.*git@(.+):(.+)\.git.*|https://\1/\2|p' -e '1q')
