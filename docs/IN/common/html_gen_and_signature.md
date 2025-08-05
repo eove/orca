@@ -15,7 +15,7 @@ export ORCA_WF_AS_MD="book/markdown/IN/69/IN69-verifications-recurrentes-de-la-p
 export ORCA_WF_TITLE="IN69"
 ```
 
-We will now insert the commit in the OR.C.A workflow document:
+Next, let's setup our environment:
 ```bash
 cd /path/to/orca # Please adapt to the path where you cloned OR.C.A
 git checkout <commit> # Replace with the commit or branch you want to use
@@ -25,7 +25,7 @@ export ORCA_WF_REV=<rev> # Set this variable correctly, eg: 'A' or '1.1'
 > [!Warning]  
 > You'll have to adapt each line above to your setup
 
-We now generate the workflow document as a self-standing file for the subsequent signature process.
+And finally, let's generate the workflow document as a self-standing file for the subsequent signature process.
 ```bash
 export GIT_REMOTE_URL=$(git remote -v | sed -n -E -e 's|^.*git@(.+):(.+)\.git.*|https://\1/\2|p' -e '1q')
 export GIT_CURRENT_HASH=$(git log --pretty=format:'%H' -n 1)
