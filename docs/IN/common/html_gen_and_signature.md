@@ -2,18 +2,31 @@
 
 At first, before selecting the commit at which the OR.C.A document is signed, **please make sure both the author and verifier's hardware token's public GPG keys** are in this repo's directory `/src/signatory_keys`. These will be required when verifying the signatures in the future.
 
-First, we need to set an environment variable specifying the workflow we want to generate:
-* For IN65: `export ORCA_WF_AS_MD="book/markdown/IN/65/IN65-ceremonie-d-ouverture-de-la-pki-offline-preprod-d-entreprise.md" && export ORCA_WF_TITLE="IN65"`
-* For IN69: `export ORCA_WF_AS_MD="book/markdown/IN/69/IN69-verifications-recurrentes-de-la-pki.md" && export ORCA_WF_TITLE="IN69"`
-
-We will now insert the commit in the OR.C.A workflow document, and transform it into a self-standing html file for the subsequent signature process.
-
+First, we need to select the document we want to generate:
+* For IN65:
 ```bash
-git checkout <commit>
+export ORCA_WF_AS_MD="book/markdown/IN/65/IN65-ceremonie-d-ouverture-de-la-pki-offline-preprod-d-entreprise.md"
+export ORCA_WF_TITLE="IN65"
+```
 
-export ORCA_WF_REV= # Set this variable correctly
+* For IN69:
+```bash
+export ORCA_WF_AS_MD="book/markdown/IN/69/IN69-verifications-recurrentes-de-la-pki.md"
+export ORCA_WF_TITLE="IN69"
+```
 
-cd /path/to/orca
+We will now insert the commit in the OR.C.A workflow document:
+```bash
+cd /path/to/orca # Please adapt to the path where you cloned OR.C.A
+git checkout <commit> # Replace with the commit or branch you want to use
+export ORCA_WF_REV=<rev> # Set this variable correctly, eg: 'A' or '1.1'
+```
+
+> [!Warning]  
+> You'll have to adapt each line above to your setup
+
+We now generate the workflow document as a self-standing file for the subsequent signature process.
+```bash
 export GIT_REMOTE_URL=$(git remote -v | sed -n -E -e 's|^.*git@(.+):(.+)\.git.*|https://\1/\2|p' -e '1q')
 export GIT_CURRENT_HASH=$(git log --pretty=format:'%H' -n 1)
 
