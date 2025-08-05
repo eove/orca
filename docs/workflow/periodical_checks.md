@@ -7,7 +7,7 @@ Document created from repository [@ORCA@gitremote@](@ORCA@gitremote@) at commit 
 
 ## Verifying this document
 
-Please follow your organisation's way of verifing a document to make sure this document has not been tampered with.
+Please follow your organisation's way of verifying a document to make sure this document has not been tampered with.
 A gpg-based one can be found at the [signing and verifying annex](../signing_and_verifying.md)
 
 ## Introduction
