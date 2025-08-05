@@ -5,8 +5,8 @@ In this document, we will explain how to work with the Public-Key Infrastructure
 If you directly want to generate a one-page html-formatted workflows, please see [here](./workflow/common/html_gen_and_signature.md).
 
 You may also directly browse the workflows online:
- - ["Using the Offline PKI"](./workflow/offline_vault_ceremony.md)
- - ["Vérifications récurrentes de la PKI](./workflow/periodical-checks.md)
+ - [Using the Offline PKI](./workflow/offline_vault_ceremony.md)
+ - [Periodical checks of the PKI](./workflow/periodical-checks.md)
 
 You can also access specific topics by browsing the left-handside menu.
 

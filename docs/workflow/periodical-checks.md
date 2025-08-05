@@ -7,13 +7,13 @@ Document created from repository [@ORCA@gitremote@](@ORCA@gitremote@) at commit 
 
 ## Verifying this document
 
-Please follow your organisation's way of verifing a document to make sure this document has not been tempered with.
+Please follow your organisation's way of verifing a document to make sure this document has not been tampered with.
 A hand made one can be found at the [signing and verifying annex](../signing_and_verifying.md)
 
 ## Introduction
 
 This document explains how to periodically verify the PKI and its usability.
-This workflow may need to work on the offline PKI and this depends on the offline PKI workflow.
+Executing this workflow may require performing changes on the offline PKI, and thus executing an offline ceremony.
 
 {{#include ./common/glossary.md}}
 

@@ -6,7 +6,7 @@ Document created from repository [@ORCA@gitremote@](@ORCA@gitremote@) at commit 
 
 ## Verifying this document
 
-Please follow your organisation's way of verifing a document to make sure this document has not been tempered with.
+Please follow your organisation's way of verifing a document to make sure this document has not been tampered with.
 A hand made one can be found at the [signing and verifying annex](../signing_and_verifying.md)
 
 ## Introduction
@@ -159,7 +159,7 @@ The bootable live media should be created by one 👥`team member` *before* the 
 > [!Warning]  
 > The rest of this section should not be executed at the first initialisation of the vault because we have no previous backup. In that case, please skip to the next section.
 
-Fetch offline CA private data backup for the correspond environment.
+Fetch offline CA private data backup for the corresponding environment (eg: prod, preprod etc.).
 
 {{#include ../offline/loading_backup.md}}
 
@@ -518,7 +518,7 @@ sed -e '/^@GPG@SIGNATURES@$/q' "$REPORT" |\
 > You might also do it manually (for example using `gpg --card-status` or `gpg --list-keys --fingerprint`) if this sed oneliner doesn't do the job properly
 
 The last 👥`team member` that signs takes the resulting signed report file and:
-1. renames it to contain the date of the ceremony, for example: *ceremonie-d-ouverture-de-la-pki-offline-preprod-d-entreprise-2025-03-17.signed.txt*
+1. renames it to contain the date of the ceremony, for example: *ceremony-report-preprod-2025-03-17.signed.txt*
 2. sends it to all the participants as an attached file via e-mail
 3. copies it to Google Drive next to the backup
 
