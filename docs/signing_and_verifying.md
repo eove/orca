@@ -1,24 +1,25 @@
-# Signing and verifying a document
+# Signing and verifying a text-based document
 
-## Protocole de vérification
+This method works for text-based documents like markdown or HTML.
 
+## Verifying
 > [!Tip]  
-> L'authenticité du contenu de ce document (au format HTML), doit être vérifié à l'aide de signature cryptographiques avant d'entamer son déroulement.
-> * Retrouver les identités publiques gpg des signataires (éditeur et vérificateur). Pour cela, se placer au commit signalé dans l'entête :
+> The authenticity of the content of the document, must be verify via cryptographic signatures before executing it.
+> * Find the public keys of the signatories. To do that, go to the commit found in the header of the document :
 > `git checkout @ORCA@commit@`
-> * À ce commit, les clés publiques se trouvent dans le répertoire [`src/workflow_signatory_keys/`](@ORCA@gitremote@/tree/main/src/workflow_signatory_keys).
-> * Vérifier que ces clés ont bien été insérées par un **commit signé par leur propriétaire**.
-> * Utiliser un nouveau trousseau gpg vide (toutes les commandes ci-dessous seront ensuite exécutées avec la variable d'environnement) :  
+> * There, you can find the keys in [`src/workflow_signatory_keys/`](@ORCA@gitremote@/tree/main/src/workflow_signatory_keys).
+> * Verify that these keys were added via **a valid signed commit by their owner**.
+> * Use a new gpg keystore (all of the following commands will be executed with this environment variable) :
 > `export TMP_GPG_HOME=$(mktemp -d)`
-> * Importer toutes les clés publiques dans ce nouveau trousseau :  
+> * Import all the public keys :
 > `gpg --home="$TMP_GPG_HOME" --import /path/to/src/workflow_signatory_keys/*`
-> * Marquer toutes les clés comme de confiance ultime :  
+> * Mark all keys as ultimatly trusted :
 > `gpg --home="$TMP_GPG_HOME" --list-keys --keyid-format LONG --with-colons | sed -n -e '/^pub/{n;p}' | sed -n -E 's/^fpr:([^:]*:){8}([^:]*).*$/\2:6:/p' | gpg --home="$TMP_GPG_HOME"  --import-ownertrust`
-> * Extraire les signatures de la fin du document html :  
-> `sed -e '1,/^<!-- @GPG@SIGNATURES@ --><pre>$/ d' /chemin/vers/document_signed.html > /tmp/document.sig`
-> * Extraire la vestion html d'origine du document (sans signatures) :  
-> `sed -e '/^<!-- @GPG@SIGNATURES@ --><pre>$/q' /chemin/vers/document_signed.html > /tmp/document_without_signatures.html`
-> * Vérifier toutes les signatures :  
-> `gpg --home="$TMP_GPG_HOME" --verify /tmp/document.sig /tmp/document_without_signatures.html && echo "All signatures verified"`
-> * La validité des signatures est confirmée par l'affichage de la ligne `Good signature from xxxx` **autant de fois que de signataires du document** et qu'une dernière ligne `All signatures verified` s'affiche.
+> * Extract the signature at the end of the document :
+> `sed -e '1,/^<!-- @GPG@SIGNATURES@ --><pre>$/ d' /chemin/vers/document_signed > /tmp/document.sig`
+> * Extract the document without the signatures :
+> `sed -e '/^<!-- @GPG@SIGNATURES@ --><pre>$/q' /chemin/vers/document_signed > /tmp/document_without_signatures`
+> * Verify all signatures :  
+> `gpg --home="$TMP_GPG_HOME" --verify /tmp/document.sig /tmp/document_without_signatures && echo "All signatures verified"`
+> * The validity of the signatures will be confirmed with `Good signature from xxxx` **for each signatory** and a last line `All signatures verified` must be prompted.
 
