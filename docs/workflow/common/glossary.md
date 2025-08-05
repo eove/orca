@@ -10,7 +10,7 @@ CSR/[Certificate Signing Request](https://en.wikipedia.org/wiki/Certificate_sign
 
 [Secret Sharing](https://en.wikipedia.org/wiki/Secret_sharing) : an algorithm to split a secret between multiple people 
 
-SSS : [Shamir Secret Sharing](https://fr.wikipedia.org/wiki/Partage_de_cl%C3%A9_secr%C3%A8te_de_Shamir)
+SSS : [Shamir Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing)
 
 GPG/GnuPG : [GNU Privacy Guard](https://en.wikipedia.org/wiki/GNU_Privacy_Guard). This tool can sign and cypher messages and files this ensuring their authenticity, integrity and/or confidentiality.
 
