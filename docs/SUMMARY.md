@@ -9,7 +9,7 @@
     - [Verifying public keys](./verifying_public_keys.md)
 
 - [The offline vault](./offline/README.md)
-    - [🔁 How to generate and sign an html version of the workflow documents](./workflow/common/html_gen_and_signature.md)
+    - [🔁 How to generate a html version of the workflow documents](./workflow/common/html_gen.md)
     - [🚀 Initialising the offline PKI](./offline/PKI_init.md)
     - [🔁 Manipulating Yubikeys for hardware token](./yubikeys.md)
     - [🔁 Verifying the report of the last ceremony](./offline/verifying_last_ceremony_report.md)
