@@ -1,6 +1,9 @@
 # Signing and verifying a text-based document
 
 This method works for text-based documents like markdown or HTML.
+Even though the `--clear-sign` option of gpg could be used, it adds a bit of noise at the beginning of the document that makes HTML documents rendering poorly.
+This method is more manual but only adds noise at the end of the document making HTML documents render properly.
+
 The last line of these document **must** be `@GPG@SIGNATURES@`.
 
 ## Signing 
