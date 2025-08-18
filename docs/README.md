@@ -6,7 +6,7 @@ If you directly want to generate a one-page html-formatted workflows, please see
 
 You may also directly browse the workflows online:
  - [Using the Offline PKI](./workflow/offline_vault_ceremony.md)
- - [Periodical checks of the PKI](./workflow/periodical-checks.md)
+ - [Periodical checks of the PKI](./workflow/periodical_checks.md)
 
 You can also access specific topics by browsing the left-handside menu.
 
