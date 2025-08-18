@@ -26,6 +26,6 @@
 
 [Signing and verifying a document](./signing_and_verifying.md)
 [Ceremony to use the Offline Root CA](./workflow/offline_vault_ceremony.md)
-[Periodical checks of the PKI](./workflow/periodical-checks.md)
+[Periodical checks of the PKI](./workflow/periodical_checks.md)
 [Providing your GPG public key](./gpg_public_key.md)  
 [Glossary](./workflow/common/glossary.md)  
