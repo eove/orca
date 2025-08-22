@@ -6,7 +6,7 @@ Document created from repository [@ORCA@gitremote@](@ORCA@gitremote@) at commit 
 
 ## Verifying this document
 
-Please follow your organisation's way of verifing a document to make sure this document has not been tampered with.
+Please follow your organisation's way of verifying a document to make sure this document has not been tampered with.
 A gpg-based one can be found at the [signing and verifying annex](../signing_and_verifying.md)
 
 ## Introduction
@@ -179,8 +179,10 @@ These 3 persons should be **physically present during the whole ceremony**, and 
 2. The second role is the `reporter` (📝).\
    This person has their own copy of this ceremony workflow document.\
    During the whole ceremony, this person will fill in the sections framed with a <span style="border:2px dotted dodgerblue;padding-left:2px;padding-right:2px;">dotted-blue border</span>.\
-   To extract these sections from the html version of the ceremony's workflow, use the following filter:\
-   `cat /path/to/ceremory_workflow.html | sed -e 's|<\([/]\)*code class="language-report">|\n<\1\@ORCA\@report\@>\n|g' | sed -n -e '/<\@ORCA\@report\@>/,/<\/\@ORCA\@report\@>/{s/<[/]*\@ORCA\@report\@>//;p}' | sed -e '$a\@GPG\@SIGNATURES\@' | tee /tmp/blank_report.txt`
+
+> [!Tip]
+> To extract these sections from the html version of the ceremony's workflow, use the following filter:\
+>  `cat /path/to/ceremory_workflow.html | sed -e 's|<\([/]\)*code class="language-report">|\n<\1\@ORCA\@report\@>\n|g' | sed -n -e '/<\@ORCA\@report\@>/,/<\/\@ORCA\@report\@>/{s/<[/]*\@ORCA\@report\@>//;p}' | sed -e '$a\@GPG\@SIGNATURES\@' | tee /tmp/blank_report.txt`
 
 3. The third role is the `observer` (👀).\
    This person should be [randomly](https://www.random.org/lists/) picked among all share holders except the two other 👥`team members`. The random draw will be performed by either the 💻`operator` or 📝`reporter`.\
@@ -500,30 +502,9 @@ Value of the full sha256 checksum of the vault private data folder (_Cvault_):
 Before signing the report, please verify its content, specifically:
 - the value of the ✅`trusted commit`
 - the value of the sha256 checksum of the new offline vault private data (C<sub>vault</sub>)
+- name the report to contain the date of the ceremony, for example: *ceremony-report-preprod-2025-03-17*
 
-The 📝`reporter`, 💻`operator`, and 👀`observer` will all sign the report.\
-In sequence, each of them will run the following command and transfer the resulting signed file (which name is displayed on the console) to the next person:
-```bash
-export REPORT=/path/to/ceremony_report.txt
-export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status |\
- sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi')
-sed -e '/^@GPG@SIGNATURES@$/q' "$REPORT" |\
- gpg --armor --output - -u "$GPG_HW_TOKEN_KEY_ID" --detach-sign > "$REPORT.sig.asc" &&\
- cat "$REPORT" "$REPORT.sig.asc" > "$REPORT".signed &&\
- rm "$REPORT.sig.asc" &&\
- command ls "$REPORT".signed >&2
-```
-> [!Note]  
-> In the shell snippet above, we catch the hardware token public key ID from the signing key ID in the token, and store this inside variable `GPG_HW_TOKEN_KEY_ID`.  
-> You might also do it manually (for example using `gpg --card-status` or `gpg --list-keys --fingerprint`) if this sed oneliner doesn't do the job properly
+The 📝`reporter`, 💻`operator`, and 👀`observer` will all sign the report by following your organisation's way of signing documents.
+A gpg-based one can be found at the [signing and verifying annex](../signing_and_verifying.md)
 
-The last 👥`team member` that signs takes the resulting signed report file and:
-1. renames it to contain the date of the ceremony, for example: *ceremony-report-preprod-2025-03-17.signed.txt*
-2. sends it to all the participants as an attached file via e-mail
-3. copies it to Google Drive next to the backup
-
-All 👥`team members` should now:
-1. download the attached signed report from the e-mail they have received
-2. download a copy of the signed report from the drive
-
-On both these files, they should perform a double check of all signatures with the key committed in the env-specific directory located under `share_holders_keys/` in this repository with [the same process as when checking the last ceremony's report](#verification-of-the-last-ceremonys-report).
+All 👥`team members` should now get a copy of the signed report and perform a check of all signatures using [the same process as when checking the last ceremony's report](#verification-of-the-last-ceremonys-report).

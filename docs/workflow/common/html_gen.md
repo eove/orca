@@ -54,38 +54,4 @@ command mv "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" "/tmp/${ORCA_WF_TITLE}.html
  rm -rf "${TMP_OUTPUT_DIR}" && unset TMP_OUTPUT_DIR
 ```
 
-# How to sign the OR.C.A workflow document
-
-> [!Tip]  
-> If you have several private GPG keys, you may need to specify which one to use for signing with `-u` when running the commands below.
-
-First, we need to set an environment variable specifying the workflow we are working on:
-* For the ceremony workflow: `export ORCA_WF_TITLE="ceremony_workflow"`
-* For the periodical checks: `export ORCA_WF_TITLE="periodical_checks"`
-
-The editor can now sign the document inline using the signing key in their own hardware token:
-```bash
-export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status | sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi')
-sed -e '/^<!-- @GPG@SIGNATURES@ --><pre>$/q' "/tmp/${ORCA_WF_TITLE}.html" |\
- gpg --armor --output - -u "$GPG_HW_TOKEN_KEY_ID" --detach-sign > /tmp/${ORCA_WF_TITLE}.html.sig.asc &&\
- cat "/tmp/${ORCA_WF_TITLE}.html" "/tmp/${ORCA_WF_TITLE}.html.sig.asc" > "/tmp/${ORCA_WF_TITLE}_signed.html" &&\
- rm "/tmp/${ORCA_WF_TITLE}.html.sig.asc"
-```
-
-> [!Note]  
-> We catch the hardware token public key ID from the signing key ID in the token, and store this inside variable `GPG_HW_TOKEN_KEY_ID`.  
-> You might also do it manually (for example using `gpg --card-status` or `gpg --list-keys --fingerprint`) if this sed oneliner doesn't do the job properly
-
-
-File `/tmp/IN*_signed.html` is then transferred and checked by the verifier, who saves it to `/tmp/IN${ORCA_WF_TITLE}.html` again (without the `signed` suffix). The verifier then signs it in turn (using the same command as above).
-
-> [!Tip]  
-> To make sure that the document to sign is genuine (and corresponds to the announced commit), the verifier can compare the signed version (`/tmp/IN${ORCA_WF_TITLE}_signed.html`) with a version generated from scratch at the specified commit (`/tmp/IN${ORCA_WF_TITLE}.html`).  
-> This can be done with:  
-> `sed -e '/^<!-- @GPG@SIGNATURES@ --><pre>$/q' "/tmp/${ORCA_WF_TITLE}_signed.html" | command diff "/tmp/${ORCA_WF_TITLE}.html" -`
-
-The now double-signed `/tmp/IN*_signed.html` can now be handed over to the quality department.
-
-# How to verify the OR.C.A workflow document
-
-See the header in your OR.C.A workflow document. It gives the details on how to check the signatures.
+You can then sign the html document following your organisation's way of signing documents or via the gpg-based way you can find at the [signing and verifying annex](../../signing_and_verifying.md)
