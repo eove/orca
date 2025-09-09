@@ -3,13 +3,13 @@
 At first, before selecting the commit at which the OR.C.A document is signed, **please make sure both the author and verifier's hardware token's public GPG keys** are in this repo's directory `/src/signatory_keys`. These will be required when verifying the signatures in the future.
 
 First, we need to select the document we want to generate:
-* For IN65:
+* For the ceremony to use the Offline Root CA:
 ```bash
 export ORCA_WF_AS_MD="book/markdown/workflow/offline_vault_ceremony.md"
 export ORCA_WF_TITLE="ceremony_workflow"
 ```
 
-* For IN69:
+* For the periodical checks of the PKI:
 ```bash
 export ORCA_WF_AS_MD="book/markdown/workflow/periodical_checks.md"
 export ORCA_WF_TITLE="periodical_checks"
@@ -24,7 +24,7 @@ export ORCA_WF_REV=<rev> # Set this variable correctly, eg: 'A' or '1.1'
 
 And finally, let's generate the workflow document as a self-standing file for the subsequent signature process.
 ```bash
-export GIT_REMOTE_URL=$(git remote -v | sed -n -E -e 's|^.*git@(.+):(.+)\.git.*|https://\1/\2|p' -e '1q')
+export GIT_REMOTE_URL=$(git config --get remote.origin.url | sed -E -e 's|^.*git@(.+):(.+)|https://\1/\2|p')
 export GIT_CURRENT_HASH=$(git log --pretty=format:'%H' -n 1)
 
 unset SANITY_CHECKS_OK
@@ -46,7 +46,7 @@ test -n $SANITY_CHECKS_OK &&\
    "$ORCA_WF_AS_MD" > "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}_with_commit.md"
 
 nix develop --command md-to-html "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}_with_commit.md" "${ORCA_WF_TITLE} rev${ORCA_WF_REV}" |\
- sed -e '$a<hr>\n<!-- @GPG@SIGNATURES@ --><pre>' > "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" &&\
+ sed -e '$a<hr><pre>\n@GPG@SIGNATURES@' > "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" &&\
  rm "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}_with_commit.md"
 
 command mv "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" "/tmp/${ORCA_WF_TITLE}.html" &&\
@@ -54,4 +54,4 @@ command mv "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" "/tmp/${ORCA_WF_TITLE}.html
  rm -rf "${TMP_OUTPUT_DIR}" && unset TMP_OUTPUT_DIR
 ```
 
-You can then sign the html document following your organisation's way of signing documents or via the gpg-based way you can find at the [signing and verifying annex](../../signing_and_verifying.md)
+You can then sign the html document following your organisation's way of signing documents, or if you don't have any, by following the gpg-based process [here](../../signing_and_verifying.md).
