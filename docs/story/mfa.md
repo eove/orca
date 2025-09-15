@@ -56,7 +56,7 @@ One evening, Shuri went to Jules home.
 
 Jules spent the rest of the night listening to Shuri's trauma and emotions while being conscious that he wasn't even remotely qualified to help her.
 
-Shuri needed to confess the way she stole the root CA. She modified the documentation explaining how to work with the root CA by removing the section about the verification of the USB key.
+Shuri needed to confess the way she stole the root CA. She modified the documentation explaining how to work with the root CA by removing the section about the verification of the USB stick.
 She created a corrupted key and asked new recruts to help her access the root CA.
 
 Jules felt rage against Evil Corp. He would go back in time. Again. To save his friends against Evil Corp. Again!

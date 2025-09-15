@@ -15,7 +15,7 @@ Fine, Jules calls for another meeting.
 
 "Yes, but we could also easily corrupt the scripts that we are using to achieve the same effect. We'll need to verify them too." Shuri remarked.
 
-"I think we may be able to do all that at once by using a USB key." Adira said,"We could use [nix and nixOS](https://nixos.org/) to build an iso image of a USB key and boot from it to use  the root CA. The nix community is doing a pretty good job at making builds reproducible. That means that we will build exactly the same image on any machine if we build from the same sources. So if we agree on which source we start from, then we can easily verify the USB key and thus the operating system as well as the scripts."
+"I think we may be able to do all that at once by using a USB stick." Adira said,"We could use [nix and nixOS](https://nixos.org/) to build an iso image of a USB stick and boot from it to use  the root CA. The nix community is doing a pretty good job at making builds reproducible. That means that we will build exactly the same image on any machine if we build from the same sources. So if we agree on which source we start from, then we can easily verify the USB stick and thus the operating system as well as the scripts."
 
 "And we'll do that right before booting from the key so that we are sure nothing got changed since the check." Leiko added.
 

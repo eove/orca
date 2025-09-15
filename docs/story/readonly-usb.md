@@ -1,10 +1,10 @@
-# All USB keys are not created equals
+# All USB sticks are not created equals
 
 "What if someone overwrites the key while verifiying it?" Jules asked.
 
 "Your creativity scares me sometimes" Shuri said, "but that seems doable indeed."
 
-"We could avoid the issue with a USB key with a hardware readonly switch" Leiko started, "When we verify the USB key, we switch it to readonly, and we switch it back to read/write when booting on it."
+"We could avoid the issue with a USB stick with a hardware readonly switch" Leiko started, "When we verify the USB stick, we switch it to readonly, and we switch it back to read/write when booting on it."
 
 "Good idea" Adira said, "but then we should boot on the same computer that verified the key."
 

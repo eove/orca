@@ -26,18 +26,18 @@ See chapters [Is this for real?](./story/verify-workflow.md) and [Verifiable Ope
 
 ### Building the iso on more than one computers
 
-This is useful in order to be confident about the value to use to verify the USB key. Sharing in between the team also makes it a fool-proof step.
+This is useful in order to be confident about the value to use to verify the USB stick. Sharing in between the team also makes it a fool-proof step.
 See chapter [Verifiable Operating System](./story/verifiable-os.md)
 
 ### Choosing the computer to use randomly
 
 The goal is to make prepared attacks less probable to succeed. It's also a nice way to get an observer for the ceremony.
-See chapters [All USB keys are not created equals](./story/readonly-usb.md) and [Never alone](./story/never-alone.md)
+See chapters [All USB sticks are not created equals](./story/readonly-usb.md) and [Never alone](./story/never-alone.md)
 
-### Using a USB key with a readonly switch
+### Using a USB stick with a readonly switch
 
 The goal is to avoid any modification of the key while it's beeing verified. This is also a fool-proof tool in case the operating system that is about to make the verification decides to write anything on it.
-See chapter [All USB keys are not created equals](./story/readonly-usb.md)
+See chapter [All USB sticks are not created equals](./story/readonly-usb.md)
 
 ### Verifying the states after boot
 
@@ -63,7 +63,7 @@ See chapters [Is this for real?](./story/verify-workflow.md) and [Verifiable Ope
 
 ## Known limitation
 
-O.R.CA is not protected against a USB key that would show one version of the OS at verification time and another version, corrupted, at boot time. It is concidered too sophisticated to do for a single person.
+O.R.CA is not protected against a USB stick that would show one version of the OS at verification time and another version, corrupted, at boot time. It is concidered too sophisticated to do for a single person.
 
 O.R.CA is not protected against social engineering. The people having shares should be aware and trained against this kind of attacks.
 

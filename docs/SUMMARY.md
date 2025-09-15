@@ -16,7 +16,7 @@
     - [Never alone](./story/never-alone.md)
     - [Need backup !](./story/need-backup.md)
     - [Verifiable Operating System](./story/verifiable-os.md)
-    - [All USB keys are not created equals](./story/readonly-usb.md)
+    - [All USB sticks are not created equals](./story/readonly-usb.md)
     - [One factor of authentication is not enough](./story/mfa.md)
     - [Is this for real ?](./story/verify-workflow.md)
     - [Afterword](./story/afterword.md)
