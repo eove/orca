@@ -21,5 +21,5 @@ Because of this, any data going from a computer to another via a public network 
 Asymetric cryptography allows someone to publicly share a key (the public key) that can be used to cypher data while keeping another key secret (the private key)
 Once it has been cyphered, only the person with the private key is able to read the original message.
 Another way to use asymmetric cryptography is to sign a clear text message with the private key.
-Any one with the public key can then verify the signature.
+Anyone with the public key can then verify the signature.
 This is a good tool to avoid monster-in-the-middle attacks.
