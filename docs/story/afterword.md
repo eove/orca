@@ -29,7 +29,7 @@ See chapters [Is this for real?](./story/verify-workflow.md) and [Verifiable Ope
 This is useful in order to be confident about the checksum value to compare when verifying the USB stick. Sharing in between the team also makes it a fool-proof step.
 See chapter [Verifiable Operating System](./story/verifiable-os.md)
 
-### Choosing the computer to use randomly
+### Randomly selecting the computer used during the ceremony
 
 The goal is to make prepared attacks less probable to succeed. It's also a nice way to get an observer for the ceremony.
 See chapters [All USB sticks are not created equals](./story/readonly-usb.md) and [Never alone](./story/never-alone.md)
