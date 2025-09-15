@@ -4,7 +4,7 @@
 
 In this section, we'll make a summary of the most important points of the O.R.CA workflow, in the order of the workflow. We will link to the story's chapters when relevant.
 
-It worth remainding that [we want to protect ourself against an internal, ill-intent, knowledgeable administrator](./raise-the-bar.md).
+It's worth reminding that [we want to protect ourself against an internal, ill-intent, knowledgeable administrator](./raise-the-bar.md).
 
 ### Verifying the workflow document
 
