@@ -21,7 +21,7 @@ Fine, Jules calls for another meeting.
 
 "That's a great idea!" Jules said, "Let's do that!"
 
-Five years later, the company grew quite a lot and everything seemed to go as planned.
+Five years later, the company grew a lot and everything seemed to go as planned.
 
 One afternoon, Shuri entered Jules office and said "Jules, we have a problem. Someone succeeded to steal the root CA."
 
