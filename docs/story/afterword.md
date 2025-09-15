@@ -24,7 +24,7 @@ This is required to know from which sources to start to reproduce the operating 
 This is required in order to trust the value that will be used to verify the backup that will be used. It is also useful to avoid reviewing the whole operating system and to just verify the changes between the current trusted commit and the last trusted commit.
 See chapters [Is this for real?](./story/verify-workflow.md) and [Verifiable Operating System](./story/verifiable-os.md)
 
-### Building the iso on more than one computers
+### Building the USB stick image on more than one computer
 
 This is useful in order to be confident about the value to use to verify the USB stick. Sharing in between the team also makes it a fool-proof step.
 See chapter [Verifiable Operating System](./story/verifiable-os.md)
