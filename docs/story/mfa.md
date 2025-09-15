@@ -26,7 +26,7 @@ And finally, you can verify what they are, like their fingerprint".
 
 "Ok, so we'll buy a hardware token for each one of us, right?" Jules asked.
 
-"Yes, but we'll need to add a layer on top of the Shamir's Secret Sharing used by vault so well need one that can also generate an asymmetric private key on it. We'll use it to encrypt the share." Shuri said.
+"Yes, but we'll need to add a layer on top of the Shamir's Secret Sharing used by vault so we'll need one that can also generate an asymmetric private key on it. We'll use it to encrypt the share." Shuri said.
 
 "[Yubikeys](https://www.yubico.com/products/) can do that!" Leiko said.
 
