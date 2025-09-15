@@ -27,7 +27,7 @@ One afternoon, Shuri entered Jules office and said "Jules, we have a problem. So
 
 "What? How? Are you sure?" Jules asked.
 
-"We are sure because we found some corrupted data on our server that were pushed by a certificate signed by another Intermediate CA than ours but still signed by ours root CA" she replied.
+"We are sure because we found some corrupted data on our server that were pushed by a certificate signed by an Intermediate CA that was not ours, but that Intermediate CA was still signed by our root CA" she replied.
 
 "That's going to make a lot of damages! Any idea on how they did it?" Jules asked.
 
