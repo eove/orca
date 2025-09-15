@@ -26,7 +26,7 @@ See chapters [Is this for real?](./story/verify-workflow.md) and [Verifiable Ope
 
 ### Building the USB stick image on more than one computer
 
-This is useful in order to be confident about the value to use to verify the USB stick. Sharing in between the team also makes it a fool-proof step.
+This is useful in order to be confident about the checksum value to compare when verifying the USB stick. Sharing in between the team also makes it a fool-proof step.
 See chapter [Verifiable Operating System](./story/verifiable-os.md)
 
 ### Choosing the computer to use randomly
