@@ -6,7 +6,7 @@ He ran to his brother's house and started to pitch his idea.
 
 "Did you ever wonder about the quality of the water you use to cook?
 What about the quality of the food you cook?
-What if you had a smart strainer that would analyze the water going through it and give you all the relevent data?
+What if you had a smart strainer that would analyze the water going through it and give you all the relevant data?
 Are your pasta really gluten-free?
 Is your water contaminated with heavy metals?
 Are you eating too much carbs?
