@@ -37,3 +37,5 @@ Five years later, Leiko comes to Jules house.
 Leiko wanted to continue to talk though, and Jules listened. She felt relieved to finally express the rage, fear and sadness she had been keeping for herself for a year.
 
 Late that night, Jules went back in time. Protecting his friends from harm will always be a good reason to tickle the spacetime continuum.
+
+Jules started to think that the challenge to keep the root CA really secure was much more tricky that what one believes intuitively.

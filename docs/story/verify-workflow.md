@@ -22,7 +22,9 @@
 
 "That would give us a full audit trail of what happened so that if anything strange happens, we can analyse a lot without actually starting the offline root CA" Adira added.
 
-"That seems good to me." Jules concluded.
+"And without needing to go back into the past, hide behind the curtains and find out what really occurred..." Jules thought.
+
+"That seems good to me." He concluded.
 
 Six years passed since then. The company grew a lot and Hole-in-one was concidered as success by all counts.
 
