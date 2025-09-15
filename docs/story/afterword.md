@@ -57,7 +57,7 @@ See chapter [Need backup!](./story/need-backup.md)
 
 ### Creating a report and signing it
 
-This is the necessary step to make the next ceremony easier and secure.
+This is the necessary step to make the next ceremony easier and secure. It is the building block for an audit trail.
 See previous section about verifying the previous report
 See chapters [Is this for real?](./story/verify-workflow.md) and [Verifiable Operating System](./story/verifiable-os.md)
 
