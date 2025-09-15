@@ -8,7 +8,7 @@ It's worth reminding that [we want to protect ourself against an internal, ill-i
 
 ### Verifying the workflow document
 
-The workflow document is the starting point for using O.R.CA. If the document is wrong, then the security of the root CA is at risk. See the end of chapter [one factor of authentication is not enough](./mfa.md) for an exemple of an attack on it and chapter [Is this for real?](./story/verify-workflow.md) for more explainations.
+The workflow document is the starting point for using O.R.CA. If the document is wrong, then the security of the root CA is at risk. See the end of chapter [one factor of authentication is not enough](./mfa.md) for an example of an attack on it and chapter [Is this for real?](./story/verify-workflow.md) for more explanations.
 
 ### Using Shamir's Secret Sharing
 
