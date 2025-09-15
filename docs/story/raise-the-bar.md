@@ -27,6 +27,6 @@ Then Jules added, "Here's another way to think of the same problem: imagine that
 
 "That's a good point. However, we cannot protect ourself against an opponent with an overwhelming amount of resources like a state. Let's start with one bad agent, if we find a way to scale things up then all the better, but it shouldn't be the goal. We have to stop somewhere." Jules replied.
 
-"Let's all take the rest of the day to thing about it calmly." Vernes said, "Then, starting tomorrow, please consider this when thinking of the security of our root CA."
+"Let's all take the rest of the day to thing about it calmly." Vernes said, "Then, starting tomorrow, please consider this when thinking about the security of our root CA."
 
 "Thanks everyone" Jules concluded.
