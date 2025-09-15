@@ -1,6 +1,6 @@
 # Foreword
 
-This short story aims to explain why O.R.CA and especially O.R.CA's workflow works the way it works.
+This short story aims to explain why O.R.CA (and especially O.R.CA's workflow) are implemented the way they are.
 If you want the even shorter version of the story, you can go directly to the [afterword section](./afterword.md).
 
 ## Prerequisites
