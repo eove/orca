@@ -35,7 +35,7 @@ One afternoon, Shuri entered Jules office and said "Jules, we have a problem. So
 
 Jules said nothing, waiting for the rest of the analysis.
 
-"Anyway," Shuri continued, " it seems I comes from the tool we used to validate the USB stick. It is corrupted on my computer. Bad news, we used my computer to validate the USB stick last time. It turns out that the tool actually fakes the verification, pretending everything is legitimate, and in the meantime overwrites the vault with a modified version. Everything seemed normal to us when using it but the with the modified vault, secret data like shares and master keys were displayed in clear in the logs. I checked in the last backup and I found the shares."
+"Anyway," Shuri continued, " it seems it comes from the tool we used to validate the USB stick. It is corrupted on my computer. Bad news, we used my computer to validate the USB stick last time. It turns out that the tool actually fakes the verification, pretending everything is legitimate, and in the meantime overwrites the vault with a modified version. Everything seemed normal to us when using it but with the modified vault, secret data like shares and master keys were displayed in clear in the logs. I checked in the last backup and I found the shares."
 
 "Damn! They are good!" Jules said.
 
