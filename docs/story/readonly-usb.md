@@ -12,7 +12,7 @@
 
 "Because otherwise someone could replace the USB stick between the verification and the boot. You know, a sleight of hand trick..." Adira replied.
 
-"True." Jules said, "but then we don't need an always offline computer, we could use any computer. We can configure the NixOS on the key to disable all network interface so that we are sure it's offline."
+"True." Jules said, "but then we don't need an always offline computer, we could use any computer. We can configure the NixOS on the USB stick to disable all network interface so that we are sure it remains offline."
 
 "Indeed." Adira remarked, "and that will simplify things at the same time."
 
