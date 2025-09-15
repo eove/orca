@@ -5,7 +5,7 @@ If you want the even shorter version of the story, you can go directly to the [a
 
 ## Prerequisites
 
-Even though we want to make our explainations as accessible as possible, some subjects won't be explained.
+Even though we want to make our explanation as accessible as possible, some topics won't be covered.
 We will list theses subjects and give a very short description of what's important about them in our context.
 If you want to know more about a subject or do not trust the very short desciption we made about it, please feel free to dig into it before going any futher.
 Wikipedia is probably a good place to start.
