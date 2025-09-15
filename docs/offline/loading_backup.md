@@ -1,6 +1,6 @@
 The content of the previous offline vault private data should be extracted and put into the `VAULT_WRITABLE` partition.
 
-If the USB key's partitions have been mounted automatically by your distro, the following will help in finding out the mount point for the `VAULT_WRITABLE` content:
+If the USB stick's partitions have been mounted automatically by your distro, the following will help in finding out the mount point for the `VAULT_WRITABLE` content:
 ```bash
 lsblk -o name,mountpoint,label,size | grep VAULT_WRITABLE
 ```

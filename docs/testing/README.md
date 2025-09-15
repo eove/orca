@@ -26,7 +26,7 @@ If a script needs more environment variables, it will tell you.
 
 ## In a VM
 
-This allows to keep the state of your vault across reboots and is very close to the *ephemeral vault* setup but skipping the need to create a USB key. The state (`VAULT_WRITABLE` partition content) is kept in a generated raw ext4 stored in a local file named `orca-testing-disk.raw`.
+This allows to keep the state of your vault across reboots and is very close to the *ephemeral vault* setup but skipping the need to create a USB stick. The state (`VAULT_WRITABLE` partition content) is kept in a generated raw ext4 stored in a local file named `orca-testing-disk.raw`.
 
 > [!Tip]  
 > You can loop mount this `.raw` image if you need to access or modify files.

@@ -152,7 +152,7 @@ Communicate the values of *N<sub>iso</sub>* and *C<sub>iso</sub>* to the other �
 
 #### Creation of a bootable live media for the vault
 
-The bootable live media should be created by one 👥`team member` *before* the day of the ceremony. This person will be referred to as the `key owner`.
+The bootable live media should be created by one 👥`team member` *before* the day of the ceremony. This person will be referred to as the `stick owner`.
 
 {{#include ../offline/creating_a_usb_stick.md}}
 
@@ -250,9 +250,9 @@ the operator ................................................ PASS [] / FAIL []
 the reporter ................................................ PASS [] / FAIL []
 All (possible) changes are legitimate ....................... PASS [] / FAIL []
 
-A bootable live media has been generated for this ceremony .. PASS [] / FAIL []
-Identity of the team member who brings the bootable media (the key owner):
-............................................. the operator [] / the reporter []
+A bootable live media has been generated for this ceremony ........... PASS [] / FAIL []
+Identity of the team member who brings the bootable media (the stick owner):
+...................................................... the operator [] / the reporter []
 
 The offline CA private data has been restored from the following archive file:
 ...............................................................................
@@ -265,17 +265,17 @@ The offline CA private data has been restored from the following archive file:
 The machine of the 👀`observer` will be used during the whole ceremony to verify and boot the *ephemeral vault*. That machine can be any x86_64 PC able to boot on a live media.
 
 > [!Warning]  
-> Only the `key owner` is allowed to touch the bootable live media.
+> Only the `stick owner` is allowed to touch the bootable live media.
 
 > [!Warning]  
 > The *ephemeral vault* machine should not be connected to any IP network.  
 > All cables attached to the machine should be evaluated, especially USB-C power supplied.
 
 To check the key:
-- Before inserting the USB key, `key owner` switches the physical button of the key to *read-only*
-- *While switched to read-only*, the 👀`observer`'s computer is booted on the USB key a first time, just to make sure that this machine can boot successfully on the *ephemeral vault*. When booting finishes, an error message will appear indicating that the USB key is *read-only*, this is expected.
+- Before inserting the USB stick, the `stick owner` switches the physical button of the key to *read-only*
+- *While switched to read-only*, the 👀`observer`'s computer is booted on the USB stick a first time, just to make sure that this machine can boot successfully on the *ephemeral vault*. When booting finishes, an error message will appear indicating that the USB stick is *read-only*, this is expected.
 - If successful, the 👀`observer`'s machine can be shutdown.
-- The following steps must be performed without booting on the USB key, with the USB key still in *read-only* mode, and directly on the installed Linux OS of the 👀`observer`'s computer.
+- The following steps must be performed without booting on the USB stick, with the USB stick still in *read-only* mode, and directly on the installed Linux OS of the 👀`observer`'s computer.
 - An environment variable `Niso` should be set with the correct value, then the key is verified by the 👀`observer` (number of partitions, *N<sub>iso</sub>* checksum):
 ```bash
 sudo fdisk -l /dev/sda &&\
@@ -289,8 +289,8 @@ sudo fdisk -l /dev/sda &&\
 
 If the checksum *C<sub>iso</sub>* is correct:
 - Power off the 👀`observer`'s computer.
-- The `key owner` switches the physical button of the key to *read/write*.
-- The 👀`observer`'s computer is rebooted once more on the USB key.
+- The `stick owner` switches the physical button of the key to *read/write*.
+- The 👀`observer`'s computer is rebooted once more on the USB stick.
 
 When booting *ephemeral vault*, a NixOS logo will appear with a boot menu mentionning `O.R.CA xxxx`.
 
@@ -303,11 +303,10 @@ The operator's machine:
 can select the key as boot device ........................... PASS [] / FAIL []
 can successfully complete boot on the readonly key .......... PASS [] / FAIL []
 
-While performing the USB key content check on the operator's machine:
-the first partition is the only one marked as bootable ...... PASS [] / FAIL []
-the checksum *Ciso* is correct .............................. PASS [] / FAIL []
-the computer has been powered off while the key was still read-only ...........
-............................................................. PASS [] / FAIL []
+While performing the USB stick content check on the operator's machine:
+the first partition is the only one marked as bootable ............... PASS [] / FAIL []
+the checksum *Ciso* is correct ....................................... PASS [] / FAIL []
+the computer has been powered off while the USB stick was still read-only .. PASS [] / FAIL []
 
 The key for the ephemeral vault is then set as read/write and the ephemeral ...
 vault is immediately booted ................................. PASS [] / FAIL []
@@ -440,7 +439,7 @@ backup
 The script will create a tar archive of the data in the `VAULT_WRITABLE` partition.
 
 The value *C<sub>vault</sub>* is displayed on the *ephemeral vault*'s terminal, together with its graphical representation as a QR code. It is a checksum over the vault private data folder.\
-All 👥`team members` should keep a copy of this *C<sub>vault</sub>* value. It will be used to verify that the backup was not altered when extracted from the USB key.
+All 👥`team members` should keep a copy of this *C<sub>vault</sub>* value. It will be used to verify that the backup was not altered when extracted from the USB stick.
 
 You can now shutdown the vault:
 <table width=100% style="border:2px solid red;"><td style="padding:0;">
@@ -451,15 +450,17 @@ poweroff
 
 </td></table>
 
-The USB key is then immediately switched to *read-only* mode **until the end of the ceremony's workflow**.
-One of the 👥`team members` inserts the USB key on their own computer.
+The USB stick is then immediately switched to *read-only* mode **until the end of the ceremony's workflow**.
+One of the 👥`team members` inserts the USB stick on their own computer.
 
 > [!Tip]  
 > The preferred 👥`team member` to do this is the 📝`reporter` because it allows to speed up the process, but this is not mandatory.  
 > Indeed, if it is the 📝`reporter`, then as soon as the archive is sent (see the lines below), the report can be completed and signed by the 📝`reporter` asynchronously while the other 👥`team member` perform verifications.
 
-The 👥`team member` that inserted the USB key, immediately:
+The 👥`team member` that inserted the USB stick, immediately:
 1. copies the tar archive from the `VAULT_WRITABLE` partition to the backup destination corresponding to the environment:
+   * `Eove_RnD/PKI/Eove_offline_prod_CAs/` for prod offline CAs
+   * `Eove_RnD/PKI/Eove_offline_preprod_CAs/` for preprod offline CAs
 2. sends the tar archive from the `VAULT_WRITABLE` partition to all the participants as an attached file via e-mail
 3. gets the AIA data in folder `orca/aia/` of the current environment (prod/preprod) from `VAULT_WRITABLE` partition data and makes it available on the online vault.
 
