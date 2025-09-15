@@ -14,7 +14,7 @@
 
 Seeing that everybody was giving her a puzzled look, she continued: "The Shamir Shared Secret algorithm allows us to share a secret between people while needing only a subset of those people to retrieve it."
 
-Every one kept their poker face.
+Everyone kept their poker face.
 
 "Let's say you have a secret, like the password to the root CA, that you want to keep safe. You also want to make sure that two people are here in order to access the secret. You can divide it in two and give one half to each of them. Let me draw you an exemple."
 
