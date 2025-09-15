@@ -1,4 +1,4 @@
-# All USB sticks are not created equals
+# All USB sticks are not created equal
 
 "What if someone overwrites the key while verifiying it?" Jules asked.
 
