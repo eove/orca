@@ -47,7 +47,7 @@ See chapter [Verifiable Operating System](./story/verifiable-os.md)
 ### Using hardware tokens
 
 Hardware token can generate a private key directly on it. This mean that the private key can never be seen by any computer, including at creation time. That's a good way to make sure there is no duplicate that could decrypt a share.
-Further more, having a hardware token give use first factor of authentication and the pin gives a second one. That's a good way to ensure strong authentication.
+Furthermore, having a hardware token give use first factor of authentication and the pin gives a second one. That's a good way to ensure strong authentication.
 See chapter [One factor of authentication is not enough](./story/mfa.md)
 
 ### Creating backups
