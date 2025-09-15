@@ -33,4 +33,4 @@ When he arrived back at his home, Vernes was there, waiting for him.
 
 "Sounds good to me." Vernes said.
 
-One our later, Jules was at work, signing the new Intermediate CA. The next day, production started again. 6 mounth later, everything was back on tracks.
+One hour later, Jules was at work, signing the new Intermediate CA. The next day, production started again. 6 months later, everything was back on tracks.
