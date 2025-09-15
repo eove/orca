@@ -12,7 +12,7 @@
 
 "Then we should use the Shamir's Secret Sharing algorithm" Shuri said.
 
-Seeing that everybody was giving her a puzzled look, she continued: "The Shamir Shared Secret algorithm allows us to share a secret between people while needing only a subset of thoses people to retrieve it."
+Seeing that everybody was giving her a puzzled look, she continued: "The Shamir Shared Secret algorithm allows us to share a secret between people while needing only a subset of those people to retrieve it."
 
 Every one kept their poker face.
 
