@@ -14,7 +14,7 @@ Wikipedia is probably a good place to start.
 
 When communicating with a server, it is highly probable that your data goes through a chain of machines to reach its destination.
 It is possible that one of these machines is own by an ill-intended person.
-Because of this, any data going from a computer to another is considered public knowledge.
+Because of this, any data going from a computer to another via a public network is considered public knowledge.
 
 ### Asymetric cryptography
 
