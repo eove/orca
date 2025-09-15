@@ -65,6 +65,6 @@ See chapters [Is this for real?](./story/verify-workflow.md) and [Verifiable Ope
 
 O.R.CA is not protected against a USB stick that would show one version of the OS at verification time and another version, corrupted, at boot time. It is concidered too sophisticated to do for a single person.
 
-O.R.CA is not protected against social engineering. The people having shares should be aware and trained against this kind of attacks.
+O.R.CA is not protected against social engineering. The people having shares should be aware and trained against this kind of attacks. Also, people should obviously not neglect the security of their share (for example, they should not let the hardware token on their desktop with a post-it note on it displaying the PIN, or they should not insert a public key that is not coming from their hardware token).
 
 
