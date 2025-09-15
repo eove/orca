@@ -7,7 +7,12 @@ This method is more manual but only adds noise **at the end** of the document, t
 The last line of the document to sign **must** be `@GPG@SIGNATURES@`.
 
 ## Signing 
-In sequence, each of the signatory will run the following command and transfer the resulting signed file (which name is displayed on the console) to the next signatory:
+In sequence, each of the signatory will run the following command and transfer the resulting signed file (which name is displayed on the console) to the next signatory.
+
+> [!Note]  
+> In the shell snippet below, we catch the hardware token public key ID from the signing key ID in the token, and store this inside variable `GPG_HW_TOKEN_KEY_ID`.  
+> You might also do it manually (for example using `gpg --card-status` or `gpg --list-keys --fingerprint`) if this sed oneliner doesn't do the job properly.
+
 ```bash
 export INPUT_TO_SIGN=/path/to/document # Adapt this to your path
 export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status |\
@@ -19,9 +24,6 @@ sed -e '/^@GPG@SIGNATURES@$/q' "$INPUT_TO_SIGN" |\
  rm "$INPUT_TO_SIGN.sig.asc" &&\
  command ls "$INPUT_TO_SIGN".signed >&2
 ```
-> [!Note]  
-> In the shell snippet above, we catch the hardware token public key ID from the signing key ID in the token, and store this inside variable `GPG_HW_TOKEN_KEY_ID`.  
-> You might also do it manually (for example using `gpg --card-status` or `gpg --list-keys --fingerprint`) if this sed oneliner doesn't do the job properly.
 
 ## Verifying
 The authenticity of the content of the document, must be verify via cryptographic signatures before executing it.
