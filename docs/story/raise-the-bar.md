@@ -21,7 +21,7 @@ Everybody stayed silent for a few seconds, shocked by the request.
 The atmosphere was heavy, nobody expected that.
 Not a word was said for the next two minutes.
 
-Then Jules added, "Here's another way to think of the same problem:: imagine that someone successfully corrupted me. Consider me as the attacker."
+Then Jules added, "Here's another way to think of the same problem: imagine that someone successfully corrupted me. Consider me as the attacker."
 
 "And why don't we consider that we are all corrupted? Or at least more than one of us?" Leiko asked.
 
