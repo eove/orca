@@ -36,7 +36,7 @@ See chapters [All USB sticks are not created equals](./story/readonly-usb.md) an
 
 ### Using a USB stick with a readonly switch
 
-The goal is to avoid any modification of the key while it's beeing verified. This is also a fool-proof tool in case the operating system that is about to make the verification decides to write anything on it.
+The goal is to avoid any modification of the USB stick while it is getting verified. This is also a fool-proof tool in case the operating system that is about to make the verification decides to write anything on it.
 See chapter [All USB sticks are not created equals](./story/readonly-usb.md)
 
 ### Verifying the states after boot
