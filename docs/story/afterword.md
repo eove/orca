@@ -41,7 +41,7 @@ See chapter [All USB sticks are not created equals](./story/readonly-usb.md)
 
 ### Verifying the states after boot
 
-The main goal is to verify that the vault's database has not been tempered. It's also a way to verify that we are indeed at the state described in the previous report.
+The main goal is to verify that the vault's database has not been tampered with. It's also a way to verify that we are indeed starting from the expected state (described in the previous report).
 See chapter [Verifiable Operating System](./story/verifiable-os.md)
 
 ### Using hardware tokens
