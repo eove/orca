@@ -67,7 +67,7 @@ vault write <pki_name>/revoke serial_number=30:6e:65:c7:e9:01:1a:fd:b5:70:41:1a:
 > [!Note]  
 > With `pki_name` matching the correct CA's mountpoint
 
-Once all necessary certificates have been revoked, we will rotate the CRl:
+Once all necessary certificates have been revoked, we will rotate the CRL:
 ```
 vault read <pki_name>/crl/rotate
 ```

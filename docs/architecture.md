@@ -22,7 +22,7 @@ flowchart TD
 *.example.com
 fa:fa-hourglass 30yrs"]
         INTERMEDIATE_CA>"<b>Offline intermediate CA</b>
-*.subdomain.example.fr
+*.subdomain.example.com
 fa:fa-hourglass 30yrs"]
     end
     ROOT_CA --> |delegates| INTERMEDIATE_CA
@@ -31,13 +31,13 @@ fa:fa-hourglass 30yrs"]
 
     subgraph Online vault
         VAULT_PKI>"<b>Online intermediate CA</b>
-*.subdomain.example.fr
+*.subdomain.example.com
 fa:fa-hourglass 14yrs"]
         VAULT_PKI -->|signs| EOCON1("fa:fa-barcode
-        XXX.subdomain.example.fr
+        XXX.subdomain.example.com
 fa:fa-hourglass 12yrs")
         VAULT_PKI -->|signs| EOCON2("fa:fa-barcode
-        YYY.subdomain.example.fr
+        YYY.subdomain.example.com
 fa:fa-hourglass 12yrs")
     end
 ```
