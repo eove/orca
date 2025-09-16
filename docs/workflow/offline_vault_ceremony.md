@@ -14,7 +14,7 @@ A gpg-based one can be found at the [signing and verifying annex](../signing_and
 This document explains how to use the Offline Root CA from preparing the ceremony until a report is signed and shared.
 That event is called a *ceremony*.
 
-All commands are given for Linux using a bash shell. Please adapt acording to your environment.
+All commands are given for Linux using a bash shell. Please adapt according to your environment.
 
 {{#include ./common/glossary.md}}
 
