@@ -80,7 +80,7 @@ The 📢`organiser` asks all `share holders` (including 👥`team members`) to c
 
 #### Setting up the trusted commit
 
-When all scripts planned for the ceremony are ready and all keys are up-to-date, the 📢`organiser` writes down the last git commit of repo [O.R.CA]@ORCA@gitremote@) containing all re-inserted keys, and communicates this commit to all 👥`team members`.
+When all scripts planned for the ceremony are ready and all keys are up-to-date, the 📢`organiser` writes down the last git commit of repo [O.R.CA](@ORCA@gitremote@) containing all re-inserted keys, and communicates this commit to all 👥`team members`.
 
 For the rest of this documentation, we are going to name that commit the `trusted commit` (✅)
 
@@ -122,11 +122,12 @@ git diff <previous ceremony trusted commit> src/
 ```
 
 > [!Important]  
-> All content within `src/` should only reference files also within `src/`.\
-> Any change displayed by the diff should be considered legitimate to you.\
-> During this step, 👥`team members` will also review and understand all the scripts that are planned for execution during the ceremony.
-> Scripts should never ask the offline topmost root CA to sign anything that doesn't strictly remains in the offline vault (no external CSR).
-> If the offline CA is signing a CSR from a third party (for example online) CA, the authenticity of the CSR file should be checked. Please consult your online PKI documentation to know how to authentify the emitter of the CSR.
+> * The environment (prod/preprod) that has been [selected when organising the ceremony](#selecting-the-vault-environment) should be verified.
+> * All content within `src/` should only reference files also within `src/`.
+> * Any change displayed by the diff should be considered legitimate to you.
+> * During this step, 👥`team members` will also review and understand all the scripts that are planned for execution during the ceremony.
+> * Scripts should never ask the offline topmost root CA to sign anything that doesn't strictly remains in the offline vault (no external CSR).
+> * If the offline CA is signing a CSR from a third party (for example online) CA, the authenticity of the CSR file should be checked. Please consult your online PKI documentation to know how to authentify the emitter of the CSR.
 
 Once all 👥`team members` have validated the new ✅`trusted commit`, each of them will gather some fingerprinting data concerning the bootable media that will be used during the ceremony:
 
