@@ -43,16 +43,9 @@
     # This should probably only evolve when the orca setup evolves as well
     ({ config, ... }@args:
       let
-        scripts = builtins.attrValues (builtins.mapAttrs pkgs.writeShellScriptBin (import ./scripts (args // { inherit (pkgs) lib; })));
         recordDir = ''${config.services.vault.storagePath}/orca/recordings'';
         orca_user = config.users.users.orca;
-        init-script = pkgs.writeShellScriptBin "shell-init" ''
-          RECORD_DIR=${recordDir}
-          cp /var/lib/acme/.minica/cert.pem ${orca_user.home}/cert.pem
-          chown ${orca_user.name} ${orca_user.home}/cert.pem
-          mkdir -p $RECORD_DIR
-          chown -R ${orca_user.name} ${config.services.vault.storagePath}/orca
-        '';
+        scripts = builtins.attrValues (builtins.mapAttrs pkgs.writeShellScriptBin (import ./scripts (args // { inherit (pkgs) lib; inherit recordDir orca_user; })));
       in
       {
         options = with pkgs.lib; {
@@ -71,7 +64,7 @@
               pkgs.coreutils
               pkgs.qrencode
             ]
-            ++ scripts ++ [init-script];
+            ++ scripts;
           };
           system.stateVersion = pkgs.lib.trivial.release;
           users = {
@@ -102,15 +95,10 @@
                   users = [ orca_user.name ];
                   commands = (builtins.map
                     (script: {
-                      command = "${system_path}/${script.name}";
+                      command = "${system_path}/${script}";
                       options = [ "NOPASSWD" ];
                     })
-                    scripts) ++ [
-                    {
-                      command = "${system_path}/${init-script.name}";
-                      options = [ "NOPASSWD" ];
-                    }
-                  ];
+                    [ "shell-init" "compute-cvault" "seal" "count-tokens" "backup"]);
                 }
               ];
             };
