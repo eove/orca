@@ -14,7 +14,7 @@
       let
         dev-scripts = builtins.mapAttrs pkgs.writeShellScriptBin {
           plug-simulated-yubikey = ''
-            sudo rm -rf ~/.gnupg 2> /dev/null
+            rm -rf ~/.gnupg 2> /dev/null
             cp -r ${./simulated-yubikeys}/yubikey''${1}@eove.fr/.gnupg/ ~/
             chmod +w,og-rwx -R ~/.gnupg
           '';
@@ -25,11 +25,16 @@
           pkgs.vim
         ] ++ (builtins.attrValues dev-scripts);
         services.openssh.enable = pkgs.lib.mkForce true;
+        services.openssh.settings.PermitRootLogin = "yes";
+        users.users.root = {
+          initialPassword = pkgs.lib.mkForce "root";
+          initialHashedPassword = pkgs.lib.mkForce null;
+        };
         users.users.orca = {
           initialPassword = pkgs.lib.mkForce "orca";
           initialHashedPassword = pkgs.lib.mkForce null;
         };
-        networking= {
+        networking = {
           useDHCP = pkgs.lib.mkForce true;
         };
       }
@@ -38,7 +43,16 @@
     # This should probably only evolve when the orca setup evolves as well
     ({ config, ... }@args:
       let
-        scripts = builtins.mapAttrs pkgs.writeShellScriptBin (import ./scripts (args // {inherit (pkgs) lib;}));
+        scripts = builtins.attrValues (builtins.mapAttrs pkgs.writeShellScriptBin (import ./scripts (args // { inherit (pkgs) lib; })));
+        recordDir = ''${config.services.vault.storagePath}/orca/recordings'';
+        orca_user = config.users.users.orca;
+        init-script = pkgs.writeShellScriptBin "shell-init" ''
+          RECORD_DIR=${recordDir}
+          cp /var/lib/acme/.minica/cert.pem ${orca_user.home}/cert.pem
+          chown ${orca_user.name} ${orca_user.home}/cert.pem
+          mkdir -p $RECORD_DIR
+          chown -R ${orca_user.name} ${config.services.vault.storagePath}/orca
+        '';
       in
       {
         options = with pkgs.lib; {
@@ -49,22 +63,21 @@
           };
         };
         config = {
-          environment={
+          environment = {
             systemPackages = [
-            pkgs.vault
-            pkgs.jq
-            pkgs.gnupg
-            pkgs.coreutils
-            pkgs.qrencode
-          ]
-          ++ (builtins.attrValues scripts);
-        };
+              pkgs.vault
+              pkgs.jq
+              pkgs.gnupg
+              pkgs.coreutils
+              pkgs.qrencode
+            ]
+            ++ scripts ++ [init-script];
+          };
           system.stateVersion = pkgs.lib.trivial.release;
           users = {
             # Use less privileged orca user
             users.orca = {
               isNormalUser = true;
-              extraGroups = [ "wheel" ];
               initialHashedPassword = "";
             };
             # Allow the user to log in as root without a password.
@@ -75,10 +88,31 @@
           security = {
             # Don't require sudo/root to `reboot` or `poweroff`.
             polkit.enable = true;
-            # Allow passwordless sudo from orca user
-            sudo = {
+            # Allow passwordless sudo from orca user for the prepared and reviewed scripts
+            sudo = let
+              system_path = "/run/current-system/sw/bin";
+            in {
               enable = true;
-              wheelNeedsPassword = false;
+                extraConfig = with pkgs; ''
+    Defaults secure_path="${system_path}"
+    Defaults env_keep += "VAULT_ADDR VAULT_CACERT"
+  '';
+              extraRules = [
+                {
+                  users = [ orca_user.name ];
+                  commands = (builtins.map
+                    (script: {
+                      command = "${system_path}/${script.name}";
+                      options = [ "NOPASSWD" ];
+                    })
+                    scripts) ++ [
+                    {
+                      command = "${system_path}/${init-script.name}";
+                      options = [ "NOPASSWD" ];
+                    }
+                  ];
+                }
+              ];
             };
             acme = ({
               acceptTerms = true;
@@ -140,26 +174,21 @@
 
           # record everything that happens on the terminal
           programs.bash.loginShellInit = ''
-            RECORD_DIR=${config.services.vault.storagePath}/orca/recordings
+            RECORD_DIR=${recordDir}
             gpg --import ${./share_holders_keys/${config.orca.environment-target}}/* &> /dev/null
 
-            sudo cp /var/lib/acme/.minica/cert.pem ~/cert.pem
-            sudo chown orca ~/cert.pem
 
             export VAULT_ADDR="https://localhost:8200"
             export VAULT_CACERT=~/cert.pem
 
-            sudo mkdir -p $RECORD_DIR
-            sudo chown -R orca ${config.services.vault.storagePath}/orca
+            sudo shell-init
             if [ ! -e /tmp/cvault-displayed ]
             then
-              cd ${config.services.vault.storagePath}
-              echo "Cvault:"
-              sudo find . -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum -
-              cd
+              echo "Cvault : "
+              sudo compute-cvault
 
               echo "Count tokens : "
-              count-tokens 2> /dev/null
+              sudo count-tokens 2> /dev/null
 
               echo "Waiting for vault to be available..."
               sleep 2
@@ -179,7 +208,7 @@
               experimental-features = [ "nix-command" "flakes" ];
             };
           };
-          networking= {
+          networking = {
             hostName = "orca-${config.orca.environment-target}";
             useDHCP = false;
           };

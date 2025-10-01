@@ -36,12 +36,12 @@ let
       export ORCA_FOLDER="$VAULT_STORAGE_PATH/orca"
       export PUBLIC_KEYS_FOLDER="${../share_holders_keys/${config.orca.environment-target}}"
       export SHARES_FOLDER="$ORCA_FOLDER/shares/$ENVIRONMENT_TARGET"
-      sudo mkdir -p $SHARES_FOLDER
+      mkdir -p $SHARES_FOLDER
       export AIA_FOLDER="$ORCA_FOLDER/aia/$ENVIRONMENT_TARGET"
-      sudo mkdir -p $AIA_FOLDER
+      mkdir -p $AIA_FOLDER
       export CERTIFICATE_FOLDER="$ORCA_FOLDER/certificates/$ENVIRONMENT_TARGET"
-      sudo mkdir -p $CERTIFICATE_FOLDER
-      sudo chown -R orca $ORCA_FOLDER
+      mkdir -p $CERTIFICATE_FOLDER
+      chown -R ${config.users.users.orca.name} $ORCA_FOLDER
 
       function revoke() {
         echo "Revoking root token..." >&2

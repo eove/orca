@@ -1,1 +1,1 @@
-sudo ls ${VAULT_STORAGE_PATH}/sys/token/id/ | wc -l
+ls ${VAULT_STORAGE_PATH}/sys/token/id/ | wc -l
