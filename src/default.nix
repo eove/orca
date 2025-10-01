@@ -88,7 +88,6 @@
               enable = true;
                 extraConfig = with pkgs; ''
     Defaults secure_path="${system_path}"
-    Defaults env_keep += "VAULT_ADDR VAULT_CACERT"
   '';
               extraRules = [
                 {
