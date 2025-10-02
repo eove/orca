@@ -397,7 +397,7 @@ First, we will seal the vault:
 <table width=100% style="border:2px solid red;"><td style="padding:0;">
 
 ```bash
-sudo seal
+seal
 ```
 
 </td></table>
@@ -406,7 +406,7 @@ We now need to make sure there is no existing root token anymore, by running the
 <table width=100% style="border:2px solid red;"><td style="padding:0;">
 
 ```bash
-sudo count-tokens
+count-tokens
 ```
 
 </td></table>
@@ -432,7 +432,7 @@ On the *ephemeral vault* terminal, run:
 <table width=100% style="border:2px solid red;"><td style="padding:0;">
 
 ```bash
-sudo backup
+backup
 ```
 
 </td></table>

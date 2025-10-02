@@ -1,4 +1,4 @@
-{ config, lib, ... }@args:
+{ config, lib, pkgs, ... }@args:
 let
   filterAttr = f: attrs:
     let
@@ -25,6 +25,7 @@ let
       { }
       (shell-files dir))
   ];
+  wrapSudoerScript = scripts: builtins.mapAttrs (acc: script: ''sudo ${pkgs.lib.getExe script}'') scripts;
 
   packageAuthenticatedScripts = dir: builtins.mapAttrs (n: v: vaultTokenHeader + v) (packageScripts dir);
 
@@ -115,9 +116,18 @@ let
     export VAULT_TOKEN=$(get_root_token)
     trap revoke INT QUIT TERM EXIT ABRT
   '';
+  createScript = (n: v: pkgs.writeShellScriptBin n (scriptHeader + v));
 in
-builtins.mapAttrs (n: v: scriptHeader + v) (
-  (packageScripts ./orca-protocol) //
-  (packageScripts ./unauthenticated) //
-  (packageAuthenticatedScripts ./authenticated)
-)
+{
+  custom_scripts = builtins.mapAttrs createScript (
+    (packageScripts ./unauthenticated) //
+    (packageAuthenticatedScripts ./authenticated)
+  );
+  orca_scripts = rec {
+    sudoer = builtins.mapAttrs createScript (packageScripts ./orca-protocol/sudoer);
+    orca_user = builtins.mapAttrs createScript (
+      (packageScripts ./orca-protocol/orca_user) //
+      (wrapSudoerScript sudoer)
+    );
+  };
+}

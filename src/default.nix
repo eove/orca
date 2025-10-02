@@ -45,7 +45,10 @@
       let
         recordDir = ''${config.services.vault.storagePath}/orca/recordings'';
         orca_user = config.users.users.orca;
-        scripts = builtins.attrValues (builtins.mapAttrs pkgs.writeShellScriptBin (import ./scripts (args // { inherit (pkgs) lib; inherit recordDir orca_user; })));
+        all_scripts = import ./scripts (args // { inherit (pkgs) lib; inherit recordDir orca_user pkgs; });
+        custom_scripts = builtins.attrValues all_scripts.custom_scripts;
+        orca_user_scripts = builtins.attrValues all_scripts.orca_scripts.orca_user;
+        sudoer_scripts = builtins.attrValues all_scripts.orca_scripts.sudoer;
         init-script = pkgs.writeShellScriptBin "init-script" ''
           RECORD_DIR=${recordDir}
           cp /var/lib/acme/.minica/cert.pem ${orca_user.home}/cert.pem
@@ -74,7 +77,9 @@
               pkgs.coreutils
               pkgs.qrencode
             ]
-            ++ scripts;
+            ++ custom_scripts 
+            ++ orca_user_scripts
+            ;
           };
           system.stateVersion = pkgs.lib.trivial.release;
           users = {
@@ -98,18 +103,15 @@
               in
               {
                 enable = true;
-                extraConfig = with pkgs; ''
-                  Defaults secure_path="${system_path}"
-                '';
                 extraRules = [
                   {
                     users = [ orca_user.name ];
                     commands = (builtins.map
                       (script: {
-                        command = "${system_path}/${script}";
+                        command = "${pkgs.lib.getExe script}";
                         options = [ "NOPASSWD" ];
                       })
-                      [ "seal" "count-tokens" "backup" ]) ++ [
+                      sudoer_scripts) ++ [
                       {
                         command = "${pkgs.lib.getExe init-script}";
                         options = [ "NOPASSWD" ];
@@ -181,16 +183,12 @@
             RECORD_DIR=${recordDir}
             gpg --import ${./share_holders_keys/${config.orca.environment-target}}/* &> /dev/null
 
-
             export VAULT_ADDR="https://localhost:8200"
             export VAULT_CACERT=~/cert.pem
 
             if [ ! -e /tmp/cvault-displayed ]
             then
               sudo ${pkgs.lib.getExe init-script}
-
-              echo "Count tokens : "
-              sudo count-tokens 2> /dev/null
 
               echo "Waiting for vault to be available..."
               sleep 2
