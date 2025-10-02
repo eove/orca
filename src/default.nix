@@ -77,7 +77,7 @@
               pkgs.coreutils
               pkgs.qrencode
             ]
-            ++ custom_scripts 
+            ++ custom_scripts
             ++ orca_user_scripts
             ;
           };
@@ -98,9 +98,6 @@
             polkit.enable = true;
             # Allow passwordless sudo from orca user for the prepared and reviewed scripts
             sudo =
-              let
-                system_path = "/run/current-system/sw/bin";
-              in
               {
                 enable = true;
                 extraRules = [
