@@ -46,6 +46,16 @@
         recordDir = ''${config.services.vault.storagePath}/orca/recordings'';
         orca_user = config.users.users.orca;
         scripts = builtins.attrValues (builtins.mapAttrs pkgs.writeShellScriptBin (import ./scripts (args // { inherit (pkgs) lib; inherit recordDir orca_user; })));
+        init-script = pkgs.writeShellScriptBin "init-script" ''
+RECORD_DIR=${recordDir}
+cp /var/lib/acme/.minica/cert.pem ${orca_user.home}/cert.pem
+chown ${orca_user.name} ${orca_user.home}/cert.pem
+mkdir -p $RECORD_DIR
+chown -R ${orca_user.name} ${config.services.vault.storagePath}/orca
+
+echo "Cvault : "
+find ${config.services.vault.storagePath} -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum - | cut -d " " -f 1
+        '';
       in
       {
         options = with pkgs.lib; {
@@ -97,7 +107,12 @@
                       command = "${system_path}/${script}";
                       options = [ "NOPASSWD" ];
                     })
-                    [ "shell-init" "compute-cvault" "seal" "count-tokens" "backup"]);
+                    [ "seal" "count-tokens" "backup"]) ++ [
+                      {
+                      command = "${pkgs.lib.getExe init-script}";
+                      options = [ "NOPASSWD" ];
+                      }
+                    ];
                 }
               ];
             };
@@ -168,11 +183,9 @@
             export VAULT_ADDR="https://localhost:8200"
             export VAULT_CACERT=~/cert.pem
 
-            sudo shell-init
             if [ ! -e /tmp/cvault-displayed ]
             then
-              echo "Cvault : "
-              sudo compute-cvault
+              sudo ${pkgs.lib.getExe init-script}
 
               echo "Count tokens : "
               sudo count-tokens 2> /dev/null
