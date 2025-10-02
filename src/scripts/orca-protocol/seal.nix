@@ -1,4 +1,4 @@
 { config, ... }:
 ''
-   systemctl stop ${config.systemd.services.vault.name}
+  systemctl stop ${config.systemd.services.vault.name}
 ''

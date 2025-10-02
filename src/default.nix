@@ -47,14 +47,14 @@
         orca_user = config.users.users.orca;
         scripts = builtins.attrValues (builtins.mapAttrs pkgs.writeShellScriptBin (import ./scripts (args // { inherit (pkgs) lib; inherit recordDir orca_user; })));
         init-script = pkgs.writeShellScriptBin "init-script" ''
-RECORD_DIR=${recordDir}
-cp /var/lib/acme/.minica/cert.pem ${orca_user.home}/cert.pem
-chown ${orca_user.name} ${orca_user.home}/cert.pem
-mkdir -p $RECORD_DIR
-chown -R ${orca_user.name} ${config.services.vault.storagePath}/orca
+          RECORD_DIR=${recordDir}
+          cp /var/lib/acme/.minica/cert.pem ${orca_user.home}/cert.pem
+          chown ${orca_user.name} ${orca_user.home}/cert.pem
+          mkdir -p $RECORD_DIR
+          chown -R ${orca_user.name} ${config.services.vault.storagePath}/orca
 
-echo "Cvault : "
-find ${config.services.vault.storagePath} -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum - | cut -d " " -f 1
+          echo "Cvault : "
+          find ${config.services.vault.storagePath} -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum - | cut -d " " -f 1
         '';
       in
       {
@@ -92,30 +92,32 @@ find ${config.services.vault.storagePath} -type f -exec sha256sum -b {} \; | sor
             # Don't require sudo/root to `reboot` or `poweroff`.
             polkit.enable = true;
             # Allow passwordless sudo from orca user for the prepared and reviewed scripts
-            sudo = let
-              system_path = "/run/current-system/sw/bin";
-            in {
-              enable = true;
+            sudo =
+              let
+                system_path = "/run/current-system/sw/bin";
+              in
+              {
+                enable = true;
                 extraConfig = with pkgs; ''
-    Defaults secure_path="${system_path}"
-  '';
-              extraRules = [
-                {
-                  users = [ orca_user.name ];
-                  commands = (builtins.map
-                    (script: {
-                      command = "${system_path}/${script}";
-                      options = [ "NOPASSWD" ];
-                    })
-                    [ "seal" "count-tokens" "backup"]) ++ [
+                  Defaults secure_path="${system_path}"
+                '';
+                extraRules = [
+                  {
+                    users = [ orca_user.name ];
+                    commands = (builtins.map
+                      (script: {
+                        command = "${system_path}/${script}";
+                        options = [ "NOPASSWD" ];
+                      })
+                      [ "seal" "count-tokens" "backup" ]) ++ [
                       {
-                      command = "${pkgs.lib.getExe init-script}";
-                      options = [ "NOPASSWD" ];
+                        command = "${pkgs.lib.getExe init-script}";
+                        options = [ "NOPASSWD" ];
                       }
                     ];
-                }
-              ];
-            };
+                  }
+                ];
+              };
             acme = ({
               acceptTerms = true;
               defaults.email = "it@orca.com";
