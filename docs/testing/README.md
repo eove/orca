@@ -47,8 +47,12 @@ nix run
 A virtual machine that will boot on the iso image (that was automatically mounted), and with a small disk will start.
 
 > [!Note]  
-> At the end of your testing session, you'll probably want to delete the backup from the disk with:
-> `sudo rm /var/lib/vault/orca/*.tar`  
+> At the end of your testing session, you'll probably want to delete the backup from the disk. To do so, first login as root with
+>
+> `su -` and the password `root`
+>
+> Then run
+> `rm /var/lib/vault/orca/*.tar`  
 
 ### Simulating Yubikeys
 
@@ -74,3 +78,4 @@ From your host, you can ssh to the VM with:
 ssh orca@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222
 ```
 The password is `orca`
+You can also login as root with the password `root`
