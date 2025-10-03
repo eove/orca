@@ -124,7 +124,7 @@ in
     (packageAuthenticatedScripts ./authenticated)
   );
   orca_scripts = rec {
-    sudoer = builtins.mapAttrs createScript (packageScripts ./orca-protocol/sudoer);
+    sudoer = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts ./orca-protocol/sudoer);
     orca_user = builtins.mapAttrs createScript (
       (packageScripts ./orca-protocol/orca_user) //
       (wrapSudoerScript sudoer)
