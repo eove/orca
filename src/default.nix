@@ -69,6 +69,23 @@
           };
         };
         config = {
+          assertions = 
+            let
+              script_names = builtins.map (p: p.name) sudoer_scripts;
+              allowed_scripts = [ "backup" "count-tokens" "seal" ];
+              unknown_scripts = pkgs.lib.lists.subtractLists allowed_scripts script_names;
+            in 
+          [
+            {
+              assertion = unknown_scripts == [];
+              message = ''These scripts are not confirmed as scripts that can be ran with sudo : ${pkgs.lib.strings.concatStringsSep ", " unknown_scripts}
+
+It is possible that they were saved in the wrong folder.
+
+If it should indeed be allowed to run as root, please double check them for security risk and then add it's name to the allowed_scripts above.
+              '';
+            }
+          ];
           environment = {
             systemPackages = [
               pkgs.vault
