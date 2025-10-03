@@ -140,6 +140,17 @@
 
           # record everything that happens on the terminal
           programs.bash.loginShellInit = ''
+            if ! sudo test -w ${config.services.vault.storagePath}
+            then
+              cat << EOF
+              You successfully booted O.R.CA for the ${config.orca.environment-target} environment in read-only mode.
+              Since nothing can be done, you won't have access to a shell.
+              When you'll want have access to a shell, please boot in read/write mode.
+              Press enter to poweroff the computer.
+EOF
+              read -s
+              poweroff
+            fi
             RECORD_DIR=${config.services.vault.storagePath}/orca/recordings
             gpg --import ${./share_holders_keys/${config.orca.environment-target}}/* &> /dev/null
 
