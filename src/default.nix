@@ -43,22 +43,29 @@
     # This should probably only evolve when the orca setup evolves as well
     ({ config, ... }@args:
       let
-        recordDir = ''${config.services.vault.storagePath}/orca/recordings'';
+        recordDir = ''${config.services.vault.storagePath}/recordings'';
+        orcaDir = ''${config.services.vault.storagePath}/orca'';
         orca_user = config.users.users.orca;
         all_scripts = import ./scripts (args // { inherit (pkgs) lib; inherit recordDir orca_user pkgs; });
         custom_scripts = builtins.attrValues all_scripts.custom_scripts;
         orca_user_scripts = builtins.attrValues all_scripts.orca_scripts.orca_user;
         sudoer_scripts = builtins.attrValues all_scripts.orca_scripts.sudoer;
         init-script = pkgs.writeShellScriptBin "init-script" ''
-          RECORD_DIR=${recordDir}
           cp /var/lib/acme/.minica/cert.pem ${orca_user.home}/cert.pem
           chown ${orca_user.name} ${orca_user.home}/cert.pem
-          mkdir -p $RECORD_DIR
-          chown -R ${orca_user.name} ${config.services.vault.storagePath}/orca
+          mkdir -p ${orcaDir}
+          chown -R ${orca_user.name} ${orcaDir}
 
           echo "Cvault : "
           find ${config.services.vault.storagePath} -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum - | cut -d " " -f 1
         '';
+        su_record_session = pkgs.writeShellScriptBin "su_record_session" ''
+          mkdir -p ${recordDir}
+          ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${recordDir}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} bash"
+        '';
+        record_session = pkgs.writeShellScriptBin "record_session" ''
+          sudo ${pkgs.lib.getExe su_record_session}
+          '';
       in
       {
         options = with pkgs.lib; {
@@ -104,6 +111,8 @@ If it should indeed be allowed to run as root, please double check them for secu
             users.orca = {
               isNormalUser = true;
               initialHashedPassword = "";
+              ignoreShellProgramCheck = true;
+              shell = pkgs.lib.getExe record_session;
             };
             # Allow the user to log in as root without a password.
             users.root.initialHashedPassword = "";
@@ -130,6 +139,10 @@ If it should indeed be allowed to run as root, please double check them for secu
                         command = "${pkgs.lib.getExe init-script}";
                         options = [ "NOPASSWD" ];
                       }
+                      {
+                        command = "${pkgs.lib.getExe su_record_session}";
+                        options = [ "NOPASSWD" ];
+                      }
                     ];
                   }
                 ];
@@ -154,7 +167,7 @@ If it should indeed be allowed to run as root, please double check them for secu
 
           services = {
             # Automatically log in at the virtual consoles.
-            getty.autologinUser = "orca";
+            getty.autologinUser = orca_user.name;
             xserver.xkb = {
               layout = "fr,fr,us";
               variant = "oss,bepo,";
@@ -194,27 +207,27 @@ If it should indeed be allowed to run as root, please double check them for secu
 
           # record everything that happens on the terminal
           programs.bash.loginShellInit = ''
-            RECORD_DIR=${recordDir}
-            gpg --import ${./share_holders_keys/${config.orca.environment-target}}/* &> /dev/null
-
-            export VAULT_ADDR="https://localhost:8200"
-            export VAULT_CACERT=~/cert.pem
-
-            if [ ! -e /tmp/cvault-displayed ]
+            if [ "$USER" == "${orca_user.name}" ]
             then
-              sudo ${pkgs.lib.getExe init-script}
+              gpg --import ${./share_holders_keys/${config.orca.environment-target}}/* &> /dev/null
 
-              echo "Waiting for vault to be available..."
-              sleep 2
+              export VAULT_ADDR="https://localhost:8200"
+              export VAULT_CACERT=~/cert.pem
 
-              echo "Vault status :"
-              vault status
+              if [ ! -e /tmp/cvault-displayed ]
+              then
+                sudo ${pkgs.lib.getExe init-script}
 
-              touch /tmp/cvault-displayed
+                echo "Waiting for vault to be available..."
+                sleep 2
+
+                echo "Vault status :"
+                vault status
+
+                touch /tmp/cvault-displayed
+              fi
+
             fi
-
-            ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 $RECORD_DIR/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast
-            exit
           '';
 
           nix = {
