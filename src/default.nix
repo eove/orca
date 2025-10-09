@@ -61,7 +61,7 @@
         '';
         su_record_session = pkgs.writeShellScriptBin "su_record_session" ''
           mkdir -p ${recordDir}
-          ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${recordDir}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} bash"
+          ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${recordDir}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} bash --noprofile --rcfile /etc/profile"
         '';
         record_session = pkgs.writeShellScriptBin "record_session" ''
           sudo ${pkgs.lib.getExe su_record_session}
