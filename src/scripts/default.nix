@@ -1,4 +1,4 @@
-{ config, lib, ... }@args:
+{ config, lib, pkgs, ... }@args:
 let
   filterAttr = f: attrs:
     let
@@ -25,6 +25,7 @@ let
       { }
       (shell-files dir))
   ];
+  wrapSudoerScript = scripts: builtins.mapAttrs (acc: script: ''sudo ${pkgs.lib.getExe script}'') scripts;
 
   packageAuthenticatedScripts = dir: builtins.mapAttrs (n: v: vaultTokenHeader + v) (packageScripts dir);
 
@@ -36,12 +37,12 @@ let
       export ORCA_FOLDER="$VAULT_STORAGE_PATH/orca"
       export PUBLIC_KEYS_FOLDER="${../share_holders_keys/${config.orca.environment-target}}"
       export SHARES_FOLDER="$ORCA_FOLDER/shares/$ENVIRONMENT_TARGET"
-      sudo mkdir -p $SHARES_FOLDER
+      mkdir -p $SHARES_FOLDER
       export AIA_FOLDER="$ORCA_FOLDER/aia/$ENVIRONMENT_TARGET"
-      sudo mkdir -p $AIA_FOLDER
+      mkdir -p $AIA_FOLDER
       export CERTIFICATE_FOLDER="$ORCA_FOLDER/certificates/$ENVIRONMENT_TARGET"
-      sudo mkdir -p $CERTIFICATE_FOLDER
-      sudo chown -R orca $ORCA_FOLDER
+      mkdir -p $CERTIFICATE_FOLDER
+      chown -R ${config.users.users.orca.name} $ORCA_FOLDER
 
       function revoke() {
         echo "Revoking root token..." >&2
@@ -115,9 +116,18 @@ let
     export VAULT_TOKEN=$(get_root_token)
     trap revoke INT QUIT TERM EXIT ABRT
   '';
+  createScript = (n: v: pkgs.writeShellScriptBin n (scriptHeader + v));
 in
-builtins.mapAttrs (n: v: scriptHeader + v) (
-  (packageScripts ./orca-protocol) //
-  (packageScripts ./unauthenticated) //
-  (packageAuthenticatedScripts ./authenticated)
-)
+{
+  custom_scripts = builtins.mapAttrs createScript (
+    (packageScripts ./unauthenticated) //
+    (packageAuthenticatedScripts ./authenticated)
+  );
+  orca_scripts = rec {
+    sudoer = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts ./orca-protocol/sudoer);
+    orca_user = builtins.mapAttrs createScript (
+      (packageScripts ./orca-protocol/orca_user) //
+      (wrapSudoerScript sudoer)
+    );
+  };
+}

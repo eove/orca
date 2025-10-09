@@ -14,7 +14,7 @@
       let
         dev-scripts = builtins.mapAttrs pkgs.writeShellScriptBin {
           plug-simulated-yubikey = ''
-            sudo rm -rf ~/.gnupg 2> /dev/null
+            rm -rf ~/.gnupg 2> /dev/null
             cp -r ${./simulated-yubikeys}/yubikey''${1}@eove.fr/.gnupg/ ~/
             chmod +w,og-rwx -R ~/.gnupg
           '';
@@ -25,11 +25,16 @@
           pkgs.vim
         ] ++ (builtins.attrValues dev-scripts);
         services.openssh.enable = pkgs.lib.mkForce true;
+        services.openssh.settings.PermitRootLogin = "yes";
+        users.users.root = {
+          initialPassword = pkgs.lib.mkForce "root";
+          initialHashedPassword = pkgs.lib.mkForce null;
+        };
         users.users.orca = {
           initialPassword = pkgs.lib.mkForce "orca";
           initialHashedPassword = pkgs.lib.mkForce null;
         };
-        networking= {
+        networking = {
           useDHCP = pkgs.lib.mkForce true;
         };
       }
@@ -38,7 +43,22 @@
     # This should probably only evolve when the orca setup evolves as well
     ({ config, ... }@args:
       let
-        scripts = builtins.mapAttrs pkgs.writeShellScriptBin (import ./scripts (args // {inherit (pkgs) lib;}));
+        recordDir = ''${config.services.vault.storagePath}/orca/recordings'';
+        orca_user = config.users.users.orca;
+        all_scripts = import ./scripts (args // { inherit (pkgs) lib; inherit recordDir orca_user pkgs; });
+        custom_scripts = builtins.attrValues all_scripts.custom_scripts;
+        orca_user_scripts = builtins.attrValues all_scripts.orca_scripts.orca_user;
+        sudoer_scripts = builtins.attrValues all_scripts.orca_scripts.sudoer;
+        init-script = pkgs.writeShellScriptBin "init-script" ''
+          RECORD_DIR=${recordDir}
+          cp /var/lib/acme/.minica/cert.pem ${orca_user.home}/cert.pem
+          chown ${orca_user.name} ${orca_user.home}/cert.pem
+          mkdir -p $RECORD_DIR
+          chown -R ${orca_user.name} ${config.services.vault.storagePath}/orca
+
+          echo "Cvault : "
+          find ${config.services.vault.storagePath} -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum - | cut -d " " -f 1
+        '';
       in
       {
         options = with pkgs.lib; {
@@ -49,22 +69,40 @@
           };
         };
         config = {
-          environment={
+          assertions = 
+            let
+              script_names = builtins.map (p: p.name) sudoer_scripts;
+              allowed_scripts = [ "backup" "count-tokens" "seal" ];
+              unknown_scripts = pkgs.lib.lists.subtractLists allowed_scripts script_names;
+            in 
+          [
+            {
+              assertion = unknown_scripts == [];
+              message = ''These scripts are not confirmed as scripts that can be ran with sudo : ${pkgs.lib.strings.concatStringsSep ", " unknown_scripts}
+
+It is possible that they were saved in the wrong folder.
+
+If it should indeed be allowed to run as root, please double check them for security risk and then add it's name to the allowed_scripts above.
+              '';
+            }
+          ];
+          environment = {
             systemPackages = [
-            pkgs.vault
-            pkgs.jq
-            pkgs.gnupg
-            pkgs.coreutils
-            pkgs.qrencode
-          ]
-          ++ (builtins.attrValues scripts);
-        };
+              pkgs.vault
+              pkgs.jq
+              pkgs.gnupg
+              pkgs.coreutils
+              pkgs.qrencode
+            ]
+            ++ custom_scripts
+            ++ orca_user_scripts
+            ;
+          };
           system.stateVersion = pkgs.lib.trivial.release;
           users = {
             # Use less privileged orca user
             users.orca = {
               isNormalUser = true;
-              extraGroups = [ "wheel" ];
               initialHashedPassword = "";
             };
             # Allow the user to log in as root without a password.
@@ -75,11 +113,27 @@
           security = {
             # Don't require sudo/root to `reboot` or `poweroff`.
             polkit.enable = true;
-            # Allow passwordless sudo from orca user
-            sudo = {
-              enable = true;
-              wheelNeedsPassword = false;
-            };
+            # Allow passwordless sudo from orca user for the prepared and reviewed scripts
+            sudo =
+              {
+                enable = true;
+                extraRules = [
+                  {
+                    users = [ orca_user.name ];
+                    commands = (builtins.map
+                      (script: {
+                        command = "${pkgs.lib.getExe script}";
+                        options = [ "NOPASSWD" ];
+                      })
+                      sudoer_scripts) ++ [
+                      {
+                        command = "${pkgs.lib.getExe init-script}";
+                        options = [ "NOPASSWD" ];
+                      }
+                    ];
+                  }
+                ];
+              };
             acme = ({
               acceptTerms = true;
               defaults.email = "it@orca.com";
@@ -140,26 +194,15 @@
 
           # record everything that happens on the terminal
           programs.bash.loginShellInit = ''
-            RECORD_DIR=${config.services.vault.storagePath}/orca/recordings
+            RECORD_DIR=${recordDir}
             gpg --import ${./share_holders_keys/${config.orca.environment-target}}/* &> /dev/null
-
-            sudo cp /var/lib/acme/.minica/cert.pem ~/cert.pem
-            sudo chown orca ~/cert.pem
 
             export VAULT_ADDR="https://localhost:8200"
             export VAULT_CACERT=~/cert.pem
 
-            sudo mkdir -p $RECORD_DIR
-            sudo chown -R orca ${config.services.vault.storagePath}/orca
             if [ ! -e /tmp/cvault-displayed ]
             then
-              cd ${config.services.vault.storagePath}
-              echo "Cvault:"
-              sudo find . -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum -
-              cd
-
-              echo "Count tokens : "
-              count-tokens 2> /dev/null
+              sudo ${pkgs.lib.getExe init-script}
 
               echo "Waiting for vault to be available..."
               sleep 2
@@ -179,7 +222,7 @@
               experimental-features = [ "nix-command" "flakes" ];
             };
           };
-          networking= {
+          networking = {
             hostName = "orca-${config.orca.environment-target}";
             useDHCP = false;
           };
