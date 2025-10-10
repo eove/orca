@@ -5,6 +5,7 @@ let
   ];
   orca_protocol = all_scripts.orca_scripts.orca_user;
   ceremony_actions = pkgs.lib.strings.concatStringsSep "\n" (builtins.map (script: ''
+    set -e
     echo -e "Running O.R.CA custom action '${script.name}'\n"
     ${pkgs.lib.getExe script}
     confirm
@@ -27,8 +28,7 @@ let
     export VAULT_ADDR="https://localhost:8200"
     export VAULT_CACERT=~/cert.pem
     
-    # TODO the script header is creating issues here. Should be fixed with a root only getShare script
-    sudo ${pkgs.lib.getExe all_scripts.orca_scripts.sudoer.init-script}
+    ${pkgs.lib.getExe orca_protocol.init-script}
     
     echo "Waiting for vault to be available..."
     sleep 2
