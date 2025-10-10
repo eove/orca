@@ -48,7 +48,7 @@
         recordDir = ''${config.services.vault.storagePath}/recordings'';
         orcaDir = ''${config.services.vault.storagePath}/orca'';
         orca_user = config.users.users.orca;
-        all_scripts = import ./scripts (args // { inherit (pkgs) lib; inherit recordDir orca_user pkgs; });
+        all_scripts = import ./scripts (args // { inherit recordDir orca_user pkgs; });
         custom_scripts = builtins.attrValues all_scripts.custom_scripts;
         orca_user_scripts = builtins.attrValues all_scripts.orca_scripts.orca_user;
         sudoer_scripts = builtins.attrValues all_scripts.orca_scripts.sudoer;
@@ -61,9 +61,23 @@
           echo "Cvault : "
           find ${config.services.vault.storagePath} -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum - | cut -d " " -f 1
         '';
+  wipe_everything = pkgs.writeShellScriptBin "wipe_everything" ''
+    echo "Something went wrong"
+
+    echo "Sealing the vault"
+    seal
+
+    echo "Wiping everything"
+    ${pkgs.lib.getExe pkgs.wipe} -r ${config.services.vault.storagePath}/*
+
+    echo -e "\nPlease recreate the orca stick once the issue has been fixed\n"
+    '';
+
+        run_ceremony = pkgs.writeShellScriptBin "run_ceremony" (import ./run_ceremony.nix (args // { inherit (pkgs) lib; inherit orca_user pkgs all_scripts init-script wipe_everything; }));
+        # record everything that happens on the terminal
         su_record_session = pkgs.writeShellScriptBin "su_record_session" ''
           mkdir -p ${recordDir}
-          ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${recordDir}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} bash --noprofile --rcfile /etc/profile"
+          ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${recordDir}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} ${pkgs.lib.getExe run_ceremony}"
         '';
         record_session = pkgs.writeShellScriptBin "record_session" ''
           sudo ${pkgs.lib.getExe su_record_session}
@@ -145,6 +159,10 @@ If it should indeed be allowed to run as root, please double check them for secu
                         command = "${pkgs.lib.getExe su_record_session}";
                         options = [ "NOPASSWD" ];
                       }
+                      {
+                        command = "${pkgs.lib.getExe wipe_everything}";
+                        options = [ "NOPASSWD" ];
+                      }
                     ];
                   }
                 ];
@@ -206,31 +224,6 @@ If it should indeed be allowed to run as root, please double check them for secu
             earlySetup = true;
             useXkbConfig = true;
           };
-
-          # record everything that happens on the terminal
-          programs.bash.loginShellInit = ''
-            if [ "$USER" == "${orca_user.name}" ]
-            then
-              gpg --import ${./share_holders_keys/${config.orca.environment-target}}/* &> /dev/null
-
-              export VAULT_ADDR="https://localhost:8200"
-              export VAULT_CACERT=~/cert.pem
-
-              if [ ! -e /tmp/cvault-displayed ]
-              then
-                sudo ${pkgs.lib.getExe init-script}
-
-                echo "Waiting for vault to be available..."
-                sleep 2
-
-                echo "Vault status :"
-                vault status
-
-                touch /tmp/cvault-displayed
-              fi
-
-            fi
-          '';
 
           nix = {
             settings = {
