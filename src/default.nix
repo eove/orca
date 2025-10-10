@@ -12,11 +12,13 @@
     # Dev specific scripts
     ({ config, ... }: pkgs.lib.mkIf (config.orca.environment-target == "dev") (
       let
+        orca_user = config.users.users.orca;
         dev-scripts = builtins.mapAttrs pkgs.writeShellScriptBin {
           plug-simulated-yubikey = ''
-            rm -rf ~/.gnupg 2> /dev/null
-            cp -r ${./simulated-yubikeys}/yubikey''${1}@eove.fr/.gnupg/ ~/
-            chmod +w,og-rwx -R ~/.gnupg
+            rm -rf ${orca_user.home}/.gnupg 2> /dev/null
+            cp -r ${./simulated-yubikeys}/yubikey''${1}@eove.fr/.gnupg/ ${orca_user.home}/
+            chown -R ${orca_user.name}:${orca_user.group} ${orca_user.home}/.gnupg
+            chmod +w,og-rwx -R ${orca_user.home}/.gnupg
           '';
         };
       in
