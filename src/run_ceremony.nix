@@ -11,6 +11,7 @@ let
     confirm
     '') scripts_to_run_in_order);
   ceremony = pkgs.writeShellScriptBin "ceremony" ''
+    set -e
       function confirm(){
         echo ""
         while true ; do
