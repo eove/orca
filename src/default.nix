@@ -46,34 +46,13 @@
     ({ config, ... }@args:
       let
         recordDir = ''${config.services.vault.storagePath}/recordings'';
-        orcaDir = ''${config.services.vault.storagePath}/orca'';
         orca_user = config.users.users.orca;
         all_scripts = import ./scripts (args // { inherit recordDir orca_user pkgs; });
         custom_scripts = builtins.attrValues all_scripts.custom_scripts;
         orca_user_scripts = builtins.attrValues all_scripts.orca_scripts.orca_user;
         sudoer_scripts = builtins.attrValues all_scripts.orca_scripts.sudoer;
-        init-script = pkgs.writeShellScriptBin "init-script" ''
-          cp /var/lib/acme/.minica/cert.pem ${orca_user.home}/cert.pem
-          chown ${orca_user.name} ${orca_user.home}/cert.pem
-          mkdir -p ${orcaDir}
-          chown -R ${orca_user.name} ${orcaDir}
 
-          echo "Cvault : "
-          find ${config.services.vault.storagePath} -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum - | cut -d " " -f 1
-        '';
-  wipe_everything = pkgs.writeShellScriptBin "wipe_everything" ''
-    echo "Something went wrong"
-
-    echo "Sealing the vault"
-    seal
-
-    echo "Wiping everything"
-    ${pkgs.lib.getExe pkgs.wipe} -r ${config.services.vault.storagePath}/*
-
-    echo -e "\nPlease recreate the orca stick once the issue has been fixed\n"
-    '';
-
-        run_ceremony = pkgs.writeShellScriptBin "run_ceremony" (import ./run_ceremony.nix (args // { inherit (pkgs) lib; inherit orca_user pkgs all_scripts init-script wipe_everything; }));
+        run_ceremony = pkgs.writeShellScriptBin "run_ceremony" (import ./run_ceremony.nix (args // { inherit (pkgs) lib; inherit orca_user pkgs all_scripts; }));
         # record everything that happens on the terminal
         su_record_session = pkgs.writeShellScriptBin "su_record_session" ''
           mkdir -p ${recordDir}
@@ -95,7 +74,7 @@
           assertions = 
             let
               script_names = builtins.map (p: p.name) sudoer_scripts;
-              allowed_scripts = [ "backup" "count-tokens" "seal" ];
+              allowed_scripts = [ "backup" "count-tokens" "seal" "wipe_everything" "init-script" ];
               unknown_scripts = pkgs.lib.lists.subtractLists allowed_scripts script_names;
             in 
           [
@@ -152,15 +131,7 @@ If it should indeed be allowed to run as root, please double check them for secu
                       })
                       sudoer_scripts) ++ [
                       {
-                        command = "${pkgs.lib.getExe init-script}";
-                        options = [ "NOPASSWD" ];
-                      }
-                      {
                         command = "${pkgs.lib.getExe su_record_session}";
-                        options = [ "NOPASSWD" ];
-                      }
-                      {
-                        command = "${pkgs.lib.getExe wipe_everything}";
                         options = [ "NOPASSWD" ];
                       }
                     ];
