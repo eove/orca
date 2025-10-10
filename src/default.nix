@@ -47,9 +47,7 @@
       let
         recordDir = ''${config.services.vault.storagePath}/recordings'';
         orca_user = config.users.users.orca;
-        all_scripts = import ./scripts (args // { inherit recordDir orca_user pkgs; });
-        custom_scripts = builtins.attrValues all_scripts.custom_scripts;
-        orca_user_scripts = builtins.attrValues all_scripts.orca_scripts.orca_user;
+        all_scripts = import ./scripts (args // { inherit recordDir orca_user pkgs all_scripts; });
         sudoer_scripts = builtins.attrValues all_scripts.orca_scripts.sudoer;
 
         run_ceremony = pkgs.writeShellScriptBin "run_ceremony" (import ./run_ceremony.nix (args // { inherit (pkgs) lib; inherit orca_user pkgs all_scripts; }));
@@ -95,10 +93,7 @@ If it should indeed be allowed to run as root, please double check them for secu
               pkgs.gnupg
               pkgs.coreutils
               pkgs.qrencode
-            ]
-            ++ custom_scripts
-            ++ orca_user_scripts
-            ;
+            ];
           };
           system.stateVersion = pkgs.lib.trivial.release;
           users = {

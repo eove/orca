@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }@args:
+{ config, lib, pkgs, all_scripts, ... }@args:
 let
   filterAttr = f: attrs:
     let
@@ -84,10 +84,11 @@ let
           echo "This hardware token could not unlock any share" >&2
       }
     '';
+  count_tokens = lib.getExe all_scripts.orca_scripts.orca_user.count-tokens;
   vaultTokenHeader = ''
-    if [ "$(count-tokens 2> /dev/null)" != "0" ]
+    if [ "$(${count_tokens} 2> /dev/null)" != "0" ]
     then
-      echo "Warning: there are $(count-tokens) non-revoked tokens" >&2
+      echo "Warning: there are $(${count_tokens}) non-revoked tokens" >&2
     fi
 
     function get_root_token() {

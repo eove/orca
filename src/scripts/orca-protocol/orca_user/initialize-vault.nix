@@ -1,3 +1,5 @@
+{ all_scripts, pkgs, ...}:
+''
 if [ -z "$ENVIRONMENT_TARGET" ]; then
     echo "Expected environment variables : ENVIRONMENT_TARGET" >&2
     exit -1
@@ -30,6 +32,7 @@ export VAULT_TOKEN=$(echo "$JSON" | jq -r ".root_token")
 
 trap revoke INT QUIT TERM EXIT ABRT
 
-unseal
+${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.unseal}
 
 vault audit enable file file_path=$VAULT_STORAGE_PATH/audit.log
+''

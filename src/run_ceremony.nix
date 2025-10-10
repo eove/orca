@@ -14,7 +14,7 @@ let
       function confirm(){
         echo ""
         while true ; do
-          read -p "Is everything ok so far ?(y/n)" choice
+          read -p "Is everything ok so far ? (y/n) " choice
           case "$choice" in
             y|Y ) break;;
             n|N ) exit -1;;
@@ -42,10 +42,10 @@ let
     if [ "$STATUS" == "true" ]
     then
       echo "Unsealing the vault :"
-      unseal 
+      ${pkgs.lib.getExe orca_protocol.unseal}
     else
       echo "Initializing the vault :"
-      initialize-vault 
+      ${pkgs.lib.getExe orca_protocol.initialize-vault}
     fi
     
     confirm
@@ -53,15 +53,16 @@ let
     ${ceremony_actions}
 
     echo "Sealing the vault :"
-    seal
+    ${pkgs.lib.getExe orca_protocol.seal}
+    echo "Done"
 
     echo "Counting left over tokens :"
-    count-tokens
+    ${pkgs.lib.getExe orca_protocol.count-tokens}
 
     confirm
 
     echo "Creating backup :"
-    backup
+    ${pkgs.lib.getExe orca_protocol.backup}
 
     confirm
 '';

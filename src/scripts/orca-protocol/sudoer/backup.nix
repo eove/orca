@@ -1,7 +1,7 @@
-{ config, ... }:
+{ config, all_scripts,pkgs,... }:
 ''
 set -e
-seal
+${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.seal}
 VAULT_STORAGE_PATH=${config.services.vault.storagePath}
 cd $VAULT_STORAGE_PATH
 mv audit.log audit_$(date +%F_%T).log
