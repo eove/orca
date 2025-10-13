@@ -44,7 +44,7 @@
     # This should probably only evolve when the orca setup evolves as well
     ({ config, ... }@args:
       let
-        recordDir = ''${config.environment.variables.ORCA_FOLDER}/recordings'';
+        recordDir = config.environment.variables.RECORDINGS_FOLDER;
         orca_user = config.users.users.orca;
         all_scripts = import ./scripts (args // { inherit orca_user pkgs all_scripts; });
         user_scripts_names = builtins.map (s: s.name) (builtins.attrValues all_scripts.custom_scripts);
@@ -96,6 +96,7 @@ If it should indeed be allowed to run as root, please double check them for secu
               ORCA_FOLDER="${VAULT_STORAGE_PATH}/orca";
             in {
               inherit ENVIRONMENT_TARGET VAULT_STORAGE_PATH ORCA_FOLDER;
+              RECORDINGS_FOLDER = "${ORCA_FOLDER}/recordings";
               VAULT_ADDR="https://localhost:8200";
               VAULT_CACERT="${orca_user.home}/cert.pem";
               PUBLIC_KEYS_FOLDER="${./share_holders_keys/${config.orca.environment-target}}";
