@@ -13,7 +13,4 @@ in
   chown -R ${orca_user.name} ${AIA_FOLDER}
   mkdir -p ${CERTIFICATE_FOLDER}
   chown -R ${orca_user.name} ${CERTIFICATE_FOLDER}
-
-  echo "Cvault : "
-  find ${config.services.vault.storagePath} -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum - | cut -d " " -f 1
 ''

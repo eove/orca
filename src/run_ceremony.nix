@@ -2,6 +2,8 @@
 let
   scripts_to_run_in_order = builtins.map (name: all_scripts.custom_scripts."${name}") config.orca.actions_in_order;
   orca_protocol = all_scripts.orca_scripts.orca_user;
+  computeCVault = pkgs.lib.getExe all_scripts.orca_scripts.orca_user.compute_c_vault;
+  count_tokens = pkgs.lib.getExe all_scripts.orca_scripts.orca_user.count-tokens;
   ceremony_actions = pkgs.lib.strings.concatStringsSep "\n" (builtins.map (script: ''
     set -e
     echo -e "Running O.R.CA custom action '${script.name}'\n"
@@ -29,7 +31,13 @@ let
 
     ${pkgs.lib.getExe orca_protocol.init-script}
     
-    echo "Waiting for vault to be available..."
+    echo "Cvault : "
+    ${computeCVault}
+
+    echo -e "\nExisting tokens : "
+    ${count_tokens}
+
+    echo -e "\nWaiting for vault to be available..."
     sleep 2
     
     echo "Vault status :"

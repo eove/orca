@@ -75,7 +75,7 @@
           assertions = 
             let
               script_names = builtins.map (p: p.name) sudoer_scripts;
-              allowed_scripts = [ "backup" "count-tokens" "seal" "wipe_everything" "init-script" "get_root_token" "rotate-seal-shares" "unseal" "save_shares_from_json"];
+              allowed_scripts = [ "backup" "count-tokens" "seal" "wipe_everything" "init-script" "get_root_token" "rotate-seal-shares" "unseal" "save_shares_from_json" "compute_c_vault" ];
               unknown_scripts = pkgs.lib.lists.subtractLists allowed_scripts script_names;
             in 
           [
