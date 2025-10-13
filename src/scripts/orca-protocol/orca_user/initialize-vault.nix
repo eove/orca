@@ -1,8 +1,10 @@
-{ config, all_scripts, pkgs, ...}:
+{ config, all_scripts, lib, ...}:
 let
   inherit (config.environment.variables) SHARES_FOLDER PUBLIC_KEYS_FOLDER;
-  unseal = pkgs.lib.getExe all_scripts.orca_scripts.orca_user.unseal;
+  unseal = lib.getExe all_scripts.orca_scripts.orca_user.unseal;
+  save_shares_from_json = lib.getExe all_scripts.orca_scripts.orca_user.save_shares_from_json;
 in ''
+set -e
 THRESHOLD=3
 
 PUBLIC_KEYS_FILES=$(find ${PUBLIC_KEYS_FOLDER} -type f | grep -v '\.gitignore')
@@ -12,10 +14,7 @@ NB_SHARES=$(ls -d "${PUBLIC_KEYS_FOLDER}"/* | wc -l)
 echo -n "Initializing vault..."
 JSON="$(vault operator init -format "json" -key-shares $NB_SHARES -key-threshold $THRESHOLD -pgp-keys $PUBLIC_KEYS)"
 
-for i in $(seq 0 $(($NB_SHARES - 1)));
-do
-    echo "$JSON" | jq -r ".unseal_keys_b64[$i]" > ${SHARES_FOLDER}/share-$i.base64 
-done
+echo $JSON | jq -r ".unseal_keys_b64" | ${save_shares_from_json}
 echo " done"
 
 export VAULT_TOKEN=$(echo "$JSON" | jq -r ".root_token")

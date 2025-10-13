@@ -27,12 +27,7 @@
         services.openssh.enable = pkgs.lib.mkForce true;
         services.openssh.settings.PermitRootLogin = "yes";
         users.users.root = {
-          initialPassword = pkgs.lib.mkForce "root";
-          initialHashedPassword = pkgs.lib.mkForce null;
-        };
-        users.users.orca = {
-          initialPassword = pkgs.lib.mkForce "orca";
-          initialHashedPassword = pkgs.lib.mkForce null;
+          openssh.authorizedKeys.keyFiles = [../testing/root_key.pub];
         };
         networking = {
           useDHCP = pkgs.lib.mkForce true;
@@ -71,7 +66,7 @@
           assertions = 
             let
               script_names = builtins.map (p: p.name) sudoer_scripts;
-              allowed_scripts = [ "backup" "count-tokens" "seal" "wipe_everything" "init-script" "get_root_token" "rotate-seal-shares" "unseal"];
+              allowed_scripts = [ "backup" "count-tokens" "seal" "wipe_everything" "init-script" "get_root_token" "rotate-seal-shares" "unseal" "save_shares_from_json"];
               unknown_scripts = pkgs.lib.lists.subtractLists allowed_scripts script_names;
             in 
           [
