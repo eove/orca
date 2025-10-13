@@ -1,4 +1,7 @@
-#!/usr/bin/env bash
+{lib, all_scripts,...}:
+let
+  get_share = lib.getExe all_scripts.orca_scripts.root_only.get_share;
+in ''
 set -e
 set -o pipefail
 
@@ -12,11 +15,6 @@ if [ -z "$PUBLIC_KEYS_FOLDER" ]; then
 fi
 if [ -z "$SHARES_FOLDER" ]; then
     echo "Expected environment variables : SHARES_FOLDER" >&2
-    exit -1
-fi
-if ! type -t get_share 2>/dev/null; then
-    echo "get_share() not found" >&2
-    echo "It is usually inserted by nix at build when creating images, but you will also find this function definition in the O.R.CA repository" >&2
     exit -1
 fi
 
@@ -38,14 +36,14 @@ while [ $(vault operator rekey -status -format=json | jq -r '.started') == "true
 do
     STATUS=$(vault operator rekey -status -format=json)
     echo "Root rekey status: $(echo $STATUS | jq -r '.progress') / $(echo $STATUS | jq -r '.required')" >&2
-    SHARE=$(get_share)
+    SHARE=$(${get_share})
     if [ -n "$SHARE" ]
     then
         REKEY_JSON=$(vault operator rekey -format=json $VERIFY -nonce="$NONCE" "$SHARE")
         if [ $(echo $REKEY_JSON | jq -r '.complete') == "true" ]
         then
             VERIFY_NONCE=$(echo "$REKEY_JSON" | jq -r ".verification_nonce")
-            mv $SHARES_FOLDER ${SHARES_FOLDER}.bak
+            mv $SHARES_FOLDER $${SHARES_FOLDER}.bak
             mkdir -p $SHARES_FOLDER
             for i in $(seq 0 $(($NB_SHARES - 1)));
             do
@@ -55,7 +53,7 @@ do
     fi
 done
 
-echo "Rekeying done, we are going to validate ${NB_SHARES} keys." >&2
+echo "Rekeying done, we are going to validate $${NB_SHARES} keys." >&2
 
 while [ $(vault operator rekey -status -format=json | jq -r '.started') == "true" ]
 do
@@ -68,5 +66,6 @@ do
     fi
 done
 
-rm -rf ${SHARES_FOLDER}.bak
+rm -rf $${SHARES_FOLDER}.bak
 echo "Rotation done"
+''

@@ -12,13 +12,11 @@
     # Dev specific scripts
     ({ config, ... }: pkgs.lib.mkIf (config.orca.environment-target == "dev") (
       let
-        orca_user = config.users.users.orca;
         dev-scripts = builtins.mapAttrs pkgs.writeShellScriptBin {
           plug-simulated-yubikey = ''
-            rm -rf ${orca_user.home}/.gnupg 2> /dev/null
-            cp -r ${./simulated-yubikeys}/yubikey''${1}@eove.fr/.gnupg/ ${orca_user.home}/
-            chown -R ${orca_user.name}:${orca_user.group} ${orca_user.home}/.gnupg
-            chmod +w,og-rwx -R ${orca_user.home}/.gnupg
+            rm -rf ~/.gnupg 2> /dev/null
+            cp -r ${./simulated-yubikeys}/yubikey''${1}@eove.fr/.gnupg/ ~
+            chmod +w,og-rwx -R ~/.gnupg
           '';
         };
       in
@@ -46,8 +44,9 @@
     ({ config, ... }@args:
       let
         recordDir = ''${config.services.vault.storagePath}/recordings'';
+        share_holders_keys = "${./share_holders_keys/${config.orca.environment-target}}"; 
         orca_user = config.users.users.orca;
-        all_scripts = import ./scripts (args // { inherit recordDir orca_user pkgs all_scripts; });
+        all_scripts = import ./scripts (args // { inherit recordDir orca_user pkgs all_scripts share_holders_keys; });
         sudoer_scripts = builtins.attrValues all_scripts.orca_scripts.sudoer;
 
         run_ceremony = pkgs.writeShellScriptBin "run_ceremony" (import ./run_ceremony.nix (args // { inherit (pkgs) lib; inherit orca_user pkgs all_scripts; }));
@@ -72,7 +71,7 @@
           assertions = 
             let
               script_names = builtins.map (p: p.name) sudoer_scripts;
-              allowed_scripts = [ "backup" "count-tokens" "seal" "wipe_everything" "init-script" ];
+              allowed_scripts = [ "backup" "count-tokens" "seal" "wipe_everything" "init-script" "get_root_token" "rotate-seal-shares" "unseal"];
               unknown_scripts = pkgs.lib.lists.subtractLists allowed_scripts script_names;
             in 
           [
@@ -87,6 +86,10 @@ If it should indeed be allowed to run as root, please double check them for secu
             }
           ];
           environment = {
+            variables = {
+              VAULT_ADDR="https://localhost:8200";
+              VAULT_CACERT="${orca_user.home}/cert.pem";
+            };
             systemPackages = [
               pkgs.vault
               pkgs.jq
@@ -116,6 +119,9 @@ If it should indeed be allowed to run as root, please double check them for secu
             sudo =
               {
                 enable = true;
+                extraConfig = ''
+                  Defaults env_keep += "VAULT_ADDR VAULT_CACERT"
+                '';
                 extraRules = [
                   {
                     users = [ orca_user.name ];

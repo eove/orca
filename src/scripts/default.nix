@@ -39,78 +39,15 @@ let
       export SHARES_FOLDER="$ORCA_FOLDER/shares/$ENVIRONMENT_TARGET"
       export AIA_FOLDER="$ORCA_FOLDER/aia/$ENVIRONMENT_TARGET"
       export CERTIFICATE_FOLDER="$ORCA_FOLDER/certificates/$ENVIRONMENT_TARGET"
-
-      function revoke() {
-        echo "Revoking root token..." >&2
-        if [ -n "$VAULT_TOKEN" ]
-        then
-          vault token revoke $VAULT_TOKEN
-        fi
-      }
-
-      function get_share() {
-          pkill gpg-agent || true
-          echo "Next share holder, please plug your hardware token and press enter" >&2
-          read -s
-              ${ if config.orca.environment-target == "dev" then ''
-          ID=$(gpg --list-keys --keyid-format 0xlong | grep "cv25519/" | sed -E -e 's|.*cv25519/0x([^ ]+).*|\1|')
-              '' else ''
-          while ! gpg --card-status &> /dev/null
-          do
-            pkill gpg-agent || true
-            sleep 1
-          done
-          ID=$(gpg --card-status --keyid-format 0xlong | grep "cv25519/" | sed -E -e 's|.*cv25519/0x([^ ]+).*|\1|')
-            ''}
-
-          if [ -n "$ID" ]
-          then
-            for share_file in $SHARES_FOLDER/*
-            do
-              if cat "$share_file" | base64 -d | gpg --pinentry-mode cancel --no-default-keyring --keyid-format=0xlong --list-packets 2>&1 | grep "ID 0x$ID" > /dev/null
-              then
-                echo "When asked for a passphrase, please enter the PIN of your hardware token" >&2
-                SHARE=$(cat "$share_file" | base64 -d | gpg -d --pinentry-mode loopback  2> /dev/null)
-
-                if [ "$?" -eq 0 ] 
-                then
-                    echo "Found a share unlocked by this hardware token" >&2
-                    echo "$SHARE"
-                    return 0
-                fi
-              fi
-            done
-          fi
-          echo "This hardware token could not unlock any share" >&2
-      }
     '';
   count_tokens = lib.getExe all_scripts.orca_scripts.orca_user.count-tokens;
+  get_root_token = lib.getExe all_scripts.orca_scripts.orca_user.get_root_token;
   vaultTokenHeader = ''
-    if [ "$(${count_tokens} 2> /dev/null)" != "0" ]
-    then
-      echo "Warning: there are $(${count_tokens}) non-revoked tokens" >&2
-    fi
-
-    function get_root_token() {
-      INIT_JSON=$(vault operator generate-root -init -format=json)
-      OTP=$(echo $INIT_JSON | jq -r '.otp')
-      NONCE=$(echo $INIT_JSON | jq -r '.nonce')
-      while [ $(vault operator generate-root -status -format=json | jq -r '.started') == "true" ]
-      do
-       STATUS=$(vault operator generate-root -status -format=json)
-       echo "Root token generation status: $(echo $STATUS | jq -r '.progress') / $(echo $STATUS | jq -r '.required')" >&2
-       SHARE=$(get_share)
-       if [ -n "$SHARE" ]
-       then
-         GENERATE_JSON=$(vault operator generate-root -format=json -nonce="$NONCE" "$SHARE")
-         if [ "$(echo $GENERATE_JSON | jq -r '.complete')" == "true" ]
-         then
-             echo $GENERATE_JSON | jq -r '.encoded_root_token' | vault operator generate-root -otp="$OTP" -decode -
-         fi
-       fi
-      done
-    }
-    export VAULT_TOKEN=$(get_root_token)
+    export VAULT_TOKEN=$(${get_root_token})
+      function revoke() {
+        echo "Revoking root token..." >&2
+        vault token revoke $VAULT_TOKEN
+      }
     trap revoke INT QUIT TERM EXIT ABRT
   '';
   createScript = (n: v: pkgs.writeShellScriptBin n (scriptHeader + v));
@@ -122,6 +59,7 @@ in
   );
   orca_scripts = rec {
     sudoer = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts ./orca-protocol/sudoer);
+    root_only = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts ./orca-protocol/root_only);
     orca_user = builtins.mapAttrs createScript (
       (packageScripts ./orca-protocol/orca_user) //
       (wrapSudoerScript sudoer)

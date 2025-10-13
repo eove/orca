@@ -12,6 +12,7 @@ let
     '') scripts_to_run_in_order);
   ceremony = pkgs.writeShellScriptBin "ceremony" ''
     set -e
+    source /etc/profile
       function confirm(){
         echo ""
         while true ; do
@@ -24,28 +25,25 @@ let
         done
         echo ""
       }
-    gpg --import ${./share_holders_keys/${config.orca.environment-target}}/* &> /dev/null
     
-    export VAULT_ADDR="https://localhost:8200"
-    export VAULT_CACERT=~/cert.pem
-    
+    export VAULT_ADDR
+    export VAULT_CACERT
+
     ${pkgs.lib.getExe orca_protocol.init-script}
     
     echo "Waiting for vault to be available..."
     sleep 2
     
     echo "Vault status :"
-    vault status
+    vault status || true
     
     confirm
     
-    STATUS="$(vault status -format "json" | jq -r .initialized)"
+    STATUS="$($(vault status -format "json" | jq -r .initialized) || true)"
     if [ "$STATUS" == "true" ]
     then
-      echo "Unsealing the vault :"
       ${pkgs.lib.getExe orca_protocol.unseal}
     else
-      echo "Initializing the vault :"
       ${pkgs.lib.getExe orca_protocol.initialize-vault}
     fi
     

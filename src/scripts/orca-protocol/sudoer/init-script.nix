@@ -1,9 +1,10 @@
-{ config, pkgs, orca_user, ...}:
+{ config, pkgs, orca_user, share_holders_keys,...}:
 let
     orcaDir = "${config.services.vault.storagePath}/orca";
     env = config.orca.environment-target;
 in
 ''
+gpg --import ${share_holders_keys}/* &> /dev/null
 cp /var/lib/acme/.minica/cert.pem ${orca_user.home}/cert.pem
 chown ${orca_user.name} ${orca_user.home}/cert.pem
 mkdir -p ${orcaDir}

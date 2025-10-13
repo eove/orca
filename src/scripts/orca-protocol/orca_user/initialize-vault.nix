@@ -30,6 +30,11 @@ echo " done"
 
 export VAULT_TOKEN=$(echo "$JSON" | jq -r ".root_token")
 
+function revoke() {
+  echo "Revoking root token..." >&2
+  vault token revoke $VAULT_TOKEN
+}
+
 trap revoke INT QUIT TERM EXIT ABRT
 
 ${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.unseal}
