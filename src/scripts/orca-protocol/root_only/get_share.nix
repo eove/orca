@@ -1,7 +1,7 @@
 {config, all_scripts, ...}:
 let
   env = config.orca.environment-target;
-  shares_folder = "${config.services.vault.storagePath}/orca/shares/${env}";
+  shares_folder = config.environment.variables.SHARES_FOLDER;
 in ''
 pkill gpg-agent || true
 echo "Next share holder, please plug your hardware token and press enter" >&2

@@ -86,9 +86,18 @@ If it should indeed be allowed to run as root, please double check them for secu
             }
           ];
           environment = {
-            variables = {
+            variables = let
+              ENVIRONMENT_TARGET=config.orca.environment-target;
+              VAULT_STORAGE_PATH=config.services.vault.storagePath;
+              ORCA_FOLDER="${VAULT_STORAGE_PATH}/orca";
+            in {
+              inherit ENVIRONMENT_TARGET VAULT_STORAGE_PATH ORCA_FOLDER;
               VAULT_ADDR="https://localhost:8200";
               VAULT_CACERT="${orca_user.home}/cert.pem";
+              PUBLIC_KEYS_FOLDER="${./share_holders_keys/${config.orca.environment-target}}";
+              SHARES_FOLDER="${ORCA_FOLDER}/shares/${ENVIRONMENT_TARGET}";
+              AIA_FOLDER="${ORCA_FOLDER}/aia/${ENVIRONMENT_TARGET}";
+              CERTIFICATE_FOLDER="${ORCA_FOLDER}/certificates/${ENVIRONMENT_TARGET}";
             };
             systemPackages = [
               pkgs.vault
