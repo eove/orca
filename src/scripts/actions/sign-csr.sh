@@ -30,4 +30,4 @@ vault write -format=json ${PKI_NAME}/root/sign-intermediate \
     ttl=${TTL} \
     | jq -r '.data.certificate' > $CERTIFICATE_FILE
 
-echo "$CERTIFICATE_FILE"
+echo -e "\nSigned certificate can be found at $CERTIFICATE_FILE\n"

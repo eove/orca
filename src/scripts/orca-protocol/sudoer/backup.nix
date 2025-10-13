@@ -16,5 +16,5 @@ in
   echo "Cvault: $C_VAULT" | qrencode -t utf8 -i
   echo "Cvault: $C_VAULT"
 
-  mv $VAULT_BACKUP ${VAULT_STORAGE_PATH}
+  mv $VAULT_BACKUP ${ORCA_FOLDER}
 ''

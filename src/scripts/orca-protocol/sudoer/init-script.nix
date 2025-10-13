@@ -1,10 +1,10 @@
-{ config, pkgs, orca_user, share_holders_keys, ... }:
+{ config, pkgs, orca_user, ... }:
 let
-  inherit (config.environment.variables) SHARES_FOLDER AIA_FOLDER CERTIFICATE_FOLDER ORCA_FOLDER;
+  inherit (config.environment.variables) SHARES_FOLDER AIA_FOLDER CERTIFICATE_FOLDER ORCA_FOLDER PUBLIC_KEYS_FOLDER;
 in
 ''
   set -e
-  gpg --import ${share_holders_keys}/* &> /dev/null
+  gpg --import ${PUBLIC_KEYS_FOLDER}/* &> /dev/null
   cp /var/lib/acme/.minica/cert.pem ${orca_user.home}/cert.pem
   chown ${orca_user.name} ${orca_user.home}/cert.pem
   mkdir -p ${ORCA_FOLDER}

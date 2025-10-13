@@ -43,10 +43,9 @@
     # This should probably only evolve when the orca setup evolves as well
     ({ config, ... }@args:
       let
-        recordDir = ''${config.services.vault.storagePath}/recordings'';
-        share_holders_keys = "${./share_holders_keys/${config.orca.environment-target}}"; 
+        recordDir = ''${config.environment.variables.ORCA_FOLDER}/recordings'';
         orca_user = config.users.users.orca;
-        all_scripts = import ./scripts (args // { inherit recordDir orca_user pkgs all_scripts share_holders_keys; });
+        all_scripts = import ./scripts (args // { inherit orca_user pkgs all_scripts; });
         user_scripts_names = builtins.map (s: s.name) (builtins.attrValues all_scripts.custom_scripts);
         sudoer_scripts = builtins.attrValues all_scripts.orca_scripts.sudoer;
 
