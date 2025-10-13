@@ -8,9 +8,10 @@
       orca = {
         environment-target = "dev";
         actions_in_order = [
-          "create-root-CA"
-          "create-intermediate-CA"  
-          "sign-csr"
+#          "create-root-CA"
+#          "create-intermediate-CA"  
+#          "sign-csr"
+#           "rotate_shares"
       ];
       };
     })

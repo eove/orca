@@ -37,7 +37,7 @@ let
     
     confirm
     
-    STATUS="$($(vault status -format "json" | jq -r .initialized) || true)"
+    STATUS=$(vault status -format "json" | jq -r .initialized)
     if [ "$STATUS" == "true" ]
     then
       ${pkgs.lib.getExe orca_protocol.unseal}
