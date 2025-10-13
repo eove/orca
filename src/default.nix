@@ -7,6 +7,7 @@
     ({ config, ... }: {
       orca = {
         environment-target = "dev";
+        actions_in_order = ["create-root-CA"];
       };
     })
     # Dev specific scripts
@@ -42,6 +43,7 @@
         share_holders_keys = "${./share_holders_keys/${config.orca.environment-target}}"; 
         orca_user = config.users.users.orca;
         all_scripts = import ./scripts (args // { inherit recordDir orca_user pkgs all_scripts share_holders_keys; });
+        user_scripts_names = builtins.map (s: s.name) (builtins.attrValues all_scripts.custom_scripts);
         sudoer_scripts = builtins.attrValues all_scripts.orca_scripts.sudoer;
 
         run_ceremony = pkgs.writeShellScriptBin "run_ceremony" (import ./run_ceremony.nix (args // { inherit (pkgs) lib; inherit orca_user pkgs all_scripts; }));
@@ -59,6 +61,9 @@
           orca = {
             environment-target = mkOption {
               type = with types; enum [ "dev" "preprod" "prod" ];
+            };
+            actions_in_order = mkOption {
+              type = with types; listOf (strMatching (pkgs.lib.strings.concatStringsSep "|"  user_scripts_names));
             };
           };
         };

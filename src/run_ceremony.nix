@@ -1,8 +1,6 @@
 { config, all_scripts, pkgs,... }:
 let
-  scripts_to_run_in_order = with (all_scripts.custom_scripts); [ 
-    create-root-CA
-  ];
+  scripts_to_run_in_order = builtins.map (name: all_scripts.custom_scripts."${name}") config.orca.actions_in_order;
   orca_protocol = all_scripts.orca_scripts.orca_user;
   ceremony_actions = pkgs.lib.strings.concatStringsSep "\n" (builtins.map (script: ''
     set -e
