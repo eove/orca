@@ -7,7 +7,11 @@
     ({ config, ... }: {
       orca = {
         environment-target = "dev";
-        actions_in_order = ["create-root-CA"];
+        actions_in_order = [
+          "create-root-CA"
+          "create-intermediate-CA"  
+          "sign-csr"
+      ];
       };
     })
     # Dev specific scripts

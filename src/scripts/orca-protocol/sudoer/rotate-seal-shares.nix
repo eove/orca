@@ -40,7 +40,7 @@ in
       fi
   done
 
-  echo "Rekeying done, we are going to validate $NB_SHARES keys." >&2
+  echo -e "\nRekeying done, we are going to validate $NB_SHARES keys.\n" >&2
 
   while [ $(vault operator rekey -status -format=json | jq -r '.started') == "true" ]
   do

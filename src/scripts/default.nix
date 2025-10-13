@@ -27,7 +27,7 @@ let
   ];
   wrapSudoerScript = scripts: builtins.mapAttrs (acc: script: ''sudo ${pkgs.lib.getExe script}'') scripts;
 
-  packageAuthenticatedScripts = dir: builtins.mapAttrs (n: v: vaultTokenHeader + v) (packageScripts dir);
+  packageAuthenticatedScripts = dir: builtins.mapAttrs (n: v: if n == "rotate_shares" then v else vaultTokenHeader + v) (packageScripts dir);
 
   count_tokens = lib.getExe all_scripts.orca_scripts.orca_user.count-tokens;
   get_root_token = lib.getExe all_scripts.orca_scripts.orca_user.get_root_token;
@@ -41,7 +41,7 @@ let
   '';
 in
 {
-  custom_scripts = builtins.mapAttrs pkgs.writeShellScriptBin (packageAuthenticatedScripts ./authenticated);
+  custom_scripts = builtins.mapAttrs pkgs.writeShellScriptBin (packageAuthenticatedScripts ./actions);
   orca_scripts = rec {
     sudoer = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts ./orca-protocol/sudoer);
     root_only = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts ./orca-protocol/root_only);
