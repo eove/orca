@@ -210,7 +210,7 @@ If it should indeed be allowed to run as root, please double check them for secu
           isoImage = {
             squashfsCompression = "gzip -Xcompression-level 1";
             volumeID = "${config.isoImage.isoBaseName}";
-            isoBaseName = "orca-${config.orca.environment-target}";
+            isoBaseName = pkgs.lib.mkForce "orca-${config.orca.environment-target}";
             makeEfiBootable = true;
             makeUsbBootable = true;
             appendToMenuLabel = "";
