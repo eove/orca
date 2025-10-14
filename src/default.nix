@@ -67,7 +67,7 @@
               type = with types; enum [ "dev" "preprod" "prod" ];
             };
             actions_in_order = mkOption {
-              type = with types; listOf (strMatching (pkgs.lib.strings.concatStringsSep "|"  user_scripts_names));
+              type = with types; listOf (enum user_scripts_names);
             };
           };
         };
