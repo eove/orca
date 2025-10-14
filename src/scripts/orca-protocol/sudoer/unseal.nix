@@ -4,7 +4,7 @@ let
 in
 ''
   set -e
-  echo "Unsealing the vault !"
+  echo "Unsealing the vault !" >&2
   while [ $(vault status -format=json | jq -r '.sealed') == "true" ]
   do
       STATUS=$(vault status -format=json || true)

@@ -27,21 +27,9 @@ let
   ];
   wrapSudoerScript = scripts: builtins.mapAttrs (acc: script: ''sudo ${pkgs.lib.getExe script}'') scripts;
 
-  packageAuthenticatedScripts = dir: builtins.mapAttrs (n: v: if n == "rotate_shares" then v else vaultTokenHeader + v) (packageScripts dir);
-
-  count_tokens = lib.getExe all_scripts.orca_scripts.orca_user.count-tokens;
-  get_root_token = lib.getExe all_scripts.orca_scripts.orca_user.get_root_token;
-  vaultTokenHeader = ''
-    export VAULT_TOKEN=$(${get_root_token})
-    function revoke() {
-      echo "Revoking root token..." >&2
-      vault token revoke $VAULT_TOKEN
-    }
-    trap revoke INT QUIT TERM EXIT ABRT
-  '';
 in
 {
-  custom_scripts = builtins.mapAttrs pkgs.writeShellScriptBin (packageAuthenticatedScripts ./actions);
+  custom_scripts = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts ./actions);
   orca_scripts = rec {
     sudoer = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts ./orca-protocol/sudoer);
     root_only = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts ./orca-protocol/root_only);

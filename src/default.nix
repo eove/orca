@@ -7,12 +7,12 @@
     ({ config, ... }: {
       orca = {
         environment-target = "dev";
-        latest_cvault = "11cd4c0564fe0ee94421cec87de50a0f28048ba82571b1cf4946578d6dc8bbcd";
+        latest_cvault = null;
         rotate_keys = false;
         actions_in_order = [
-          #"create-root-CA"
-          #"create-intermediate-CA"  
-          #"sign-csr"
+          "create-root-CA"
+          "create-intermediate-CA"  
+          "sign-csr"
           #"revoke-certificate"
         ];
       };

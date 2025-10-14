@@ -12,7 +12,7 @@ in
   PUBLIC_KEYS=$(echo -e $PUBLIC_KEYS_FILES | tr ' ' ',')
   NB_SHARES=$(ls -d "${PUBLIC_KEYS_FOLDER}"/* | wc -l)
 
-  echo -n "Initializing vault..."
+  echo -n "Initializing vault..." >&2
   JSON="$(vault operator init -format "json" -key-shares $NB_SHARES -key-threshold $THRESHOLD -pgp-keys $PUBLIC_KEYS)"
 
   echo $JSON | jq -r ".unseal_keys_b64" | ${save_shares_from_json}

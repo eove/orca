@@ -76,11 +76,27 @@ let
       exit -1
     fi
 
+    cat << EOF
+
+Here is the ceremony plan :
+- ${if expect_initialized then "Unseal the vault" else "Initialise the vault"}
+${if rotate_keys then ''- Rotate the vault keys
+'' else ""}- Get a root token
+${pkgs.lib.strings.concatStringsSep "\n" (builtins.map
+    (script: ''- Run ${script.name} '')
+    scripts_to_run_in_order)}- Revoke the root token
+- Seal the vault
+- Validate that no root token is left
+- Backup everything
+- Poweroff the computer
+EOF
+
     confirm
     
     ${pkgs.lib.getExe (with orca_protocol; if expect_initialized then unseal else initialize-vault)}
 
     confirm
+
 
     ${if rotate_keys then ''
       echo "Rotating the keys :"
@@ -88,7 +104,24 @@ let
       confirm
     '' else ""}
 
+    cat << EOF
+I am going to get a root token in order to run the following scripts :
+${pkgs.lib.strings.concatStringsSep "\n" (builtins.map
+    (script: ''- ${script.name} '')
+    scripts_to_run_in_order)}
+
+The root token will be revoked right after that.
+EOF
+
+    confirm
+
+    echo "Getting a root token :"
+    export VAULT_TOKEN=$(${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.get_root_token})
+
     ${ceremony_actions}
+
+    echo "Revoking the root token :"
+    vault token revoke $VAULT_TOKEN
 
     echo "Sealing the vault :"
     ${pkgs.lib.getExe orca_protocol.seal}
