@@ -45,9 +45,13 @@ This whole chapter has to be done *before* the day of the ceremony.
 
 The 📢`organiser` should communicate to all 👥`team members` the list of operations (and therefore scripts) that will be performed during the ceremony. The aforementionned scripts should be commited to the `src/scripts/` directory of this repository prior to the verification phase.
 
-#### Selecting the vault environment
+#### Configuring the ceremony
 
 The 📢`organiser` should know which environment will be worked on (`prod`/`preprod`), modify the value of `orca.environment-target` in [src/default.nix](../../src/default.nix) accordingly, and notify this environment to all 👥`team members`.
+
+The 📢`organiser` should get the value of the cvault present in the last report and set the value of `orca.latest_cvault` in [src/default.nix](../../src/default.nix) accordingly. If the ceremony is the first one for this environment, then `null` should be set.
+
+The 📢`organiser` should know what should be done during the ceremony and set the values of `orca.actions_in_order` and `orca.rotate_keys` in [src/default.nix](../../src/default.nix) accordingly.
 
 #### Updating the version of the offline vault
 
@@ -122,8 +126,8 @@ git diff <previous ceremony trusted commit> src/
 ```
 
 > [!Important]  
-> * The environment (prod/preprod) that has been [selected when organising the ceremony](#selecting-the-vault-environment) should be verified.
-> * All content within `src/` should only reference files also within `src/`.
+> * The only changes you see should be in the orca's nix configuration and in the actions scripts.
+> * The ceremony's configuration (environment, cvault, etc…) that [has been set by the 📢`organiser`](#configuring-the-ceremony) should be verified.
 > * Any change displayed by the diff should be considered legitimate to you.
 > * During this step, 👥`team members` will also review and understand all the scripts that are planned for execution during the ceremony.
 > * Scripts should never ask the offline topmost root CA to sign anything that doesn't strictly remains in the offline vault (no external CSR).
@@ -189,8 +193,8 @@ These 3 persons should be **physically present during the whole ceremony**, and 
    This person should be [randomly](https://www.random.org/lists/) picked among all share holders except the two other 👥`team members`. The random draw will be performed by either the 💻`operator` or 📝`reporter`.\
    The 👀`observer` will lend their computer to run the *ephemeral vault*. This machine must have a Linux x86_64 OS installed.\
    They must be sitting next to the 💻`operator`. Gets the validated ceremony workflow from the 💻`operator`, and validates that the ceremony is done *exactly* as documented.\
-   Make sure that this computer has more than one USB port available:\
-   * one without adapter nor hub. This port will be used for the removable media during the whole ceremony.\
+   Make sure that this computer has more than one USB port available:
+   * one without adapter nor hub. This port will be used for the removable media during the whole ceremony.
    * one or more USB port that fits the USB format of the Yubikeys (USB-A, USB-C etc.).
 
 For the rest of the procedure below, you can consider references to 👥`team members` as a synonym for the group of the 3 roles above.
@@ -249,7 +253,17 @@ The sha256 checksum of the *N* verifiable bytes is (value of *Ciso*):
 The review of changes/content of the bootable live media has been performed by:
 the operator ................................................ PASS [] / FAIL []
 the reporter ................................................ PASS [] / FAIL []
-All (possible) changes are legitimate ....................... PASS [] / FAIL []
+All changes are legitimate ....................... PASS [] / FAIL []
+
+A key rotation will be performed (Yes/No) : ...............
+
+Scripts that will be executed during the maintenance phase:
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
 
 A bootable live media has been generated for this ceremony ........... PASS [] / FAIL []
 Identity of the team member who brings the bootable media (the stick owner):
@@ -257,6 +271,7 @@ Identity of the team member who brings the bootable media (the stick owner):
 
 The offline CA private data has been restored from the following archive file:
 ...............................................................................
+
 ```
 
 </td></table>
@@ -315,19 +330,19 @@ vault is immediately booted ................................. PASS [] / FAIL []
 
 </td></table>
 
-You will have access to a console-only environment.
-
 > [!Note]  
 > If you get errors while booting (no shell), make sure your key has been switched to *read/write*.
 
-> [!Tip]  
-> All the subsequent commands have to be entered directly on the *ephemeral vault*'s terminal, they are framed with a <span style="border:2px solid red;padding-left:2px;padding-right:2px;">red border</span>
+From now on, the ceremony will run automatically while stopping after each step to let the 👥`team members` time to validate everything is going as planned and fill the report.
+
+> [!Warning]
+> If anything goes wrong, the ceremony will stop and all data except the audit logs and the screen recording will be wiped.
 
 ### Checking boot-time verifications
 
 In order to be sure that offline private data has not been tampered with (or downgraded to an old state), at boot, we compute a cryptographically secure checksum on the vault private data *C<sub>vault</sub>*, that should match the *C<sub>vault</sub>* announced in the previous ceremony's report.
 
-Before the very first shell prompt after booting, that computed checksum is displayed on the screen, as well as the existing root token count (that should be 0) and the vault status.
+After booting, that computed checksum is displayed on the screen, as well as the existing root token count (that should be 0) and the vault status.
 
 <table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
 
@@ -362,54 +377,25 @@ Share holders that participated to the unseal process:
 
 </td></table>
 
-### Maintenance operations on the offline CAs (optional)
+### Maintenance operations on the offline CAs
 
-> [!Warning]  
-> In the maintenance phase, the 👥`team members` should make sure only the planned scripts (that have been reviewed during the preparation phase) are executed.
-
-The 📝`reporter` communicates the list of scripts that will be run to the 👀`observer` (who did not know about the ceremony before).
-
-> [!Important]  
-> If during the maintenance operation, something goes wrong, the ceremony will be cancelled and the 👥`team members` must destroy all data from `VAULT_WRITABLE` partition, and a new ceremony will start over again from the backup.
+Each maintenance script (key rotation, csr signature, CA creation, ...) will now be performed.
 
 <table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
 
 ```report
-Scripts executed during the maintenance phase:
-...............................................................................
-...............................................................................
-...............................................................................
-...............................................................................
-...............................................................................
-...............................................................................
-Only the scripts initially planned have been executed ....... PASS [] / FAIL []
+All maintenance script has been executed successfully ....... PASS [] / FAIL []
 ```
 
 </td></table>
 
 ## Closing down the ceremony
 
-To close the ceremony, we will perform a serie of actions leading to a safe shutdown of the *ephemeral vault* and a backup of the state of the vault.
+To close the ceremony, a serie of actions will be performed leading to a safe shutdown of the *ephemeral vault* and a backup of the state of the vault.
 
 ### Root token revocation check
 
-First, we will seal the vault:
-<table width=100% style="border:2px solid red;"><td style="padding:0;">
-
-```bash
-seal
-```
-
-</td></table>
-
-We now need to make sure there is no existing root token anymore, by running the following command on the *ephemeral vault*:
-<table width=100% style="border:2px solid red;"><td style="padding:0;">
-
-```bash
-count-tokens
-```
-
-</td></table>
+First, the the vault will be sealed. Then the number of remaining root tokens will be displayed.
 
 `0` should be displayed
 
@@ -428,28 +414,12 @@ While the *ephemeral vault* is sealed, we have access to the vault private data 
 
 This data needs to be backed-up to retain the last state of the offline vault.
 
-On the *ephemeral vault* terminal, run:
-<table width=100% style="border:2px solid red;"><td style="padding:0;">
-
-```bash
-backup
-```
-
-</td></table>
-
 The script will create a tar archive of the data in the `VAULT_WRITABLE` partition.
 
 The value *C<sub>vault</sub>* is displayed on the *ephemeral vault*'s terminal, together with its graphical representation as a QR code. It is a checksum over the vault private data folder.\
 All 👥`team members` should keep a copy of this *C<sub>vault</sub>* value. It will be used to verify that the backup was not altered when extracted from the USB stick.
 
-You can now shutdown the vault:
-<table width=100% style="border:2px solid red;"><td style="padding:0;">
-
-```bash
-poweroff
-```
-
-</td></table>
+The *ephemeral vault* will then switch off.
 
 The USB stick is then immediately switched to *read-only* mode **until the end of the ceremony's workflow**.
 One of the 👥`team members` inserts the USB stick on their own computer.
