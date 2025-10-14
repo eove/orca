@@ -4,6 +4,7 @@ let
   orca_protocol = all_scripts.orca_scripts.orca_user;
   computeCVault = pkgs.lib.getExe all_scripts.orca_scripts.orca_user.compute_c_vault;
   count_tokens = pkgs.lib.getExe all_scripts.orca_scripts.orca_user.count-tokens;
+  inherit (config.environment.variables) OUTPUT_FOLDER;
   inherit (config.orca) latest_cvault;
   expect_initialized = latest_cvault != null;
   ceremony_actions = pkgs.lib.strings.concatStringsSep "\n" (builtins.map (script: ''
@@ -31,7 +32,6 @@ let
     export VAULT_ADDR
     export VAULT_CACERT
 
-    ${pkgs.lib.getExe orca_protocol.init-script}
     
     echo "Cvault : "
     C_VAULT=$(${computeCVault})
@@ -43,7 +43,17 @@ let
       echo -e "\nThe expected Cvault was ${latest_cvault}\n"
       exit -1
     fi
-    '' else ''''}
+    '' else ""}
+
+    ${if !expect_initialized then ''
+    if [ -d ${OUTPUT_FOLDER} ]
+    then
+      echo -e "\nO.R.CA was never initialized but its output folder already exists\n";
+      exit -1
+    fi
+    '' else ""}
+
+    ${pkgs.lib.getExe orca_protocol.init-script}
 
     echo -e "\nExisting tokens : "
     ${count_tokens}
@@ -58,7 +68,7 @@ let
 
     if [ "$STATUS" != "${if expect_initialized then "true" else "false"}" ]
     then
-      echo ${ if expect_initialized then ''A Cvault was given so the vault should be initialized'' else ''No Cvault was given so the vault should NOT be initialized''}
+      echo -e ${ if expect_initialized then ''\nA Cvault was given so the vault should be initialized\n'' else ''\nNo Cvault was given so the vault should NOT be initialized\n''}
       exit -1
     fi
 
