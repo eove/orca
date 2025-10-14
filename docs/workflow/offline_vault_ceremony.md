@@ -43,15 +43,15 @@ This whole chapter has to be done *before* the day of the ceremony.
 > [!Important]  
 > All 👥`team members` should have a hardware token (Yubikey) that secures their unseal share. They will need this to both unseal the vault and sign the report.
 
-The 📢`organiser` should communicate to all 👥`team members` the list of operations (and therefore scripts) that will be performed during the ceremony. The aforementionned scripts should be commited to the `src/scripts/` directory of this repository prior to the verification phase.
+The 📢`organiser` should communicate to all 👥`team members` the list of operations (and therefore scripts) that will be performed during the ceremony. The aforementionned scripts should be commited to the `src/scripts/actions` directory of this repository prior to the verification phase.
 
 #### Configuring the ceremony
 
 The 📢`organiser` should know which environment will be worked on (`prod`/`preprod`), modify the value of `orca.environment-target` in [src/default.nix](../../src/default.nix) accordingly, and notify this environment to all 👥`team members`.
 
-The 📢`organiser` should get the value of the cvault present in the last report and set the value of `orca.latest_cvault` in [src/default.nix](../../src/default.nix) accordingly. If the ceremony is the first one for this environment, then `null` should be set.
+The 📢`organiser` should get the value of the cvault present in the last report and set the value of `orca.latest_cvault` in [src/default.nix](../../src/default.nix) accordingly. If the ceremony is the first one for this environment, then `null` should be set. The 📢`organiser` is encourage to verify the validity of the report in the same way the 👥`team members` [will do during the verification phase](#verification-of-the-last-ceremonys-report).
 
-The 📢`organiser` should know what should be done during the ceremony and set the values of `orca.actions_in_order` and `orca.rotate_keys` in [src/default.nix](../../src/default.nix) accordingly.
+The 📢`organiser` should know what will be done during the ceremony and set the values of `orca.actions_in_order` and `orca.rotate_keys` in [src/default.nix](../../src/default.nix) accordingly.
 
 #### Updating the version of the offline vault
 
@@ -59,7 +59,8 @@ The software we are using to run the *ephemeral vault* should not be obsolete (t
 
 Check if there is any new stable release that is more recent than what is specified in [src/flake.nix](../../../src/flake.nix)'s `inputs.nixpkgs.url`. If so, we should try to upgrade to the lastest stable release.
 
-Try to update the `flake.lock` to the most up-to-date packages by running:
+If a new stable release exists, then upgrade it in the input part of the flake.
+Otherwise update the `flake.lock` to the most up-to-date packages by running:
 ```bash
 cd src/
 nix flake update
@@ -126,7 +127,7 @@ git diff <previous ceremony trusted commit> src/
 ```
 
 > [!Important]  
-> * The only changes you see should be in the orca's nix configuration and in the actions scripts.
+> * The only changes you see should be in the orca's nix configuration and in the actions scripts in `src/scripts/actions`.
 > * The ceremony's configuration (environment, cvault, etc…) that [has been set by the 📢`organiser`](#configuring-the-ceremony) should be verified.
 > * Any change displayed by the diff should be considered legitimate to you.
 > * During this step, 👥`team members` will also review and understand all the scripts that are planned for execution during the ceremony.
@@ -179,11 +180,12 @@ Fetch offline CA private data backup for the corresponding environment (eg: prod
 These 3 persons should be **physically present during the whole ceremony**, and **have their hardware token with them**.
 
 1. The first role is the `operator` (💻).\
-   This person is typing commands on a terminal on the *ephemeral vault*, following their own copy of this workflow document and the list of scripts that have been planned to be executed.
+   This person is the one typing the commands during the verification phase and manipulates the `observer`'s computer.\
+   They follow their own copy of this workflow document.
 
 2. The second role is the `reporter` (📝).\
    This person has their own copy of this ceremony workflow document.\
-   During the whole ceremony, this person will fill in the sections framed with a <span style="border:2px dotted dodgerblue;padding-left:2px;padding-right:2px;">dotted-blue border</span>.\
+   During the whole ceremony, this person will fill in the sections framed with a <span style="border:2px dotted dodgerblue;padding-left:2px;padding-right:2px;">dotted-blue border</span>.
 
 > [!Tip]
 > To extract these sections from the html version of the ceremony's workflow, use the following filter:\
@@ -194,7 +196,7 @@ These 3 persons should be **physically present during the whole ceremony**, and 
    The 👀`observer` will lend their computer to run the *ephemeral vault*. This machine must have a Linux x86_64 OS installed.\
    They must be sitting next to the 💻`operator`. Gets the validated ceremony workflow from the 💻`operator`, and validates that the ceremony is done *exactly* as documented.\
    Make sure that this computer has more than one USB port available:
-   * one without adapter nor hub. This port will be used for the removable media during the whole ceremony.
+   * one without adapter nor hub. This port will be used for the O.R.CA stick during the whole ceremony.
    * one or more USB port that fits the USB format of the Yubikeys (USB-A, USB-C etc.).
 
 For the rest of the procedure below, you can consider references to 👥`team members` as a synonym for the group of the 3 roles above.
@@ -288,11 +290,11 @@ The machine of the 👀`observer` will be used during the whole ceremony to veri
 > All cables attached to the machine should be evaluated, especially USB-C power supplied.
 
 To check the key:
-- Before inserting the USB stick, the `stick owner` switches the physical button of the key to *read-only*
+- Before inserting the USB stick, the `stick owner` switches the physical button of the stick to *read-only*
 - *While switched to read-only*, the 👀`observer`'s computer is booted on the USB stick a first time, just to make sure that this machine can boot successfully on the *ephemeral vault*. When booting finishes, an error message will appear indicating that the USB stick is *read-only*, this is expected.
 - If successful, the 👀`observer`'s machine can be shutdown.
 - The following steps must be performed without booting on the USB stick, with the USB stick still in *read-only* mode, and directly on the installed Linux OS of the 👀`observer`'s computer.
-- An environment variable `Niso` should be set with the correct value, then the key is verified by the 👀`observer` (number of partitions, *N<sub>iso</sub>* checksum):
+- An environment variable `Niso` should be set with the correct value, then the key is verified by the 💻`operator` (number of partitions, *N<sub>iso</sub>* checksum):
 ```bash
 sudo fdisk -l /dev/sda &&\
  sudo dd if=/dev/sda bs=512 skip=1 count=$(expr $Niso / 512) |\
@@ -331,7 +333,7 @@ vault is immediately booted ................................. PASS [] / FAIL []
 </td></table>
 
 > [!Note]  
-> If you get errors while booting (no shell), make sure your key has been switched to *read/write*.
+> If you get errors while booting, make sure your key has been switched to *read/write*.
 
 From now on, the ceremony will run automatically while stopping after each step to let the 👥`team members` time to validate everything is going as planned and fill the report.
 
