@@ -4,6 +4,8 @@ let
   orca_protocol = all_scripts.orca_scripts.orca_user;
   computeCVault = pkgs.lib.getExe all_scripts.orca_scripts.orca_user.compute_c_vault;
   count_tokens = pkgs.lib.getExe all_scripts.orca_scripts.orca_user.count-tokens;
+  inherit (config.orca) latest_cvault;
+  expect_initialized = latest_cvault != null;
   ceremony_actions = pkgs.lib.strings.concatStringsSep "\n" (builtins.map (script: ''
     set -e
     echo -e "Running O.R.CA custom action '${script.name}'\n"
@@ -32,7 +34,16 @@ let
     ${pkgs.lib.getExe orca_protocol.init-script}
     
     echo "Cvault : "
-    ${computeCVault}
+    C_VAULT=$(${computeCVault})
+    echo $C_VAULT
+
+    ${ if latest_cvault != null then ''
+    if [ "$C_VAULT" != "${latest_cvault}" ]
+    then
+      echo -e "\nThe expected Cvault was ${latest_cvault}\n"
+      exit -1
+    fi
+    '' else ''''}
 
     echo -e "\nExisting tokens : "
     ${count_tokens}
@@ -43,15 +54,17 @@ let
     echo "Vault status :"
     vault status || true
     
+    STATUS=$(vault status -format "json" | jq -r .initialized)
+
+    if [ "$STATUS" != "${if expect_initialized then "true" else "false"}" ]
+    then
+      echo ${ if expect_initialized then ''A Cvault was given so the vault should be initialized'' else ''No Cvault was given so the vault should NOT be initialized''}
+      exit -1
+    fi
+
     confirm
     
-    STATUS=$(vault status -format "json" | jq -r .initialized)
-    if [ "$STATUS" == "true" ]
-    then
-      ${pkgs.lib.getExe orca_protocol.unseal}
-    else
-      ${pkgs.lib.getExe orca_protocol.initialize-vault}
-    fi
+    ${pkgs.lib.getExe (with orca_protocol; if expect_initialized then unseal else initialize-vault)}
     
     confirm
 

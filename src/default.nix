@@ -7,6 +7,7 @@
     ({ config, ... }: {
       orca = {
         environment-target = "dev";
+        latest_cvault = null;
         actions_in_order = [
 #          "create-root-CA"
 #          "create-intermediate-CA"  
@@ -65,6 +66,9 @@
           orca = {
             environment-target = mkOption {
               type = with types; enum [ "dev" "preprod" "prod" ];
+            };
+            latest_cvault = mkOption {
+              type = with types; nullOr (strMatching "[0-9a-f]{64}");
             };
             actions_in_order = mkOption {
               type = with types; listOf (enum user_scripts_names);
