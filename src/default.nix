@@ -7,12 +7,12 @@
     ({ config, ... }: {
       orca = {
         environment-target = "dev";
-        latest_cvault = null;
+        latest_cvault = "11cd4c0564fe0ee94421cec87de50a0f28048ba82571b1cf4946578d6dc8bbcd";
         rotate_keys = false;
         actions_in_order = [
-          #          "create-root-CA"
-          #          "create-intermediate-CA"  
-          #          "sign-csr"
+          #"create-root-CA"
+          #"create-intermediate-CA"  
+          #"sign-csr"
           #"revoke-certificate"
         ];
       };
@@ -55,8 +55,10 @@
         run_ceremony = pkgs.writeShellScriptBin "run_ceremony" (import ./run_ceremony.nix (args // { inherit (pkgs) lib; inherit orca_user pkgs all_scripts; }));
         # record everything that happens on the terminal
         su_record_session = pkgs.writeShellScriptBin "su_record_session" ''
+          C_VAULT=$(${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.compute_c_vault})
+
           mkdir -p ${recordDir}
-          ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${recordDir}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} ${pkgs.lib.getExe run_ceremony}"
+          ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${recordDir}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} ${pkgs.lib.getExe run_ceremony} $C_VAULT"
         '';
         record_session = pkgs.writeShellScriptBin "record_session" ''
           sudo ${pkgs.lib.getExe su_record_session}

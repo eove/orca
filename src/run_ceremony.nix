@@ -37,7 +37,7 @@ let
     
     echo "Cvault : "
     ${ if latest_cvault != null then ''
-    C_VAULT=$(${computeCVault})
+    C_VAULT="$1"
     echo $C_VAULT
 
     if [ "$C_VAULT" != "${latest_cvault}" ]
@@ -107,7 +107,7 @@ let
 
 in
 ''
-  ${pkgs.lib.getExe ceremony} || ${pkgs.lib.getExe orca_protocol.wipe_everything}
+  ${pkgs.lib.getExe ceremony} "$1" || ${pkgs.lib.getExe orca_protocol.wipe_everything}
 
   echo Press enter to poweroff
   read -s
