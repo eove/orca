@@ -10,10 +10,10 @@
         latest_cvault = null;
         rotate_keys = false;
         actions_in_order = [
-#          "create-root-CA"
-#          "create-intermediate-CA"  
-#          "sign-csr"
-      ];
+          #          "create-root-CA"
+          #          "create-intermediate-CA"  
+          #          "sign-csr"
+        ];
       };
     })
     # Dev specific scripts
@@ -34,7 +34,7 @@
         services.openssh.enable = pkgs.lib.mkForce true;
         services.openssh.settings.PermitRootLogin = "yes";
         users.users.root = {
-          openssh.authorizedKeys.keyFiles = [../testing/root_key.pub];
+          openssh.authorizedKeys.keyFiles = [ ../testing/root_key.pub ];
         };
         networking = {
           useDHCP = pkgs.lib.mkForce true;
@@ -59,7 +59,7 @@
         '';
         record_session = pkgs.writeShellScriptBin "record_session" ''
           sudo ${pkgs.lib.getExe su_record_session}
-          '';
+        '';
       in
       {
         options = with pkgs.lib; {
@@ -79,39 +79,41 @@
           };
         };
         config = {
-          assertions = 
+          assertions =
             let
               script_names = builtins.map (p: p.name) sudoer_scripts;
               allowed_scripts = [ "backup" "count-tokens" "seal" "wipe_everything" "init-script" "get_root_token" "rotate-seal-shares" "unseal" "save_shares_from_json" "compute_c_vault" ];
               unknown_scripts = pkgs.lib.lists.subtractLists allowed_scripts script_names;
-            in 
-          [
-            {
-              assertion = unknown_scripts == [];
-              message = ''These scripts are not confirmed as scripts that can be ran with sudo : ${pkgs.lib.strings.concatStringsSep ", " unknown_scripts}
+            in
+            [
+              {
+                assertion = unknown_scripts == [ ];
+                message = ''These scripts are not confirmed as scripts that can be ran with sudo : ${pkgs.lib.strings.concatStringsSep ", " unknown_scripts}
 
 It is possible that they were saved in the wrong folder.
 
 If it should indeed be allowed to run as root, please double check them for security risk and then add it's name to the allowed_scripts above.
               '';
-            }
-          ];
+              }
+            ];
           environment = {
-            variables = let
-              ENVIRONMENT_TARGET=config.orca.environment-target;
-              VAULT_STORAGE_PATH=config.services.vault.storagePath;
-              ORCA_FOLDER="${VAULT_STORAGE_PATH}/orca";
-              OUTPUT_FOLDER="${ORCA_FOLDER}/output";
-            in {
-              inherit ENVIRONMENT_TARGET VAULT_STORAGE_PATH ORCA_FOLDER OUTPUT_FOLDER;
-              RECORDINGS_FOLDER = "${ORCA_FOLDER}/recordings";
-              VAULT_ADDR="https://localhost:8200";
-              VAULT_CACERT="${orca_user.home}/cert.pem";
-              PUBLIC_KEYS_FOLDER="${./share_holders_keys/${config.orca.environment-target}}";
-              SHARES_FOLDER="${ORCA_FOLDER}/shares/${ENVIRONMENT_TARGET}";
-              AIA_FOLDER="${OUTPUT_FOLDER}/aia/${ENVIRONMENT_TARGET}";
-              CERTIFICATE_FOLDER="${OUTPUT_FOLDER}/certificates/${ENVIRONMENT_TARGET}";
-            };
+            variables =
+              let
+                ENVIRONMENT_TARGET = config.orca.environment-target;
+                VAULT_STORAGE_PATH = config.services.vault.storagePath;
+                ORCA_FOLDER = "${VAULT_STORAGE_PATH}/orca";
+                OUTPUT_FOLDER = "${ORCA_FOLDER}/output";
+              in
+              {
+                inherit ENVIRONMENT_TARGET VAULT_STORAGE_PATH ORCA_FOLDER OUTPUT_FOLDER;
+                RECORDINGS_FOLDER = "${ORCA_FOLDER}/recordings";
+                VAULT_ADDR = "https://localhost:8200";
+                VAULT_CACERT = "${orca_user.home}/cert.pem";
+                PUBLIC_KEYS_FOLDER = "${./share_holders_keys/${config.orca.environment-target}}";
+                SHARES_FOLDER = "${ORCA_FOLDER}/shares/${ENVIRONMENT_TARGET}";
+                AIA_FOLDER = "${OUTPUT_FOLDER}/aia/${ENVIRONMENT_TARGET}";
+                CERTIFICATE_FOLDER = "${OUTPUT_FOLDER}/certificates/${ENVIRONMENT_TARGET}";
+              };
             systemPackages = [
               pkgs.vault
               pkgs.jq

@@ -1,4 +1,4 @@
-{ config, all_scripts, pkgs,... }:
+{ config, all_scripts, pkgs, ... }:
 let
   scripts_to_run_in_order = builtins.map (name: all_scripts.custom_scripts."${name}") config.orca.actions_in_order;
   orca_protocol = all_scripts.orca_scripts.orca_user;
@@ -7,12 +7,14 @@ let
   inherit (config.environment.variables) OUTPUT_FOLDER;
   inherit (config.orca) latest_cvault rotate_keys;
   expect_initialized = latest_cvault != null;
-  ceremony_actions = pkgs.lib.strings.concatStringsSep "\n" (builtins.map (script: ''
-    set -e
-    echo -e "Running O.R.CA custom action '${script.name}'\n"
-    ${pkgs.lib.getExe script}
-    confirm
-    '') scripts_to_run_in_order);
+  ceremony_actions = pkgs.lib.strings.concatStringsSep "\n" (builtins.map
+    (script: ''
+      set -e
+      echo -e "Running O.R.CA custom action '${script.name}'\n"
+      ${pkgs.lib.getExe script}
+      confirm
+    '')
+    scripts_to_run_in_order);
   ceremony = pkgs.writeShellScriptBin "ceremony" ''
     set -e
     source /etc/profile
@@ -99,13 +101,13 @@ let
     ${pkgs.lib.getExe orca_protocol.backup}
 
     confirm
-'';
+  '';
 
-in 
-  ''
-${pkgs.lib.getExe ceremony} || ${pkgs.lib.getExe orca_protocol.wipe_everything}
+in
+''
+  ${pkgs.lib.getExe ceremony} || ${pkgs.lib.getExe orca_protocol.wipe_everything}
 
-echo Press enter to poweroff
-read -s
-poweroff
-  ''
+  echo Press enter to poweroff
+  read -s
+  poweroff
+''
