@@ -8,11 +8,11 @@
       orca = {
         environment-target = "dev";
         latest_cvault = null;
+        rotate_keys = true;
         actions_in_order = [
 #          "create-root-CA"
 #          "create-intermediate-CA"  
 #          "sign-csr"
-#           "rotate_shares"
       ];
       };
     })
@@ -72,6 +72,9 @@
             };
             actions_in_order = mkOption {
               type = with types; listOf (enum user_scripts_names);
+            };
+            rotate_keys = mkOption {
+              type = types.bool;
             };
           };
         };

@@ -5,7 +5,7 @@ let
   computeCVault = pkgs.lib.getExe all_scripts.orca_scripts.orca_user.compute_c_vault;
   count_tokens = pkgs.lib.getExe all_scripts.orca_scripts.orca_user.count-tokens;
   inherit (config.environment.variables) OUTPUT_FOLDER;
-  inherit (config.orca) latest_cvault;
+  inherit (config.orca) latest_cvault rotate_keys;
   expect_initialized = latest_cvault != null;
   ceremony_actions = pkgs.lib.strings.concatStringsSep "\n" (builtins.map (script: ''
     set -e
@@ -75,8 +75,14 @@ let
     confirm
     
     ${pkgs.lib.getExe (with orca_protocol; if expect_initialized then unseal else initialize-vault)}
-    
+
     confirm
+
+    ${if rotate_keys then ''
+      echo "Rotating the keys :"
+      ${pkgs.lib.getExe orca_protocol.rotate-seal-shares}
+      confirm
+    '' else ""}
 
     ${ceremony_actions}
 
