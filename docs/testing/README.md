@@ -37,8 +37,7 @@ This allows to keep the state of your vault across reboots and is very close to 
 ### Starting the iso in a VM
 
 > [!Important]  
-> Because with a VM, we are very close to the real offline *ephemeral vault* setup, we need to move under `src/scripts/*/`, all scripts that can be executed withing the offline vault VM.  
-> This means scripts should be copied over from the `templates/` folder whenever necessary, and **the new files should be added to git** so that they are picked up by nix when building the iso image.
+> Because with a VM, we are very close to the real offline *ephemeral vault* setup, the orca configuration and actions should reflect what you want to test.
 
 Move to the `src/` subdirectory, and run:
 ```bash
@@ -47,24 +46,21 @@ nix run
 A virtual machine that will boot on the iso image (that was automatically mounted), and with a small disk will start.
 
 > [!Note]  
-> At the end of your testing session, you'll probably want to delete the backup from the disk. To do so, first login as root with
+> At the end of your testing session, you'll probably want to delete the backup from the disk. To do so, at the root of O.R.CA, run :
 >
-> `su -` and the password `root`
->
-> Then run
-> `rm /var/lib/vault/orca/*.tar`  
+> `ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key rm /var/lib/vault/orca/*.tar`
 
 ### Simulating Yubikeys
 
 > [!Warning]
 > This is only available if you are using the `dev` environment-target
 
-While a yubikey should be inserted in real life, in the VM, you can simulate it by:
-- pausing the script with `CTRL + Z`
-- run the command `plug-simulated-yubikey n` where `n` is the number (1 to 4) of the yubikey you want to insert.
-- go back to the running script with the command `fg`
-- since the script is waiting for you to confirm that the yubikey has been inserted, press `ENTER`
-- when requested, enter the following passphrase to unlock the simulated yubikey: `test`
+While a yubikey should be inserted in real life, in the VM, you can simulate.
+When asked to plug a yubikey, on a terminal on the host machine, at the root of O.R.CA, run :
+```ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key plug-simulated-yubikey <n>```
+where `<n>` is the number (1 to 4) of the yubikey you want to insert.
+Then continue in the VM as in real life.
+The passphrase for the simulated yubikeys is `test`
 
 ### SSH to the VM
 
@@ -73,9 +69,7 @@ While a yubikey should be inserted in real life, in the VM, you can simulate it 
 
 A shell from the host can be useful when testing, especially to be able to make copy/paste to and from the VM.
 
-From your host, you can ssh to the VM with:
+From the root of O.R.CA on your host, you can ssh to the VM with:
 ```bash
-ssh orca@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222
+ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key
 ```
-The password is `orca`
-You can also login as root with the password `root`
