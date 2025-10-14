@@ -158,7 +158,7 @@ Communicate the values of *N<sub>iso</sub>* and *C<sub>iso</sub>* to the other �
 
 #### Creation of a bootable live media for the vault
 
-The bootable live media should be created by one 👥`team member` *before* the day of the ceremony. This person will be referred to as the `stick owner`.
+The bootable live media should be created by one 👥`team member` *before* the day of the ceremony. This person will be the 📝`reporter` during the ceremony.
 
 {{#include ../offline/creating_a_usb_stick.md}}
 
@@ -185,6 +185,7 @@ These 3 persons should be **physically present during the whole ceremony**, and 
 
 2. The second role is the `reporter` (📝).\
    This person has their own copy of this ceremony workflow document.\
+   This person **must** be the person that created the USB stick.\
    During the whole ceremony, this person will fill in the sections framed with a <span style="border:2px dotted dodgerblue;padding-left:2px;padding-right:2px;">dotted-blue border</span>.
 
 > [!Tip]
@@ -268,8 +269,7 @@ Scripts that will be executed during the maintenance phase:
 ...............................................................................
 
 A bootable live media has been generated for this ceremony ........... PASS [] / FAIL []
-Identity of the team member who brings the bootable media (the stick owner):
-...................................................... the operator [] / the reporter []
+The team member who brings the bootable media is the reporter: ....... PASS [] / FAIL []
 
 The offline CA private data has been restored from the following archive file:
 ...............................................................................
@@ -283,14 +283,14 @@ The offline CA private data has been restored from the following archive file:
 The machine of the 👀`observer` will be used during the whole ceremony to verify and boot the *ephemeral vault*. That machine can be any x86_64 PC able to boot on a live media.
 
 > [!Warning]  
-> Only the `stick owner` is allowed to touch the bootable live media.
+> Only the 📝`reporter` is allowed to touch the bootable live media.
 
 > [!Warning]  
 > The *ephemeral vault* machine should not be connected to any IP network.  
 > All cables attached to the machine should be evaluated, especially USB-C power supplied.
 
 To check the key:
-- Before inserting the USB stick, the `stick owner` switches the physical button of the stick to *read-only*
+- Before inserting the USB stick, the 📝`reporter` switches the physical button of the stick to *read-only*
 - *While switched to read-only*, the 👀`observer`'s computer is booted on the USB stick a first time, just to make sure that this machine can boot successfully on the *ephemeral vault*. When booting finishes, an error message will appear indicating that the USB stick is *read-only*, this is expected.
 - If successful, the 👀`observer`'s machine can be shutdown.
 - The following steps must be performed without booting on the USB stick, with the USB stick still in *read-only* mode, and directly on the installed Linux OS of the 👀`observer`'s computer.
@@ -307,7 +307,7 @@ sudo fdisk -l /dev/sda &&\
 
 If the checksum *C<sub>iso</sub>* is correct:
 - Power off the 👀`observer`'s computer.
-- The `stick owner` switches the physical button of the key to *read/write*.
+- The 📝`reporter` switches the physical button of the key to *read/write*.
 - The 👀`observer`'s computer is rebooted once more on the USB stick.
 
 When booting *ephemeral vault*, a NixOS logo will appear with a boot menu mentionning `O.R.CA xxxx`.
