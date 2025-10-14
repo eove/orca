@@ -13,6 +13,7 @@
           #          "create-root-CA"
           #          "create-intermediate-CA"  
           #          "sign-csr"
+          #"revoke-certificate"
         ];
       };
     })

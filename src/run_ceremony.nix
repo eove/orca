@@ -36,16 +36,18 @@ let
 
     
     echo "Cvault : "
+    ${ if latest_cvault != null then ''
     C_VAULT=$(${computeCVault})
     echo $C_VAULT
 
-    ${ if latest_cvault != null then ''
     if [ "$C_VAULT" != "${latest_cvault}" ]
     then
       echo -e "\nThe expected Cvault was ${latest_cvault}\n"
       exit -1
     fi
-    '' else ""}
+    '' else ''
+    echo "This is the first time O.R.CA is started so no Cvault needs to be checked"
+    ''}
 
     ${if !expect_initialized then ''
     if [ -d ${OUTPUT_FOLDER} ]
