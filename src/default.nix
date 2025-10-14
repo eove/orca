@@ -8,7 +8,7 @@
       orca = {
         environment-target = "dev";
         latest_cvault = null;
-        rotate_keys = true;
+        rotate_keys = false;
         actions_in_order = [
 #          "create-root-CA"
 #          "create-intermediate-CA"  

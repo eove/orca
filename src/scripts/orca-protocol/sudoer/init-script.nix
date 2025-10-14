@@ -6,11 +6,17 @@ in
   set -e
   gpg --import ${PUBLIC_KEYS_FOLDER}/* &> /dev/null
   cp /var/lib/acme/.minica/cert.pem ${orca_user.home}/cert.pem
-  chown ${orca_user.name} ${orca_user.home}/cert.pem
+
   mkdir -p ${ORCA_FOLDER}
   mkdir -p ${OUTPUT_FOLDER}
   mkdir -p ${SHARES_FOLDER}
   mkdir -p ${AIA_FOLDER}
   mkdir -p ${CERTIFICATE_FOLDER}
+
+  chown -R root ${ORCA_FOLDER}
+  chmod -R 755 ${ORCA_FOLDER}
+  chmod -R 700 ${SHARES_FOLDER}
+
   chown -R ${orca_user.name} ${OUTPUT_FOLDER}
+  chown ${orca_user.name} ${orca_user.home}/cert.pem
 ''
