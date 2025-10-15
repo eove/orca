@@ -7,6 +7,7 @@ let
   inherit (config.environment.variables) OUTPUT_FOLDER;
   inherit (config.orca) latest_cvault rotate_keys;
   expect_initialized = latest_cvault != null;
+  has_actions = (builtins.length scripts_to_run_in_order) > 0;
   ceremony_actions = pkgs.lib.strings.concatStringsSep "\n" (builtins.map
     (script: ''
       set -e
@@ -15,40 +16,56 @@ let
       confirm
     '')
     scripts_to_run_in_order);
+  plan = pkgs.lib.strings.concatStringsSep "\n" (builtins.filter (l: l != "") ([
+    (if expect_initialized then "- Unseal the vault" else "- Initialise the vault")
+    (if rotate_keys then ''- Rotate the vault keys
+    '' else "")
+    (if has_actions then ''- Get a root token'' else "")
+  ]
+  ++ (builtins.map
+    (script: ''- Run ${script.name} '')
+    scripts_to_run_in_order)
+  ++ [
+    (if has_actions then ''- Revoke the root token'' else "")
+    "- Seal the vault"
+    "- Validate that no root token is left"
+    "- Backup everything"
+  ]));
   ceremony = pkgs.writeShellScriptBin "ceremony" ''
-        set -e
-        source /etc/profile
-          function confirm(){
-            echo ""
-            while true ; do
-              read -p "Is everything ok so far ? (y/n) " choice
-              case "$choice" in
-                y|Y ) break;;
-                n|N ) exit -1;;
-                * ) ;;
-              esac
-            done
-            echo ""
-          }
+          set -e
+          source /etc/profile
+            function confirm(){
+              echo ""
+              while true ; do
+                read -p "Is everything ok so far ? (y/n) " choice
+                case "$choice" in
+                  y|Y ) break;;
+                  n|N ) exit -1;;
+                  * ) ;;
+                esac
+              done
+              echo ""
+            }
     
-        export VAULT_ADDR
-        export VAULT_CACERT
+          export VAULT_ADDR
+          export VAULT_CACERT
 
-        ${if !expect_initialized then ''
+          ${if !expect_initialized then ''
         if [ -d ${OUTPUT_FOLDER} ]
         then
           echo -e "\nO.R.CA was never initialized but its output folder already exists\n";
           exit -1
         fi
-        '' else ""}
+      '' else ""}
 
-        ${pkgs.lib.getExe orca_protocol.init-script}
+          ${pkgs.lib.getExe
+      orca_protocol.init-script}
 
-        echo -e "\nExisting tokens : "
-        ${count_tokens}
+          echo -e "\nExisting tokens : "
+          ${count_tokens}
 
-        echo -e "\nWaiting for vault to be available..."
-        sleep 2
+          echo -e "\nWaiting for vault to be available..."
+          sleep 2
     
     echo "Cvault : "
     ${ if expect_initialized then ''
@@ -83,28 +100,19 @@ let
         echo "Vault status :"
         vault status || true
     
-        STATUS=$(vault status -format "json" | jq -r .initialized)
+          STATUS=$(vault status -format "json" | jq -r .initialized)
 
-        if [ "$STATUS" != "${if expect_initialized then "true" else "false"}" ]
-        then
-          echo -e ${ if expect_initialized then ''\nA Cvault was given so the vault should be initialized\n'' else ''\nNo Cvault was given so the vault should NOT be initialized\n''}
-          exit -1
-        fi
+          if [ "$STATUS" != "${if expect_initialized then "true" else "false"}" ]
+          then
+            echo -e ${ if expect_initialized then ''\nA Cvault was given so the vault should be initialized\n'' else ''\nNo Cvault was given so the vault should NOT be initialized\n''}
+            exit -1
+          fi
 
-        cat << EOF
+          cat << EOF
 
-    Here is the ceremony plan :
-    - ${if expect_initialized then "Unseal the vault" else "Initialise the vault"}
-    ${if rotate_keys then ''- Rotate the vault keys
-    '' else ""}- Get a root token
-    ${pkgs.lib.strings.concatStringsSep "\n" (builtins.map
-        (script: ''- Run ${script.name} '')
-        scripts_to_run_in_order)}- Revoke the root token
-    - Seal the vault
-    - Validate that no root token is left
-    - Backup everything
-    - Poweroff the computer
-    EOF
+      Here is the ceremony plan :
+      ${plan}
+      EOF
 
         confirm
     
@@ -142,47 +150,59 @@ EOF
           echo "Rotating the keys :"
           ${pkgs.lib.getExe orca_protocol.rotate-seal-shares}
           confirm
-        '' else ""}
+    
+          ${pkgs.lib.getExe
+      (with orca_protocol; if expect_initialized then unseal else initialize-vault)}
 
-        cat << EOF
-    I am going to get a root token in order to run the following scripts :
-    ${pkgs.lib.strings.concatStringsSep "\n" (builtins.map
-        (script: ''- ${script.name} '')
-        scripts_to_run_in_order)}
+          confirm
 
-    The root token will be revoked right after that.
-    EOF
 
-        confirm
+          ${if rotate_keys then ''
+      echo "Rotating the keys :"
+      ${pkgs.lib.getExe orca_protocol.rotate-seal-shares}
+      confirm
+    '' else ""}
 
-        echo "Getting a root token :"
-        export VAULT_TOKEN=$(${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.get_root_token})
+          ${if has_actions then ''
+          cat << EOF
+      I am going to get a root token in order to run the following scripts :
+      ${pkgs.lib.strings.concatStringsSep "\n" (builtins.map
+          (script: ''- ${script.name} '')
+          scripts_to_run_in_order)}
 
-        ${ceremony_actions}
+      The root token will be revoked right after that.
+      EOF
 
-        echo "Revoking the root token :"
-        vault token revoke $VAULT_TOKEN
+          confirm
 
-        echo "Sealing the vault :"
-        ${pkgs.lib.getExe orca_protocol.seal}
-        echo "Done"
+          echo "Getting a root token :"
+          export VAULT_TOKEN=$(${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.get_root_token})
 
-        echo "Counting left over tokens :"
-        ${pkgs.lib.getExe orca_protocol.count-tokens}
+          ${ceremony_actions}
 
-        confirm
+          echo "Revoking the root token :"
+          vault token revoke $VAULT_TOKEN
+    '' else ""}
 
-        echo "Creating backup :"
-        ${pkgs.lib.getExe orca_protocol.backup}
+          echo "Sealing the vault :"
+          ${pkgs.lib.getExe
+      orca_protocol.seal}
+          echo "Done"
 
-        confirm
+          echo "Counting left over tokens :"
+          ${pkgs.lib.getExe
+      orca_protocol.count-tokens}
+
+          confirm
+
+          echo "Creating backup :"
+          ${pkgs.lib.getExe
+      orca_protocol.backup}
+
+          confirm
   '';
 
 in
 ''
   ${pkgs.lib.getExe ceremony} || ${pkgs.lib.getExe orca_protocol.wipe_everything}
-
-  echo Press enter to poweroff
-  read -s
-  poweroff
 ''

@@ -10,9 +10,9 @@
         latest_cvault = null;
         rotate_keys = false;
         actions_in_order = [
-          "create-root-CA"
-          "create-intermediate-CA"
-          "sign-csr"
+          #"create-root-CA"
+          #"create-intermediate-CA"
+          #"sign-csr"
           #"revoke-certificate"
         ];
       };
@@ -83,28 +83,40 @@
               '' else ''
               echo "This is the first time O.R.CA is started so no Cvault needs to be checked"
               ''}
-                      ${if config.orca.environment-target == "dev" then
-                      ''
-                      echo "You can mount ${VAULT_STORAGE_PATH} as read-only now then press enter"
-                      read -s
-                      '' else ""}
-                      if ! sudo test -w ${VAULT_STORAGE_PATH}
-                      then
-                        cat << EOF
-                        You successfully booted O.R.CA for the ${config.orca.environment-target} environment in read-only mode.
-                        To start the ceremony, please switch the stick so read/write.
+              
+              ${if config.orca.environment-target == "dev" then
+               ''
+               echo -e "\n Testing hack : You can mount ${VAULT_STORAGE_PATH} as read-only now then press enter\n"
+              read -s
+              '' else ""}
+              if ! sudo test -w ${VAULT_STORAGE_PATH}
+              then
+                cat << EOF
+                You successfully booted O.R.CA for the ${config.orca.environment-target} environment in read-only mode.
+                To start the ceremony, please switch the stick so read/write.
           EOF
-                      fi
+              fi
 
-                      while ! sudo test -w ${VAULT_STORAGE_PATH}
-                      do
-                        sleep 1
-                      ${if config.orca.environment-target == "dev"
-                      then ""
-                      else "mount -o remount ${VAULT_STORAGE_PATH}"}
-                      done
-                    mkdir -p ${RECORDINGS_FOLDER}
-                    ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${RECORDINGS_FOLDER}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} ${pkgs.lib.getExe run_ceremony}"
+              while ! test -w ${VAULT_STORAGE_PATH}
+              do
+                sleep 1
+              ${if config.orca.environment-target == "dev"
+              then ""
+              else "mount -o remount ${VAULT_STORAGE_PATH}"}
+              done
+
+              mkdir -p ${RECORDINGS_FOLDER}
+              ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${RECORDINGS_FOLDER}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} ${pkgs.lib.getExe run_ceremony}"
+
+              echo "Switch the stick to read-only to finish the ceremony"
+              while test -w ${VAULT_STORAGE_PATH}
+              do
+                sleep 1
+              ${if config.orca.environment-target == "dev"
+              then ""
+              else "mount -o remount ${VAULT_STORAGE_PATH}"}
+              done
+              poweroff
         '';
         sudo_record_session = pkgs.writeShellScriptBin "sudo_record_session" ''
           sudo ${pkgs.lib.getExe record_session}
