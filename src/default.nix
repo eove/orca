@@ -62,6 +62,7 @@
 
         run_ceremony = pkgs.writeShellScriptBin "run_ceremony" (import ./run_ceremony.nix (args // { inherit (pkgs) lib; inherit orca_user pkgs all_scripts; }));
         inherit (config.orca) latest_cvault;
+        is_dev = config.orca.environment-target == "dev" && false;
         # record everything that happens on the terminal
         record_session = pkgs.writeShellScriptBin "record_session" ''
               C_VAULT=$(${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.compute_c_vault})
@@ -84,7 +85,7 @@
               echo "This is the first time O.R.CA is started so no Cvault needs to be checked"
               ''}
               
-              ${if config.orca.environment-target == "dev" then
+              ${if is_dev then
                ''
                echo -e "\n Testing hack : You can mount ${VAULT_STORAGE_PATH} as read-only now then press enter\n"
               read -s
@@ -100,10 +101,10 @@
               while ! test -w ${VAULT_STORAGE_PATH}
               do
                 sleep 1
-              ${if config.orca.environment-target == "dev"
-              then ""
-              else "mount -o remount ${VAULT_STORAGE_PATH}"}
+              ${if is_dev then ""
+              else "mount -o remount ${VAULT_STORAGE_PATH} 2> /dev/null"}
               done
+              systemctl start ${config.systemd.services.vault.name}
 
               mkdir -p ${RECORDINGS_FOLDER}
               ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${RECORDINGS_FOLDER}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} ${pkgs.lib.getExe run_ceremony}"
@@ -112,9 +113,8 @@
               while test -w ${VAULT_STORAGE_PATH}
               do
                 sleep 1
-              ${if config.orca.environment-target == "dev"
-              then ""
-              else "mount -o remount ${VAULT_STORAGE_PATH}"}
+              ${if is_dev then ""
+              else "mount -o remount ${VAULT_STORAGE_PATH} || mount -o remount,ro ${VAULT_STORAGE_PATH}"}
               done
               poweroff
         '';
@@ -260,6 +260,7 @@ If it should indeed be allowed to run as root, please double check them for secu
             };
 
           };
+          systemd.services.vault.wantedBy = pkgs.lib.mkForce [];
 
           fileSystems = pkgs.lib.mkForce
             (config.lib.isoFileSystems // {
