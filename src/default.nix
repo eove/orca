@@ -11,7 +11,7 @@
         rotate_keys = false;
         actions_in_order = [
           "create-root-CA"
-          "create-intermediate-CA"  
+          "create-intermediate-CA"
           "sign-csr"
           #"revoke-certificate"
         ];
@@ -54,19 +54,57 @@
     # This should probably only evolve when the orca setup evolves as well
     ({ config, ... }@args:
       let
-        recordDir = config.environment.variables.RECORDINGS_FOLDER;
+        inherit (config.environment.variables) RECORDINGS_FOLDER VAULT_STORAGE_PATH;
         orca_user = config.users.users.orca;
         all_scripts = import ./scripts (args // { inherit orca_user pkgs all_scripts; });
         user_scripts_names = builtins.map (s: s.name) (builtins.attrValues all_scripts.custom_scripts);
         sudoer_scripts = builtins.attrValues all_scripts.orca_scripts.sudoer;
 
         run_ceremony = pkgs.writeShellScriptBin "run_ceremony" (import ./run_ceremony.nix (args // { inherit (pkgs) lib; inherit orca_user pkgs all_scripts; }));
+        inherit (config.orca) latest_cvault;
         # record everything that happens on the terminal
         record_session = pkgs.writeShellScriptBin "record_session" ''
-          C_VAULT=$(${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.compute_c_vault})
+              C_VAULT=$(${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.compute_c_vault})
+              echo "Cvault : "
+              ${ if latest_cvault != null then ''
+              C_VAULT="$1"
+              echo $C_VAULT
 
-          mkdir -p ${recordDir}
-          ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${recordDir}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} ${pkgs.lib.getExe run_ceremony} $C_VAULT"
+              if [ "$C_VAULT" != "${latest_cvault}" ]
+              then
+                cat << EOF
+                The expected Cvault was ${latest_cvault}
+                Please fix it and start over.
+                Press enter to poweroff
+          EOF
+                read -s
+                poweroff
+              fi
+              '' else ''
+              echo "This is the first time O.R.CA is started so no Cvault needs to be checked"
+              ''}
+                      ${if config.orca.environment-target == "dev" then
+                      ''
+                      echo "You can mount ${VAULT_STORAGE_PATH} as read-only now then press enter"
+                      read -s
+                      '' else ""}
+                      if ! sudo test -w ${VAULT_STORAGE_PATH}
+                      then
+                        cat << EOF
+                        You successfully booted O.R.CA for the ${config.orca.environment-target} environment in read-only mode.
+                        To start the ceremony, please switch the stick so read/write.
+          EOF
+                      fi
+
+                      while ! sudo test -w ${VAULT_STORAGE_PATH}
+                      do
+                        sleep 1
+                      ${if config.orca.environment-target == "dev"
+                      then ""
+                      else "mount -o remount ${VAULT_STORAGE_PATH}"}
+                      done
+                    mkdir -p ${RECORDINGS_FOLDER}
+                    ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${RECORDINGS_FOLDER}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} ${pkgs.lib.getExe run_ceremony}"
         '';
         sudo_record_session = pkgs.writeShellScriptBin "sudo_record_session" ''
           sudo ${pkgs.lib.getExe record_session}
