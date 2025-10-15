@@ -52,6 +52,21 @@ A virtual machine that will boot on the iso image (that was automatically mounte
 > ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key rm '/var/lib/vault/orca/*.tar'
 > ```
 
+### Simulating a key with a read/write switch
+
+At the very beginning, in "dev" env, you have a prompt allowing you to remount the disk as read only.
+
+You can do so with :
+
+```bash
+ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key mount -o remount,ro /var/lib/vault
+```
+
+To switch the "key" to read/write use :
+```bash
+ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key mount -o remount /var/lib/vault
+```
+
 ### Simulating Yubikeys
 
 > [!Warning]
