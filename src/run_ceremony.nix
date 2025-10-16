@@ -36,7 +36,7 @@ let
 
     
     echo "Cvault : "
-    ${ if latest_cvault != null then ''
+    ${ if expect_initialized then ''
     C_VAULT="$1"
     echo $C_VAULT
 
