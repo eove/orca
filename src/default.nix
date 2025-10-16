@@ -22,6 +22,14 @@
       let
         dev-scripts = builtins.mapAttrs pkgs.writeShellScriptBin {
           plug-simulated-yubikey = ''
+            if test $# -ne 1; then
+              echo "This script requires the number of the yubikey to insert as argument" >&2
+              exit 1
+            fi
+            if ! test -e ${./simulated-yubikeys}/yubikey''${1}@eove.fr/.gnupg; then
+              echo "Invalid yubikey number" >&2
+              exit 1
+            fi
             rm -rf ~/.gnupg 2> /dev/null
             cp -r ${./simulated-yubikeys}/yubikey''${1}@eove.fr/.gnupg/ ~
             chmod +w,og-rwx -R ~/.gnupg
