@@ -2,6 +2,7 @@
 let
   wipe = lib.getExe pkgs.wipe;
   seal = lib.getExe all_scripts.orca_scripts.orca_user.seal;
+  backup = lib.getExe all_scripts.orca_scripts.orca_user.backup;
   inherit (config.environment.variables) OUTPUT_FOLDER;
 in
 ''
@@ -11,7 +12,10 @@ in
   ${seal}
 
   echo "Wiping outputs"
-  ${wipe} -r ${OUTPUT_FOLDER}/*
+  ${wipe} -r ${OUTPUT_FOLDER}
+
+  echo "Creating backup :"
+  ${backup}
 
   echo -e "\nPlease recreate the orca stick once the issue has been fixed\n"
 ''

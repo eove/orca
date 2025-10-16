@@ -8,7 +8,10 @@ in
   set -e
   ${seal}
   cd ${VAULT_STORAGE_PATH}
-  mv audit.log audit_$(date +%F_%T).log
+  if [ -e audit.log ]
+  then
+    mv audit.log audit_$(date +%F_%T).log
+  fi
 
   VAULT_BACKUP=/tmp/ORCA_backup.tar
   tar --numeric-owner -c -f $VAULT_BACKUP .

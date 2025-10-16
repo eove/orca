@@ -37,6 +37,7 @@
         };
       in
       {
+        orca.has_dev_hack = true;
         environment.systemPackages = [
           pkgs.vim
         ] ++ (builtins.attrValues dev-scripts);
@@ -62,7 +63,7 @@
 
         run_ceremony = pkgs.writeShellScriptBin "run_ceremony" (import ./run_ceremony.nix (args // { inherit (pkgs) lib; inherit orca_user pkgs all_scripts; }));
         inherit (config.orca) latest_cvault;
-        is_dev = config.orca.environment-target == "dev" && false;
+        has_dev_hack = config.orca.environment-target == "dev";
         # record everything that happens on the terminal
         record_session = pkgs.writeShellScriptBin "record_session" ''
               C_VAULT=$(${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.compute_c_vault})
@@ -82,11 +83,12 @@
               echo "This is the first time O.R.CA is started so no Cvault needs to be checked"
               ''}
               
-              ${if is_dev then
+              ${if has_dev_hack then
                ''
                echo -e "\n Testing hack : You can mount ${VAULT_STORAGE_PATH} as read-only now then press enter\n"
               read -s
               '' else ""}
+
               if ! sudo test -w ${VAULT_STORAGE_PATH}
               then
                 cat << EOF
@@ -98,7 +100,7 @@
               while ! test -w ${VAULT_STORAGE_PATH}
               do
                 sleep 1
-              ${if is_dev then ""
+              ${if has_dev_hack then ""
               else "mount -o remount ${VAULT_STORAGE_PATH} 2> /dev/null"}
               done
               systemctl start ${config.systemd.services.vault.name}
@@ -110,7 +112,7 @@
               while test -w ${VAULT_STORAGE_PATH}
               do
                 sleep 1
-              ${if is_dev then ""
+              ${if has_dev_hack then ""
               else "mount -o remount ${VAULT_STORAGE_PATH} || mount -o remount,ro ${VAULT_STORAGE_PATH}"}
               done
               poweroff
@@ -134,6 +136,10 @@
             rotate_keys = mkOption {
               type = types.bool;
             };
+            has_dev_hack = mkOption {
+              type = types.bool;
+              default = false;
+            };
           };
         };
         config = {
@@ -152,6 +158,10 @@ It is possible that they were saved in the wrong folder.
 
 If it should indeed be allowed to run as root, please double check them for security risk and then add it's name to the allowed_scripts above.
               '';
+              }
+              {
+                assertion = config.orca.environment-target == "dev" || config.orca.has_dev_hack == false;
+                message = "Dev hack cannot be active on non dev envirnment";
               }
             ];
           environment = {
