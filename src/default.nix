@@ -95,6 +95,15 @@
                 You successfully booted O.R.CA for the ${config.orca.environment-target} environment in read-only mode.
                 To start the ceremony, please switch the stick so read/write.
           EOF
+              else
+
+                cat << EOF
+                The stick is not in read-only mode.
+                Please fix re-check the stick and start over in read-only.
+                Press enter to poweroff
+          EOF
+                read -s
+                poweroff
               fi
 
               while ! test -w ${VAULT_STORAGE_PATH}
