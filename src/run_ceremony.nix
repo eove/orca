@@ -58,20 +58,6 @@ let
           fi
         '' else ""}
 
-      echo -e "\nExisting tokens : "
-      ${count_tokens}
-
-      echo -e "\nWaiting for vault to be available..."
-      sleep 2
-  
-      ${if !expect_initialized then ''
-      if [ -d ${OUTPUT_FOLDER} ]
-      then
-        echo -e "\nO.R.CA was never initialized but its output folder already exists\n";
-        exit -1
-      fi
-      '' else ""}
-
       ${pkgs.lib.getExe orca_protocol.init-script}
 
       echo -e "\nExisting tokens : "
