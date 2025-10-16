@@ -5,7 +5,6 @@ let
   inherit (config.environment.variables) VAULT_STORAGE_PATH RECORDINGS_FOLDER;
 in
 ''
-  set -e
   echo "Something went wrong"
 
   echo "Sealing the vault"
