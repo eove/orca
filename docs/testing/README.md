@@ -49,7 +49,7 @@ A virtual machine that will boot on the iso image (that was automatically mounte
 > At the end of your testing session, you'll probably want to delete the backup from the disk. To do so, at the root of O.R.CA, run :
 >
 > ```bash
-> ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key rm /var/lib/vault/orca/*.tar
+> ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key rm '/var/lib/vault/orca/*.tar'
 > ```
 
 ### Simulating Yubikeys
