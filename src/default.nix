@@ -257,7 +257,7 @@ If it should indeed be allowed to run as root, please double check them for secu
             };
 
           };
-          systemd.services.vault.wantedBy = pkgs.lib.mkForce [];
+          systemd.services.vault.wantedBy = pkgs.lib.mkForce [ ];
 
           fileSystems = pkgs.lib.mkForce
             (config.lib.isoFileSystems // {
