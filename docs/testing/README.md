@@ -58,7 +58,7 @@ A virtual machine that will boot on the iso image (that was automatically mounte
 > This is only available if you are using the `dev` environment-target
 
 While a yubikey should be inserted in real life, in the VM, you can simulate.
-When asked to plug a yubikey, on a terminal on the host machine, at the root of O.R.CA, run :
+When asked to plug a yubikey, in a terminal **on the host machine**, at the root of O.R.CA, run:
 
 ```bash
 ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key plug-simulated-yubikey <n>
