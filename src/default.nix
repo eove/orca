@@ -54,14 +54,14 @@
 
         run_ceremony = pkgs.writeShellScriptBin "run_ceremony" (import ./run_ceremony.nix (args // { inherit (pkgs) lib; inherit orca_user pkgs all_scripts; }));
         # record everything that happens on the terminal
-        su_record_session = pkgs.writeShellScriptBin "su_record_session" ''
+        record_session = pkgs.writeShellScriptBin "record_session" ''
           C_VAULT=$(${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.compute_c_vault})
 
           mkdir -p ${recordDir}
           ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${recordDir}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} ${pkgs.lib.getExe run_ceremony} $C_VAULT"
         '';
-        record_session = pkgs.writeShellScriptBin "record_session" ''
-          sudo ${pkgs.lib.getExe su_record_session}
+        sudo_record_session = pkgs.writeShellScriptBin "sudo_record_session" ''
+          sudo ${pkgs.lib.getExe record_session}
         '';
       in
       {
@@ -132,7 +132,7 @@ If it should indeed be allowed to run as root, please double check them for secu
               isNormalUser = true;
               initialHashedPassword = "";
               ignoreShellProgramCheck = true;
-              shell = pkgs.lib.getExe record_session;
+              shell = pkgs.lib.getExe sudo_record_session;
             };
             # Allow the user to log in as root without a password.
             users.root.initialHashedPassword = "";
@@ -159,7 +159,7 @@ If it should indeed be allowed to run as root, please double check them for secu
                       })
                       sudoer_scripts) ++ [
                       {
-                        command = "${pkgs.lib.getExe su_record_session}";
+                        command = "${pkgs.lib.getExe record_session}";
                         options = [ "NOPASSWD" ];
                       }
                     ];
