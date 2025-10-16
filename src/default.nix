@@ -68,9 +68,6 @@
               C_VAULT=$(${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.compute_c_vault})
               echo "Cvault : "
               ${ if latest_cvault != null then ''
-              C_VAULT="$1"
-              echo $C_VAULT
-
               if [ "$C_VAULT" != "${latest_cvault}" ]
               then
                 cat << EOF
