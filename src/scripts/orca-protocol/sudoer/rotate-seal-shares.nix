@@ -1,7 +1,7 @@
 { config, lib, all_scripts, ... }:
 let
   get_share = lib.getExe all_scripts.orca_scripts.root_only.get_share;
-  save_shares_from_json = lib.getExe all_scripts.orca_scripts.orca_user.save_shares_from_json;
+  save_shares_from_json = lib.getExe all_scripts.orca_scripts.root_only.save_shares_from_json;
   inherit (config.environment.variables) SHARES_FOLDER PUBLIC_KEYS_FOLDER;
 in
 ''

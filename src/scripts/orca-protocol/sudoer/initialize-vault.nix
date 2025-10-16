@@ -1,8 +1,8 @@
 { config, all_scripts, lib, ... }:
 let
-  inherit (config.environment.variables) SHARES_FOLDER PUBLIC_KEYS_FOLDER;
+  inherit (config.environment.variables) SHARES_FOLDER PUBLIC_KEYS_FOLDER VAULT_STORAGE_PATH;
   unseal = lib.getExe all_scripts.orca_scripts.orca_user.unseal;
-  save_shares_from_json = lib.getExe all_scripts.orca_scripts.orca_user.save_shares_from_json;
+  save_shares_from_json = lib.getExe all_scripts.orca_scripts.root_only.save_shares_from_json;
 in
 ''
   set -e
@@ -29,5 +29,5 @@ in
 
   ${unseal}
 
-  vault audit enable file file_path=$VAULT_STORAGE_PATH/audit.log
+  vault audit enable file file_path=${VAULT_STORAGE_PATH}/audit.log
 ''

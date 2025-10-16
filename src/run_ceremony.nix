@@ -87,31 +87,6 @@ let
   
       ${pkgs.lib.getExe (with orca_protocol; if expect_initialized then unseal else initialize-vault)}
 
-      if [ "$STATUS" != "${if expect_initialized then "true" else "false"}" ]
-      then
-        echo -e "${ if expect_initialized then ''\nA Cvault was given so the vault should be initialized\n'' else ''\nNo Cvault was given so the vault should NOT be initialized\n''}"
-        exit -1
-      fi
-
-      cat << EOF
-
-        Here is the ceremony plan :
-        - ${if expect_initialized then "Unseal the vault" else "Initialise the vault"}
-        ${if rotate_keys then ''- Rotate the vault keys
-        '' else ""}- Get a root token
-        ${pkgs.lib.strings.concatStringsSep "\n" (builtins.map
-            (script: ''- Run ${script.name} '')
-            scripts_to_run_in_order)}- Revoke the root token
-        - Seal the vault
-        - Validate that no root token is left
-        - Backup everything
-        - Poweroff the computer
-    EOF
-
-        confirm
-    
-        ${pkgs.lib.getExe (with orca_protocol; if expect_initialized then unseal else initialize-vault)}
-
         confirm
 
         ${if rotate_keys then ''

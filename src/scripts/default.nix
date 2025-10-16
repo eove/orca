@@ -33,9 +33,6 @@ in
   orca_scripts = rec {
     sudoer = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts ./orca-protocol/sudoer);
     root_only = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts ./orca-protocol/root_only);
-    orca_user = builtins.mapAttrs pkgs.writeShellScriptBin (
-      (packageScripts ./orca-protocol/orca_user) //
-      (wrapSudoerScript sudoer)
-    );
+    orca_user = builtins.mapAttrs pkgs.writeShellScriptBin (wrapSudoerScript sudoer);
   };
 }
