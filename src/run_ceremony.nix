@@ -91,7 +91,7 @@ let
 
         ${if rotate_keys then ''
               echo "Rotating the keys :"
-              ${pkgs.lib.getExe orca_protocol.rotate-seal-shares}
+              ${pkgs.lib.getExe orca_protocol.rotate-shares}
               confirm
             '' else ""}
 
