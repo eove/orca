@@ -17,7 +17,7 @@ let
     '')
     scripts_to_run_in_order);
   plan = pkgs.lib.strings.concatStringsSep "\n" (builtins.filter (l: l != "") ([
-    (if expect_initialized then "- Unseal the vault" else "- Initialise the vault")
+    (if expect_initialized then "- Unseal the vault and get a root token" else "- Initialise the vault and get a root token")
     (if rotate_keys then ''- Rotate the vault keys
     '' else "")
     (if has_actions then ''- Get a root token'' else "")
@@ -85,50 +85,44 @@ let
 
       confirm
   
-      ${pkgs.lib.getExe (with orca_protocol; if expect_initialized then unseal else initialize-vault)}
+      ${pkgs.lib.getExe (with orca_protocol; if expect_initialized then unseal else initialize-vault)} > /tmp/root_token
+      export VAULT_TOKEN=$(cat /tmp/root_token)
+      rm /tmp/root_token
 
-        confirm
+      function revoke() {
+        echo "Revoking root token..." >&2
+        if [ -n "$VAULT_TOKEN" ]
+        then
+          vault token revoke $VAULT_TOKEN
+        fi
+      }
+      trap revoke INT QUIT TERM EXIT ABRT
+      confirm
 
-        ${if rotate_keys then ''
-              echo "Rotating the keys :"
-              ${pkgs.lib.getExe orca_protocol.rotate-shares}
-              confirm
-            '' else ""}
+      ${ceremony_actions}
 
-        ${if has_actions then ''
-                  cat << EOF
-              I am going to get a root token in order to run the following scripts :
-              ${pkgs.lib.strings.concatStringsSep "\n" (builtins.map
-                  (script: ''- ${script.name} '')
-                  scripts_to_run_in_order)}
+      ${if rotate_keys then ''
+            echo "Rotating the keys :"
+            ${pkgs.lib.getExe orca_protocol.rotate-shares}
+            confirm
+          '' else ""}
 
-              The root token will be revoked right after that.
-    EOF
+      revoke
+      trap - INT QUIT TERM EXIT ABRT
 
-        confirm
- 
-        echo "Getting a root token :"
-        export VAULT_TOKEN=$(${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.get_root_token})
+      echo "Sealing the vault :"
+      ${pkgs.lib.getExe orca_protocol.seal}
+      echo "Done"
 
-        ${ceremony_actions}
+      echo "Counting left over tokens :"
+      ${pkgs.lib.getExe orca_protocol.count-tokens}
 
-        echo "Revoking the root token :"
-        vault token revoke $VAULT_TOKEN
-            '' else ""}
+      confirm
 
-        echo "Sealing the vault :"
-        ${pkgs.lib.getExe orca_protocol.seal}
-        echo "Done"
+      echo "Creating backup :"
+      ${pkgs.lib.getExe orca_protocol.backup}
 
-        echo "Counting left over tokens :"
-        ${pkgs.lib.getExe orca_protocol.count-tokens}
-
-        confirm
-
-        echo "Creating backup :"
-        ${pkgs.lib.getExe orca_protocol.backup}
-
-        confirm
+      confirm
   '';
 
 in

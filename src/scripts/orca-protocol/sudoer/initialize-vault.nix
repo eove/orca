@@ -15,19 +15,19 @@ in
   echo -n "Initializing vault..." >&2
   JSON="$(vault operator init -format "json" -key-shares $NB_SHARES -key-threshold $THRESHOLD -pgp-keys $PUBLIC_KEYS)"
 
-  echo $JSON | jq -r ".unseal_keys_b64" | ${save_shares_from_json}
-  echo " done"
+  echo $JSON | jq -r ".unseal_keys_b64" | ${save_shares_from_json} 
+  echo " done" >&2
 
   export VAULT_TOKEN=$(echo "$JSON" | jq -r ".root_token")
 
   function revoke() {
-    echo "Revoking root token..." >&2
-    vault token revoke $VAULT_TOKEN
+    echo "Revoking initialisation root token..." >&2
+    vault token revoke $VAULT_TOKEN >&2
   }
 
   trap revoke INT QUIT TERM EXIT ABRT
 
   ${unseal}
 
-  vault audit enable file file_path=${VAULT_STORAGE_PATH}/audit.log
+  vault audit enable file file_path=${VAULT_STORAGE_PATH}/audit.log >&2
 ''
