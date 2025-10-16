@@ -39,9 +39,10 @@ This allows to keep the state of your vault across reboots and is very close to 
 > [!Important]  
 > Because with a VM, we are very close to the real offline *ephemeral vault* setup, the orca configuration and actions should reflect what you want to test.
 
-Move to the `src/` subdirectory, and run:
+Run with:
 ```bash
-nix run
+chmod go-rwx testing/root_key
+nix run src/
 ```
 A virtual machine that will boot on the iso image (that was automatically mounted), and with a small disk will start.
 
