@@ -58,8 +58,6 @@ let
           fi
         '' else ""}
 
-      ${pkgs.lib.getExe orca_protocol.init-script}
-
       echo -e "\nExisting tokens : "
       ${count_tokens}
 
