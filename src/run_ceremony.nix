@@ -73,7 +73,7 @@ let
 
       if [ "$STATUS" != "${if expect_initialized then "true" else "false"}" ]
       then
-          echo -e ${ if expect_initialized then ''\nA Cvault was given so the vault should be initialized\n'' else ''\nNo Cvault was given so the vault should NOT be initialized\n''}
+          echo -e "${ if expect_initialized then ''\nA Cvault was given so the vault should be initialized\n'' else ''\nNo Cvault was given so the vault should NOT be initialized\n''}"
           exit -1
       fi
 
