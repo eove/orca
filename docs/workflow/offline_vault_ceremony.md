@@ -290,9 +290,7 @@ The machine of the 👀`observer` will be used during the whole ceremony to veri
 > All cables attached to the machine should be evaluated, especially USB-C power supplied.
 
 To check the key:
-- Before inserting the USB stick, the 📝`reporter` switches the physical button of the stick to *read-only*
-- *While switched to read-only*, the 👀`observer`'s computer is booted on the USB stick a first time, just to make sure that this machine can boot successfully on the *ephemeral vault*. When booting finishes, an error message will appear indicating that the USB stick is *read-only*, this is expected.
-- If successful, the 👀`observer`'s machine can be shutdown.
+- Before inserting the USB stick, the 📝`reporter` switches the physical button of the stick to *read-only*. The stick *must stay on read-only until it is successfully booted*
 - The following steps must be performed without booting on the USB stick, with the USB stick still in *read-only* mode, and directly on the installed Linux OS of the 👀`observer`'s computer.
 - An environment variable `Niso` should be set with the correct value, then the key is verified by the 💻`operator` (number of partitions, *N<sub>iso</sub>* checksum):
 ```bash
@@ -307,7 +305,6 @@ sudo fdisk -l /dev/sda &&\
 
 If the checksum *C<sub>iso</sub>* is correct:
 - Power off the 👀`observer`'s computer.
-- The 📝`reporter` switches the physical button of the key to *read/write*.
 - The 👀`observer`'s computer is rebooted once more on the USB stick.
 
 When booting *ephemeral vault*, a NixOS logo will appear with a boot menu mentionning `O.R.CA xxxx`.
@@ -336,6 +333,8 @@ vault is immediately booted ................................. PASS [] / FAIL []
 > If you get errors while booting, make sure your key has been switched to *read/write*.
 
 From now on, the ceremony will run automatically while stopping after each step to let the 👥`team members` time to validate everything is going as planned and fill the report.
+
+A message is printed on the screen indicating the the stick can now be switched to *read/write*.
 
 > [!Warning]
 > If anything goes wrong, the ceremony will stop and all data except the audit logs and the screen recording will be wiped.
@@ -410,6 +409,7 @@ The vault has been sealed ................................... PASS [] / FAIL []
 
 </td></table>
 
+
 ### Backup and offline vault private data checksum
 
 While the *ephemeral vault* is sealed, we have access to the vault private data inside the `VAULT_WRITABLE` partition.
@@ -421,9 +421,10 @@ The script will create a tar archive of the data in the `VAULT_WRITABLE` partiti
 The value *C<sub>vault</sub>* is displayed on the *ephemeral vault*'s terminal, together with its graphical representation as a QR code. It is a checksum over the vault private data folder.\
 All 👥`team members` should keep a copy of this *C<sub>vault</sub>* value. It will be used to verify that the backup was not altered when extracted from the USB stick.
 
+To finish the ceremony, the stick must be switched to *read-only* mode and stay that way **until the end of the ceremony's workflow**.
+
 The *ephemeral vault* will then switch off.
 
-The USB stick is then immediately switched to *read-only* mode **until the end of the ceremony's workflow**.
 One of the 👥`team members` inserts the USB stick on their own computer.
 
 > [!Tip]  
