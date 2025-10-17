@@ -303,7 +303,7 @@ sudo fdisk -l /dev/sda &&\
 > [!Note]  
 > The example above assumes `/dev/sda` is the Linux device name for the bootable live media. Please adapt to your setup.
 
-If the checksum *C<sub>iso</sub>* is correct:
+If the checksum *C<sub>iso</sub>* is correct and only the first partition is bootable:
 - Power off the 👀`observer`'s computer.
 - The 👀`observer`'s computer is rebooted once more on the USB stick.
 
