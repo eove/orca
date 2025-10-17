@@ -63,7 +63,7 @@
 
         run_ceremony = pkgs.writeShellScriptBin "run_ceremony" (import ./run_ceremony.nix (args // { inherit (pkgs) lib; inherit orca_user pkgs all_scripts; }));
         inherit (config.orca) latest_cvault;
-        has_dev_hack = config.orca.environment-target == "dev";
+        has_dev_hack = config.orca.has_dev_hack;
         # record everything that happens on the terminal
         record_session = pkgs.writeShellScriptBin "record_session" ''
               C_VAULT=$(${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.compute_c_vault})
