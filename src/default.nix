@@ -117,12 +117,19 @@
               mkdir -p ${RECORDINGS_FOLDER}
               ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${RECORDINGS_FOLDER}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} ${pkgs.lib.getExe run_ceremony}"
 
+              DEVICE=$(df  ${VAULT_STORAGE_PATH} | tail -1 | cut -d " " -f 1 | xargs basename)
+              umount ${VAULT_STORAGE_PATH}
               echo "Switch the stick to read-only to finish the ceremony"
-              while test -w ${VAULT_STORAGE_PATH}
+              RO_FILE="/sys/class/block/''${DEVICE}/ro"
+              ${if has_dev_hack then ''
+                echo "reading from $RO_FILE"
+                cat $RO_FILE
+                read -s
+              ''
+              else ''''}
+              until [ $(cat /sys/class/block/''${DEVICE}/ro) -eq  ${if has_dev_hack then "0" else "1"} ]
               do
                 sleep 1
-              ${if has_dev_hack then ""
-              else "mount -o remount ${VAULT_STORAGE_PATH} || mount -o remount,ro ${VAULT_STORAGE_PATH}"}
               done
               poweroff
         '';
