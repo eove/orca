@@ -64,10 +64,16 @@ let
       ${count_tokens}
 
       echo -e "\nWaiting for vault to be available..."
-      sleep 2
+      function check_vault_started() {
+          bash -c 'vault status &> /dev/null; test $? -ne 1'
+      }
+      until check_vault_started
+      do
+         sleep 1
+      done
 
       echo "Vault status :"
-      vault status || true
+      vault status || true # vault status returns 2 when sealed
   
       STATUS=$(vault status -format "json" | jq -r .initialized)
 
