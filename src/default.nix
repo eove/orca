@@ -7,6 +7,7 @@
     ({ config, ... }: {
       orca = {
         environment-target = "dev";
+        has_dev_hack = false;
         latest_cvault = null;
         rotate_keys = false;
         actions_in_order = [
@@ -37,7 +38,6 @@
         };
       in
       {
-        orca.has_dev_hack = true;
         environment.systemPackages = [
           pkgs.vim
         ] ++ (builtins.attrValues dev-scripts);
