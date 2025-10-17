@@ -43,11 +43,15 @@ This whole chapter has to be done *before* the day of the ceremony.
 > [!Important]  
 > All 👥`team members` should have a hardware token (Yubikey) that secures their unseal share. They will need this to both unseal the vault and sign the report.
 
-The 📢`organiser` should communicate to all 👥`team members` the list of operations (and therefore scripts) that will be performed during the ceremony. The aforementionned scripts should be commited to the `src/scripts/` directory of this repository prior to the verification phase.
+The 📢`organiser` should communicate to all 👥`team members` the list of operations (and therefore scripts) that will be performed during the ceremony. The aforementionned scripts should be commited to the `src/scripts/actions` directory of this repository prior to the verification phase.
 
-#### Selecting the vault environment
+#### Configuring the ceremony
 
 The 📢`organiser` should know which environment will be worked on (`prod`/`preprod`), modify the value of `orca.environment-target` in [src/default.nix](../../src/default.nix) accordingly, and notify this environment to all 👥`team members`.
+
+The 📢`organiser` should get the value of the cvault present in the last report and set the value of `orca.latest_cvault` in [src/default.nix](../../src/default.nix) accordingly. If the ceremony is the first one for this environment, then `null` should be set. The 📢`organiser` is encourage to verify the validity of the report in the same way the 👥`team members` [will do during the verification phase](#verification-of-the-last-ceremonys-report).
+
+The 📢`organiser` should know what will be done during the ceremony and set the values of `orca.actions_in_order` and `orca.rotate_keys` in [src/default.nix](../../src/default.nix) accordingly.
 
 #### Updating the version of the offline vault
 
@@ -55,7 +59,8 @@ The software we are using to run the *ephemeral vault* should not be obsolete (t
 
 Check if there is any new stable release that is more recent than what is specified in [src/flake.nix](../../../src/flake.nix)'s `inputs.nixpkgs.url`. If so, we should try to upgrade to the lastest stable release.
 
-Try to update the `flake.lock` to the most up-to-date packages by running:
+If a new stable release exists, then upgrade it in the input part of the flake.
+Otherwise update the `flake.lock` to the most up-to-date packages by running:
 ```bash
 cd src/
 nix flake update
@@ -122,8 +127,8 @@ git diff <previous ceremony trusted commit> src/
 ```
 
 > [!Important]  
-> * The environment (prod/preprod) that has been [selected when organising the ceremony](#selecting-the-vault-environment) should be verified.
-> * All content within `src/` should only reference files also within `src/`.
+> * The only changes you see should be in the orca's nix configuration and in the actions scripts in `src/scripts/actions`.
+> * The ceremony's configuration (environment, cvault, etc…) that [has been set by the 📢`organiser`](#configuring-the-ceremony) should be verified.
 > * Any change displayed by the diff should be considered legitimate to you.
 > * During this step, 👥`team members` will also review and understand all the scripts that are planned for execution during the ceremony.
 > * Scripts should never ask the offline topmost root CA to sign anything that doesn't strictly remains in the offline vault (no external CSR).
@@ -153,7 +158,7 @@ Communicate the values of *N<sub>iso</sub>* and *C<sub>iso</sub>* to the other �
 
 #### Creation of a bootable live media for the vault
 
-The bootable live media should be created by one 👥`team member` *before* the day of the ceremony. This person will be referred to as the `stick owner`.
+The bootable live media should be created by one 👥`team member` *before* the day of the ceremony. This person will be the 📝`reporter` during the ceremony.
 
 {{#include ../offline/creating_a_usb_stick.md}}
 
@@ -175,11 +180,13 @@ Fetch offline CA private data backup for the corresponding environment (eg: prod
 These 3 persons should be **physically present during the whole ceremony**, and **have their hardware token with them**.
 
 1. The first role is the `operator` (💻).\
-   This person is typing commands on a terminal on the *ephemeral vault*, following their own copy of this workflow document and the list of scripts that have been planned to be executed.
+   This person is the one typing the commands during the verification phase and manipulates the `observer`'s computer.\
+   They follow their own copy of this workflow document.
 
 2. The second role is the `reporter` (📝).\
    This person has their own copy of this ceremony workflow document.\
-   During the whole ceremony, this person will fill in the sections framed with a <span style="border:2px dotted dodgerblue;padding-left:2px;padding-right:2px;">dotted-blue border</span>.\
+   This person **must** be the person that created the USB stick.\
+   During the whole ceremony, this person will fill in the sections framed with a <span style="border:2px dotted dodgerblue;padding-left:2px;padding-right:2px;">dotted-blue border</span>.
 
 > [!Tip]
 > To extract these sections from the html version of the ceremony's workflow, use the following filter:\
@@ -189,8 +196,8 @@ These 3 persons should be **physically present during the whole ceremony**, and 
    This person should be [randomly](https://www.random.org/lists/) picked among all share holders except the two other 👥`team members`. The random draw will be performed by either the 💻`operator` or 📝`reporter`.\
    The 👀`observer` will lend their computer to run the *ephemeral vault*. This machine must have a Linux x86_64 OS installed.\
    They must be sitting next to the 💻`operator`. Gets the validated ceremony workflow from the 💻`operator`, and validates that the ceremony is done *exactly* as documented.\
-   Make sure that this computer has more than one USB port available:\
-   * one without adapter nor hub. This port will be used for the removable media during the whole ceremony.\
+   Make sure that this computer has more than one USB port available:
+   * one without adapter nor hub. This port will be used for the O.R.CA stick during the whole ceremony.
    * one or more USB port that fits the USB format of the Yubikeys (USB-A, USB-C etc.).
 
 For the rest of the procedure below, you can consider references to 👥`team members` as a synonym for the group of the 3 roles above.
@@ -249,14 +256,24 @@ The sha256 checksum of the *N* verifiable bytes is (value of *Ciso*):
 The review of changes/content of the bootable live media has been performed by:
 the operator ................................................ PASS [] / FAIL []
 the reporter ................................................ PASS [] / FAIL []
-All (possible) changes are legitimate ....................... PASS [] / FAIL []
+All changes are legitimate ....................... PASS [] / FAIL []
+
+A key rotation will be performed (Yes/No) : ...............
+
+Scripts that will be executed during the maintenance phase:
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
 
 A bootable live media has been generated for this ceremony ........... PASS [] / FAIL []
-Identity of the team member who brings the bootable media (the stick owner):
-...................................................... the operator [] / the reporter []
+The team member who brings the bootable media is the reporter: ....... PASS [] / FAIL []
 
 The offline CA private data has been restored from the following archive file:
 ...............................................................................
+
 ```
 
 </td></table>
@@ -266,18 +283,16 @@ The offline CA private data has been restored from the following archive file:
 The machine of the 👀`observer` will be used during the whole ceremony to verify and boot the *ephemeral vault*. That machine can be any x86_64 PC able to boot on a live media.
 
 > [!Warning]  
-> Only the `stick owner` is allowed to touch the bootable live media.
+> Only the 📝`reporter` is allowed to touch the bootable live media.
 
 > [!Warning]  
 > The *ephemeral vault* machine should not be connected to any IP network.  
 > All cables attached to the machine should be evaluated, especially USB-C power supplied.
 
 To check the key:
-- Before inserting the USB stick, the `stick owner` switches the physical button of the key to *read-only*
-- *While switched to read-only*, the 👀`observer`'s computer is booted on the USB stick a first time, just to make sure that this machine can boot successfully on the *ephemeral vault*. When booting finishes, an error message will appear indicating that the USB stick is *read-only*, this is expected.
-- If successful, the 👀`observer`'s machine can be shutdown.
+- Before inserting the USB stick, the 📝`reporter` switches the physical button of the stick to *read-only*. The stick *must stay on read-only until it is successfully booted*
 - The following steps must be performed without booting on the USB stick, with the USB stick still in *read-only* mode, and directly on the installed Linux OS of the 👀`observer`'s computer.
-- An environment variable `Niso` should be set with the correct value, then the key is verified by the 👀`observer` (number of partitions, *N<sub>iso</sub>* checksum):
+- An environment variable `Niso` should be set with the correct value, then the key is verified by the 💻`operator` (number of partitions, *N<sub>iso</sub>* checksum):
 ```bash
 sudo fdisk -l /dev/sda &&\
  sudo dd if=/dev/sda bs=512 skip=1 count=$(expr $Niso / 512) |\
@@ -288,9 +303,8 @@ sudo fdisk -l /dev/sda &&\
 > [!Note]  
 > The example above assumes `/dev/sda` is the Linux device name for the bootable live media. Please adapt to your setup.
 
-If the checksum *C<sub>iso</sub>* is correct:
+If the checksum *C<sub>iso</sub>* is correct and only the first partition is bootable:
 - Power off the 👀`observer`'s computer.
-- The `stick owner` switches the physical button of the key to *read/write*.
 - The 👀`observer`'s computer is rebooted once more on the USB stick.
 
 When booting *ephemeral vault*, a NixOS logo will appear with a boot menu mentionning `O.R.CA xxxx`.
@@ -315,19 +329,21 @@ vault is immediately booted ................................. PASS [] / FAIL []
 
 </td></table>
 
-You will have access to a console-only environment.
-
 > [!Note]  
-> If you get errors while booting (no shell), make sure your key has been switched to *read/write*.
+> If you get errors while booting, make sure your key has been switched to *read/write*.
 
-> [!Tip]  
-> All the subsequent commands have to be entered directly on the *ephemeral vault*'s terminal, they are framed with a <span style="border:2px solid red;padding-left:2px;padding-right:2px;">red border</span>
+From now on, the ceremony will run automatically while stopping after each step to let the 👥`team members` time to validate everything is going as planned and fill the report.
+
+A message is printed on the screen indicating the the stick can now be switched to *read/write*.
+
+> [!Warning]
+> If anything goes wrong, the ceremony will stop and all data except the audit logs and the screen recording will be wiped.
 
 ### Checking boot-time verifications
 
 In order to be sure that offline private data has not been tampered with (or downgraded to an old state), at boot, we compute a cryptographically secure checksum on the vault private data *C<sub>vault</sub>*, that should match the *C<sub>vault</sub>* announced in the previous ceremony's report.
 
-Before the very first shell prompt after booting, that computed checksum is displayed on the screen, as well as the existing root token count (that should be 0) and the vault status.
+After booting, that computed checksum is displayed on the screen, as well as the existing root token count (that should be 0) and the vault status.
 
 <table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
 
@@ -362,54 +378,25 @@ Share holders that participated to the unseal process:
 
 </td></table>
 
-### Maintenance operations on the offline CAs (optional)
+### Maintenance operations on the offline CAs
 
-> [!Warning]  
-> In the maintenance phase, the 👥`team members` should make sure only the planned scripts (that have been reviewed during the preparation phase) are executed.
-
-The 📝`reporter` communicates the list of scripts that will be run to the 👀`observer` (who did not know about the ceremony before).
-
-> [!Important]  
-> If during the maintenance operation, something goes wrong, the ceremony will be cancelled and the 👥`team members` must destroy all data from `VAULT_WRITABLE` partition, and a new ceremony will start over again from the backup.
+Each maintenance script (key rotation, csr signature, CA creation, ...) will now be performed.
 
 <table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
 
 ```report
-Scripts executed during the maintenance phase:
-...............................................................................
-...............................................................................
-...............................................................................
-...............................................................................
-...............................................................................
-...............................................................................
-Only the scripts initially planned have been executed ....... PASS [] / FAIL []
+All maintenance script has been executed successfully ....... PASS [] / FAIL []
 ```
 
 </td></table>
 
 ## Closing down the ceremony
 
-To close the ceremony, we will perform a serie of actions leading to a safe shutdown of the *ephemeral vault* and a backup of the state of the vault.
+To close the ceremony, a serie of actions will be performed leading to a safe shutdown of the *ephemeral vault* and a backup of the state of the vault.
 
 ### Root token revocation check
 
-First, we will seal the vault:
-<table width=100% style="border:2px solid red;"><td style="padding:0;">
-
-```bash
-seal
-```
-
-</td></table>
-
-We now need to make sure there is no existing root token anymore, by running the following command on the *ephemeral vault*:
-<table width=100% style="border:2px solid red;"><td style="padding:0;">
-
-```bash
-count-tokens
-```
-
-</td></table>
+First, the the vault will be sealed. Then the number of remaining root tokens will be displayed.
 
 `0` should be displayed
 
@@ -422,36 +409,22 @@ The vault has been sealed ................................... PASS [] / FAIL []
 
 </td></table>
 
+
 ### Backup and offline vault private data checksum
 
 While the *ephemeral vault* is sealed, we have access to the vault private data inside the `VAULT_WRITABLE` partition.
 
 This data needs to be backed-up to retain the last state of the offline vault.
 
-On the *ephemeral vault* terminal, run:
-<table width=100% style="border:2px solid red;"><td style="padding:0;">
-
-```bash
-backup
-```
-
-</td></table>
-
 The script will create a tar archive of the data in the `VAULT_WRITABLE` partition.
 
 The value *C<sub>vault</sub>* is displayed on the *ephemeral vault*'s terminal, together with its graphical representation as a QR code. It is a checksum over the vault private data folder.\
 All 👥`team members` should keep a copy of this *C<sub>vault</sub>* value. It will be used to verify that the backup was not altered when extracted from the USB stick.
 
-You can now shutdown the vault:
-<table width=100% style="border:2px solid red;"><td style="padding:0;">
+To finish the ceremony, the stick must be switched to *read-only* mode and stay that way **until the end of the ceremony's workflow**.
 
-```bash
-poweroff
-```
+The *ephemeral vault* will then switch off.
 
-</td></table>
-
-The USB stick is then immediately switched to *read-only* mode **until the end of the ceremony's workflow**.
 One of the 👥`team members` inserts the USB stick on their own computer.
 
 > [!Tip]  
