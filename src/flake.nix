@@ -20,7 +20,7 @@
       in
       {
         packages = {
-          iso-offline = import ./. (inputs // { inherit system pkgs ORCA_DISK_NAME; });
+          iso-offline = import ./orca-iso.nix (inputs // { inherit system pkgs ORCA_DISK_NAME; });
         };
         apps = {
           create-usb-vault = import ./create-usb.nix { inherit pkgs ORCA_DISK_NAME; isoImage = self.packages.${system}.iso-offline; };
