@@ -12,10 +12,10 @@
 
   outputs = { flake-utils, orca, ... }@inputs:
     (flake-utils.lib.eachDefaultSystem (system:
-  {
-    apps = {
-      default = orca.lib.x86_64-linux.create-stick (import ./orca-config.nix);
-    };
-  }
-  ));
+      {
+        apps = {
+          default = orca.lib.x86_64-linux.create-stick (import ./orca-config.nix);
+        };
+      }
+    ));
 }

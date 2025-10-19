@@ -21,7 +21,6 @@
       {
         lib = import ./src/lib.nix (inputs // { inherit system pkgs ORCA_DISK_NAME; });
         apps = {
-          create-stick = import ./example/orca-iso.nix {orca = self;};
           default =
             let
               vmScript = pkgs.writeShellScriptBin "vmScript" ''
