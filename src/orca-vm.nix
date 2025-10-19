@@ -26,6 +26,8 @@ in
           has_dev_hack = true;
           latest_cvault = null;
           rotate_keys = false;
+          actions_folder = ./scripts/actions;
+          share_holder_keys_folder = ./share_holders_keys;
           actions_in_order = [
             #"create-root-CA"
             #"create-intermediate-CA"
@@ -33,6 +35,8 @@ in
             #"revoke-certificate"
           ];
         };
+      })
+      ({ config, ... }: {
         environment.systemPackages = [
           pkgs.vim
         ] ++ (builtins.attrValues dev-scripts);

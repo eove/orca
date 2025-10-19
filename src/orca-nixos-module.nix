@@ -99,6 +99,12 @@
           rotate_keys = mkOption {
             type = types.bool;
           };
+          actions_folder = mkOption {
+            type = types.path;
+          };
+          share_holder_keys_folder = mkOption {
+            type = types.path;
+          };
           writable_partition_name = mkOption {
             type = types.str;
             default = "VAULT_WRITABLE";
@@ -144,7 +150,7 @@ If it should indeed be allowed to run as root, please double check them for secu
               RECORDINGS_FOLDER = "${ORCA_FOLDER}/recordings";
               VAULT_ADDR = "https://localhost:8200";
               VAULT_CACERT = "${orca_user.home}/cert.pem";
-              PUBLIC_KEYS_FOLDER = "${./share_holders_keys/${config.orca.environment-target}}";
+              PUBLIC_KEYS_FOLDER = "${config.orca.share_holder_keys_folder}/${config.orca.environment-target}";
               SHARES_FOLDER = "${ORCA_FOLDER}/shares/${ENVIRONMENT_TARGET}";
               AIA_FOLDER = "${OUTPUT_FOLDER}/aia/${ENVIRONMENT_TARGET}";
               CERTIFICATE_FOLDER = "${OUTPUT_FOLDER}/certificates/${ENVIRONMENT_TARGET}";
