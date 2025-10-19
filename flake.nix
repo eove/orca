@@ -20,7 +20,7 @@
       in
       {
         packages = {
-          iso-offline = import ./src/orca-iso.nix (inputs // { inherit system pkgs ORCA_DISK_NAME; });
+          iso-offline = import ./example/orca-iso.nix (inputs // { inherit system pkgs ORCA_DISK_NAME; });
         };
         apps = {
           create-usb-vault = import ./src/create-usb.nix { inherit pkgs ORCA_DISK_NAME; isoImage = self.packages.${system}.iso-offline; };
@@ -35,7 +35,7 @@
                 else
                   echo "Using existing $VAULT_WRITABLE_DISK"
                 fi
-                ${pkgs.lib.getExe (import ./src/orca-vm.nix (inputs // { inherit system pkgs ORCA_DISK_NAME;}))}
+                ${pkgs.lib.getExe (import ./testing/orca-vm.nix (inputs // { inherit system pkgs ORCA_DISK_NAME;}))}
               '';
             in
             {

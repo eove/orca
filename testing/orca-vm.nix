@@ -26,8 +26,8 @@ in
           has_dev_hack = true;
           latest_cvault = null;
           rotate_keys = false;
-          actions_folder = ./scripts/actions;
-          share_holder_keys_folder = ./share_holders_keys;
+          actions_folder = ../example/actions;
+          share_holder_keys_folder = ../example/share_holders_keys;
           actions_in_order = [
             #"create-root-CA"
             #"create-intermediate-CA"
@@ -45,7 +45,7 @@ in
           settings.PermitRootLogin = "yes";
         };
         users.users.root = {
-          openssh.authorizedKeys.keyFiles = [ ../testing/root_key.pub ];
+          openssh.authorizedKeys.keyFiles = [ ./root_key.pub ];
         };
         networking = {
           useDHCP = pkgs.lib.mkForce true;
