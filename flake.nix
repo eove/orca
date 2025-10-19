@@ -19,11 +19,9 @@
         ORCA_DISK_NAME = "VAULT_WRITABLE";
       in
       {
-        packages = {
-          iso-offline = import ./example/orca-iso.nix (inputs // { inherit system pkgs ORCA_DISK_NAME; });
-        };
+        lib = import ./src/lib.nix (inputs // { inherit system pkgs ORCA_DISK_NAME; });
         apps = {
-          create-usb-vault = import ./src/create-usb.nix { inherit pkgs ORCA_DISK_NAME; isoImage = self.packages.${system}.iso-offline; };
+          create-stick = import ./example/orca-iso.nix {orca = self;};
           default =
             let
               vmScript = pkgs.writeShellScriptBin "vmScript" ''
