@@ -12,17 +12,17 @@ let
           let
             dev-scripts = builtins.mapAttrs pkgs.writeShellScriptBin {
               plug-simulated-yubikey = ''
-                if test $# -ne 1; then
-                  echo "This script requires the number of the yubikey to insert as argument" >&2
-                  exit 1
-                fi
-                if ! test -e ${config.orca.vm.simulated_yubikeys_folder}/yubikey''${1}/.gnupg; then
-                  echo "Invalid yubikey number" >&2
-                  exit 1
-                fi
-                rm -rf ~/.gnupg 2> /dev/null
-                cp -r ${config.orca.vm.simulated_yubikeys_folder}/yubikey''${1}/.gnupg/ ~
-                chmod +w,og-rwx -R ~/.gnupg
+                                if test $# -ne 1; then
+                                  echo "This script requires the number of the yubikey to insert as argument" >&2
+                                  exit 1
+                                fi
+                                if ! test -e ${config.orca.vm.simulated_yubikeys_folder}/yubikey''${1}/.gnupg; then
+                                  echo "Invalid yubikey number" >&2
+                                  exit 1
+                                fi
+                                rm -rf ~/.gnupg 2> /dev/null
+                                cp -r ${config.orca.vm.simulated_yubikeys_folder}/yubikey''${1}/.gnupg/ ~
+                                chmod +w,og-rwx -R ~/.gnupg
               '';
             };
           in
@@ -44,7 +44,7 @@ let
               "${nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
             ];
             config = {
-              assertions = [
+                assertions = [
                 {
                   assertion = config.orca.environment-target == "dev";
                   message = "O.R.CA vm can only be started in dev environment";
