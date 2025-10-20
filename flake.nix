@@ -11,9 +11,9 @@
       nixosModules = import ./src/orca-nixos-module.nix inputs;
       templates = {
         default = {
-            path = ./example;
-            description = "O.R.CA ceremony creation";
-          };
+          path = ./example;
+          description = "O.R.CA ceremony creation";
+        };
       };
     }) //
     (flake-utils.lib.eachDefaultSystem (system:
@@ -27,24 +27,7 @@
       {
         lib = import ./src/lib.nix (inputs // { inherit system pkgs ORCA_DISK_NAME; });
         apps = {
-          default =
-            let
-              vmScript = pkgs.writeShellScriptBin "vmScript" ''
-                export VAULT_WRITABLE_DISK="$(pwd)/orca-testing-disk.raw"
-                if [ ! -f "$VAULT_WRITABLE_DISK" ]; then
-                  echo "Creating a new disk at $VAULT_WRITABLE_DISK"
-                  ${pkgs.qemu}/bin/qemu-img create -f raw "$VAULT_WRITABLE_DISK" 500M
-                  mkfs.ext4 -L "${ORCA_DISK_NAME}" -F "$VAULT_WRITABLE_DISK"
-                else
-                  echo "Using existing $VAULT_WRITABLE_DISK"
-                fi
-                ${pkgs.lib.getExe (import ./testing/orca-vm.nix (inputs // { inherit system pkgs ORCA_DISK_NAME;}))}
-              '';
-            in
-            {
-              type = "app";
-              program = "${pkgs.lib.getExe vmScript}";
-            };
+          default = self.lib."${system}".run-in-vm (import ./testing/orca-config.nix);
         };
         devShells = {
           default = pkgs.mkShell (
