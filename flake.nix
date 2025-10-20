@@ -9,6 +9,12 @@
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
     ({
       nixosModules = import ./src/orca-nixos-module.nix inputs;
+      templates = {
+        default = {
+            path = ./example;
+            description = "O.R.CA ceremony creation";
+          };
+      };
     }) //
     (flake-utils.lib.eachDefaultSystem (system:
       let
