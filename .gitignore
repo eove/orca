@@ -9,3 +9,4 @@
 *.certificate
 *.pem
 book
+example/flake.lock
