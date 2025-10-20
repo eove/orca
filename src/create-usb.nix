@@ -6,7 +6,7 @@ let
     function force_unmount(){
       for MOUNTED in $(${pkgs.util-linux}/bin/lsblk -n -o MOUNTPOINTS $TARGET_DEVICE)
       do
-        umount $MOUNTED
+        umount "$MOUNTED"
       done
     }
     force_unmount
