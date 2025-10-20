@@ -1,5 +1,5 @@
 {
-  environment-target = "dev";
+  environment-target = "preprod";
   latest_cvault = null;
   rotate_keys = false;
   actions_folder = ./actions;
