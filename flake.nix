@@ -85,6 +85,27 @@
         };
         devShells = {
           default = pkgs.mkShell (
+            let
+              to-qemu = "${pkgs.lib.getExe pkgs.socat} - unix-connect:/tmp/orca-monitor-socket";
+              switch-usb-rw = value: ''
+                echo device_del vault_writable | ${to-qemu}
+                sleep 1
+                echo drive_add 42 if=none,id=usbstick,format=raw,file=$(pwd)/orca-testing-disk.raw,read-only=${value} | ${to-qemu}
+                sleep 1
+                echo device_add usb-storage,bus=xhci.0,drive=usbstick,removable=on,id=vault_writable | ${to-qemu}
+              '';
+              switch-to-readwrite = pkgs.writeShellScriptBin "switch-to-readwrite" ''
+                ${switch-usb-rw "off"}
+              '';
+              switch-to-readonly = pkgs.writeShellScriptBin "switch-to-readonly" ''
+                ${switch-usb-rw "on"}
+              '';
+              plug-simulated-yubikey = pkgs.writeShellScriptBin "plug-simulated-yubikey" ''
+                SSH_KEY=$(pwd)/testing/root_key
+                chmod 600 $SSH_KEY
+                ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i "$SSH_KEY" plug-simulated-yubikey "$@"
+              '';
+            in
             {
               packages = with pkgs; [
                 vault-bin
@@ -95,6 +116,10 @@
                 mdbook-mermaid
                 self.packages."${system}".md-to-html
                 asciinema
+                switch-to-readwrite
+                switch-to-readonly
+                plug-simulated-yubikey
+                socat
               ];
             }
           );

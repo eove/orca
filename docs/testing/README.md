@@ -55,17 +55,17 @@ A virtual machine that will boot on the iso image (that was automatically mounte
 
 ### Simulating a key with a read/write switch
 
-At the very beginning, in "dev" env, you have a prompt allowing you to remount the disk as read only.
+At the very beginning, you have a prompt allowing you to switch the stick to read-write.
 
-You can do so with :
+You can do in a terminal **on the host machine**, at the root of O.R.CA, with:
 
 ```bash
-ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key mount -o remount,ro /var/lib/vault
+switch-to-readwrite
 ```
 
-To switch the "key" to read/write use :
+To switch the "key" to readonly use :
 ```bash
-ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key mount -o remount /var/lib/vault
+switch-to-readonly
 ```
 
 ### Simulating Yubikeys
@@ -77,7 +77,7 @@ While a yubikey should be inserted in real life, in the VM, you can simulate.
 When asked to plug a yubikey, in a terminal **on the host machine**, at the root of O.R.CA, run:
 
 ```bash
-ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key plug-simulated-yubikey <n>
+plug-simulated-yubikey <n>
 ```
 
 where `<n>` is the number (1 to 4) of the yubikey you want to insert.

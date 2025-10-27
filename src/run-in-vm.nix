@@ -74,13 +74,11 @@ let
                 forwardPorts = [{ host.port = 2222; guest.port = 22; }];
                 qemu = {
                   options = [
-                    "-bios ${pkgs.OVMF.fd}/FV/OVMF.fd"
-                  ];
-                  drives = [
-                    {
-                      file = ''''${VAULT_WRITABLE_DISK}'';
-                      driveExtraOpts = { format = "raw"; };
-                    }
+                    "-bios" "${pkgs.OVMF.fd}/FV/OVMF.fd"
+                    "-monitor" "unix:/tmp/orca-monitor-socket,server,nowait"
+                    ''-drive if=none,id=usbstick,format=raw,file=''${VAULT_WRITABLE_DISK},read-only=on''
+    "-device nec-usb-xhci,id=xhci"
+    "-device usb-storage,bus=xhci.0,drive=usbstick,id=vault_writable,removable=on"
                   ];
                 };
               };
