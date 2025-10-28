@@ -100,10 +100,15 @@
               switch-to-readonly = pkgs.writeShellScriptBin "switch-to-readonly" ''
                 ${switch-usb-rw "on"}
               '';
-              plug-simulated-yubikey = pkgs.writeShellScriptBin "plug-simulated-yubikey" ''
-                SSH_KEY=$(pwd)/testing/root_key
-                chmod 600 $SSH_KEY
-                ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i "$SSH_KEY" plug-simulated-yubikey "$@"
+              plug-simulated-hardware-token = pkgs.writeShellScriptBin "plug-simulated-hardware-token" ''
+                  set -x
+                  if test $# -ne 1; then
+                    echo "This script requires the number of the hardware token to insert as argument" >&2
+                    exit 1
+                  fi
+                echo device_del canokey | ${to-qemu}
+                sleep 1
+                echo device_add canokey,file=$(pwd)/testing/simulated-hardware-tokens/canokey''${1},id=canokey | ${to-qemu}
               '';
             in
             {
@@ -118,7 +123,7 @@
                 asciinema
                 switch-to-readwrite
                 switch-to-readonly
-                plug-simulated-yubikey
+                plug-simulated-hardware-token
                 socat
               ];
             }

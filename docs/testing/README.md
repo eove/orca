@@ -68,13 +68,13 @@ To switch the "key" to readonly use :
 switch-to-readonly
 ```
 
-### Simulating Yubikeys
+### Simulating Hardware Tokens
 
 > [!Warning]
 > This is only available if you are using the `dev` environment-target
 
-While a yubikey should be inserted in real life, in the VM, you can simulate.
-When asked to plug a yubikey, in a terminal **on the host machine**, at the root of O.R.CA, run:
+While a hardware token should be inserted in real life, in the VM, you can simulate.
+When asked to plug a hardware token, in a terminal **on the host machine**, at the root of O.R.CA, run:
 
 ```bash
 plug-simulated-yubikey <n>
@@ -82,7 +82,7 @@ plug-simulated-yubikey <n>
 
 where `<n>` is the number (1 to 4) of the yubikey you want to insert.
 Then continue in the VM as in real life.
-The passphrase for the simulated yubikeys is `test`
+The passphrase for the simulated yubikeys is `hwtoken`
 
 ### SSH to the VM
 

@@ -10,9 +10,11 @@
 
       run_ceremony = pkgs.writeShellScriptBin "run_ceremony" (import ./run_ceremony.nix (args // { inherit (pkgs) lib; inherit orca_user pkgs all_scripts; }));
       inherit (config.orca) latest_cvault;
-      has_dev_hack = config.orca.has_dev_hack;
       # record everything that happens on the terminal
       record_session = pkgs.writeShellScriptBin "record_session" ''
+            mkdir -p ~/.gnupg
+            echo "disable-ccid" > ~/.gnupg/scdaemon.conf
+            chmod 600 ~/.gnupg
             C_VAULT=$(${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.compute_c_vault})
             echo "Cvault : "
             ${ if latest_cvault != null then ''
@@ -102,10 +104,6 @@
             type = types.str;
             default = "VAULT_WRITABLE";
           };
-          has_dev_hack = mkOption {
-            type = types.bool;
-            default = false;
-          };
         };
       };
       config = {
@@ -124,10 +122,6 @@ It is possible that they were saved in the wrong folder.
 
 If it should indeed be allowed to run as root, please double check them for security risk and then add it's name to the allowed_scripts above.
               '';
-            }
-            {
-              assertion = config.orca.environment-target == "dev" || config.orca.has_dev_hack == false;
-              message = "Dev hack cannot be active on non dev envirnment";
             }
           ];
         environment = {
@@ -169,6 +163,12 @@ If it should indeed be allowed to run as root, please double check them for secu
           users.root.initialHashedPassword = "";
         };
 
+        hardware.gpgSmartcards.enable = true;
+            services = {
+      pcscd = {
+        enable = true;
+      };
+    };
 
         security = {
           # Don't require sudo/root to `reboot` or `poweroff`.

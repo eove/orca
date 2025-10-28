@@ -7,16 +7,12 @@ in
   pkill gpg-agent || true
   echo "Next share holder, please plug your hardware token and press enter" >&2
   read -s
-      ${ if env == "dev" then ''
-  ID=$(gpg --list-keys --keyid-format 0xlong | grep "cv25519/" | sed -E -e 's|.*cv25519/0x([^ ]+).*|\1|')
-      '' else ''
   while ! gpg --card-status &> /dev/null
   do
     pkill gpg-agent || true
     sleep 1
   done
   ID=$(gpg --card-status --keyid-format 0xlong | grep "cv25519/" | sed -E -e 's|.*cv25519/0x([^ ]+).*|\1|')
-    ''}
 
   if [ -n "$ID" ]
   then
