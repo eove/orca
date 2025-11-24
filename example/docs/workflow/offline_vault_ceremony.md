@@ -43,26 +43,25 @@ This whole chapter has to be done *before* the day of the ceremony.
 > [!Important]  
 > All 👥`team members` should have a hardware token (Yubikey) that secures their unseal share. They will need this to both unseal the vault and sign the report.
 
-The 📢`organiser` should communicate to all 👥`team members` the list of operations (and therefore scripts) that will be performed during the ceremony. The aforementionned scripts should be commited to the `src/scripts/actions` directory of this repository prior to the verification phase.
+The 📢`organiser` should communicate to all 👥`team members` the list of operations (and therefore scripts) that will be performed during the ceremony. The aforementionned scripts should be commited to the `actions` directory of this repository prior to the verification phase.
 
 #### Configuring the ceremony
 
-The 📢`organiser` should know which environment will be worked on (`prod`/`preprod`), modify the value of `orca.environment-target` in [src/default.nix](../../src/default.nix) accordingly, and notify this environment to all 👥`team members`.
+The 📢`organiser` should know which environment will be worked on (`prod`/`preprod`), modify the value of `orca.environment-target` in [orca-config.nix](../../orca-config.nix) accordingly, and notify this environment to all 👥`team members`.
 
-The 📢`organiser` should get the value of the cvault present in the last report and set the value of `orca.latest_cvault` in [src/default.nix](../../src/default.nix) accordingly. If the ceremony is the first one for this environment, then `null` should be set. The 📢`organiser` is encourage to verify the validity of the report in the same way the 👥`team members` [will do during the verification phase](#verification-of-the-last-ceremonys-report).
+The 📢`organiser` should get the value of the cvault present in the last report and set the value of `orca.latest_cvault` in [orca-config.nix](../../orca-config.nix) accordingly. If the ceremony is the first one for this environment, then `null` should be set. The 📢`organiser` is encourage to verify the validity of the report in the same way the 👥`team members` [will do during the verification phase](#verification-of-the-last-ceremonys-report).
 
-The 📢`organiser` should know what will be done during the ceremony and set the values of `orca.actions_in_order` and `orca.rotate_keys` in [src/default.nix](../../src/default.nix) accordingly.
+The 📢`organiser` should know what will be done during the ceremony and set the values of `orca.actions_in_order` and `orca.rotate_keys` in [orca-config.nix](../../orca-config.nix) accordingly.
 
 #### Updating the version of the offline vault
 
 The software we are using to run the *ephemeral vault* should not be obsolete (to allow for smooth migration of data, and avoid any unpatched security weakness).
 
-Check if there is any new stable release that is more recent than what is specified in [src/flake.nix](../../../src/flake.nix)'s `inputs.nixpkgs.url`. If so, we should try to upgrade to the lastest stable release.
+Check if there is any new stable release that is more recent than what is specified in [flake.nix](../../../flake.nix)'s `inputs.nixpkgs.url`. If so, we should try to upgrade to the lastest stable release.
 
 If a new stable release exists, then upgrade it in the input part of the flake.
 Otherwise update the `flake.lock` to the most up-to-date packages by running:
 ```bash
-cd src/
 nix flake update
 ```
 
@@ -73,7 +72,7 @@ Once changes have been performed, commit the modified files to the [O.R.CA repos
 > [!Warning]  
 > This section should only be executed if there was any change in the set of keys in use. In all other cases, please skip to the next section.
 
-The 📢`organiser` asks all `share holders` (including 👥`team members`) to check that the hardware token they own has its public key recorded in the env-specific directory located under [`src/share_holders_keys/`] in this repository and if it needs to be updated or added, they should do it via a signed commit.
+The 📢`organiser` asks all `share holders` (including 👥`team members`) to check that the hardware token they own has its public key recorded in the env-specific directory located under [`share_holders_keys/`] in this repository and if it needs to be updated or added, they should do it via a signed commit.
 
 > [!Tip]  
 > Github automatically signs commits performed via the online Github web interface.
@@ -123,11 +122,10 @@ git checkout <trusted commit>
 ```
 Then:
 ```bash
-git diff <previous ceremony trusted commit> src/
+git diff <previous ceremony trusted commit> 
 ```
 
 > [!Important]  
-> * The only changes you see should be in the orca's nix configuration and in the actions scripts in `src/scripts/actions`.
 > * The ceremony's configuration (environment, cvault, etc…) that [has been set by the 📢`organiser`](#configuring-the-ceremony) should be verified.
 > * Any change displayed by the diff should be considered legitimate to you.
 > * During this step, 👥`team members` will also review and understand all the scripts that are planned for execution during the ceremony.
@@ -138,7 +136,7 @@ Once all 👥`team members` have validated the new ✅`trusted commit`, each of 
 
 Start by building a bootable iso image:
 ```bash
-nix build src/.#iso-offline
+nix build .#iso-offline
 ```
 
 Compute the size of the verifiable bytes (total size - 512) that we will call *N<sub>iso</sub>*:

@@ -11,13 +11,11 @@ This document describes how to initialise an offline CA using the O.R.CA scripts
 
 This section details the process to create a new offline CA, doing it fast, in one operation (for testing). If instead, you want to re-open an existing CA, following the safe process, please see [the O.R.CA workflow document](workflow/offline_vault_ceremony.md).
 
-As a first step, we will select the CA we're working on (`dev`, `preprod` or `prod`). This will have an impact before building the ISO as explained in [the O.R.CA workflow](workflow/offline_vault_ceremony.md#selecting-the-vault-environment). The value of `orca.environment-target` in [src/default.nix](../src/default.nix) should thus be updated if needed.
-To initialize a new offline CA, we will also need to include the following script from the `templates/` folder under `src/scripts/*/` (and `git add` this script):\
-* [templates/unauthenticated/initialize-vault.sh](../templates/unauthenticated/initialize-vault.sh)
-Depending on what we also want to perform during the same maintenance session, we may also include the following scripts from `templates/`:
-* [templates/authenticated/create-root-CA.sh](../templates/authenticated/create-root-CA.sh)
-* [templates/authenticated/create-intermediate-CA.sh](../templates/authenticated/create-intermediate-CA.sh)
-* [templates/authenticated/sign-csr.sh](../templates/authenticated/sign-csr.sh)
+As a first step, we will select the CA we're working on (`dev`, `preprod` or `prod`). This will have an impact before building the ISO as explained in [the O.R.CA workflow](workflow/offline_vault_ceremony.md#selecting-the-vault-environment). The value of `orca.environment-target` in [orca-config.nix](../orca-config.nix) should thus be updated if needed.
+To initialize a new offline CA, we will also need to include the following script from the `actions/` folder depending on what we want to perform :
+* [create-root-CA.sh](../actions/create-root-CA.sh)
+* [create-intermediate-CA.sh](../actions/create-intermediate-CA.sh)
+* [sign-csr.sh](../actions/sign-csr.sh)
 
 We can now start the *ephemeral vault* by following the [instructions of the O.R.CA workflow](workflow/offline_vault_ceremony.md).
 When the vault is started, we can check that it is not initialized yet by running:

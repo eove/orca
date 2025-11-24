@@ -1,6 +1,6 @@
 # How to generate an html-formatted OR.C.A workflow document
 
-At first, before selecting the commit at which the OR.C.A document is signed, **please make sure both the author and verifier's hardware token's public GPG keys** are in this repo's directory `/src/signatory_keys`. These will be required when verifying the signatures in the future.
+At first, before selecting the commit at which the OR.C.A document is signed, **please make sure both the author and verifier's hardware token's public GPG keys** are in this repo's directory `signatory_keys`. These will be required when verifying the signatures in the future.
 
 First, we need to select the document we want to generate:
 * For the ceremony to use the Offline Root CA:

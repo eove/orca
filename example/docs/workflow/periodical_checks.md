@@ -44,7 +44,7 @@ Checks (and fixes) below should be performed first on the preprod environment, t
 If fixes are needed, this means running a ceremony on preprod, and then a ceremony on prod.
 
 > [!Warning]  
-> In order to use scripts on the offline vault, they should be copied and adapted from the directory `templates/` to `src/scripts/`, then added to git and only then, the build of the live bootable media will make these scripts available from the command line on the offline terminal.
+> In order to use scripts on the offline vault, they should be adapted in the directory  `actions`, then added to git and only then, the build of the live bootable media will run these scripts.
 
 ### Yubikeys certificates that have expired should be renewed
 
@@ -110,7 +110,7 @@ Now let's test that the yubikey actually works (can decrypt data when it's the t
 ```bash
 export TMP_GPG_HOME=$(mktemp -d)
 cp ~/.gnupg/*.conf "$TMP_GPG_HOME"/
-gpg --home="$TMP_GPG_HOME" --import /path/to/src/share_holders_keys/env/*
+gpg --home="$TMP_GPG_HOME" --import /path/to/share_holders_keys/env/*
 gpg --home="$TMP_GPG_HOME" --list-keys --keyid-format LONG --with-colons | sed -n -e '/^pub/{n;p}' | sed -n -E 's/^fpr:([^:]*:){8}([^:]*).*$/\2:6:/p' | gpg --home="$TMP_GPG_HOME" --import-ownertrust
 echo "It works" | gpg --home="$TMP_GPG_HOME" -e -r "$GPG_HW_TOKEN_KEY_ID" | gpg -d
 ```
@@ -125,7 +125,7 @@ The GPG keypair should be regenerated on the Yubikey of concern, keeping in mind
 
 The process is detailed [here](@ORCA@gitremote@/blob/main/docs/yubikeys.md#generating-a-new-opengpg-key).
 
-Once a new keypair has been set up on the Yubikey, extract your public key and update the env-specific directory located under folder `src/share_holders_keys/` in this repository.
+Once a new keypair has been set up on the Yubikey, extract your public key and update the env-specific directory located under folder `share_holders_keys/` in this repository.
 
 Finally, force an unseal share rotation by executing the following script. It should be run in a ceremony for the offline vault:  
 `templates/unauthenticated/rotate-seal-shares.sh`
@@ -163,7 +163,7 @@ The GPG keypair should be regenerated on the Yubikey of concern, keeping in mind
 
 The process is detailed [here](@ORCA@gitremote@/blob/main/docs/yubikeys.md#generating-a-new-opengpg-key).
 
-Once a new keypair has been setup on the Yubikey, extract your public key and update the env-specific directory located under folder `src/share_holders_keys/` in this repository.
+Once a new keypair has been setup on the Yubikey, extract your public key and update the env-specific directory located under folder `share_holders_keys/` in this repository.
 
 Finally, force an unseal share rotation by executing the following script. It should be run in a ceremony for the offline vault:  
 `templates/unauthenticated/rotate-seal-shares.sh`
@@ -227,7 +227,7 @@ Generate a new **internal** CA CSR on the online vault, by running the following
 ./scripts/maintenance/create-devices-csr.sh
 ```
 
-Copy the template `templates/authenticated/sign-csr.sh` into `src/scripts/authenticated` and embed the CSR content inside that copied version of the script.
+Embed the CSR content inside that `actions/sign-csr.sh` script.
 
 This CSR content (PEM-formatted file) will be reviewed during the verification phase of the ceremony workflow.
 
@@ -355,7 +355,7 @@ You have two options there:
   This requires writing scripts for this to be run on the offline *ephemeral vault*.
 - Or you can create a brand new offline root CA.\
   This would be a brand new start of the root CA and this means re-initializing a new vault, start from an empty backup etc.\
-  Please read [the documentation on how to setup a new PKI](../offline/PKI_INit/md).
+  Please read [the documentation on how to setup a new PKI](../offline/PKI_init.md).
 
 > [!Note]  
 > In any case, the old PKI (and offline CAs) are still valid for at least 6 months, so you can use them up to the end of their validity. After their validity has elapsed, the expired CAs should be kept as read-only and won't be used anymore (except if revokation is required).

@@ -9,7 +9,7 @@ In order to create this bootable live media, that we will refer to as *ephemeral
 > Make sure you are doing this on the ✅`trusted commit`
 
 ```bash
-nix run src/.#create-usb-vault /dev/sda
+nix run . /dev/sda
 ```
 
 > [!Warning]  

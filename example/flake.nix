@@ -23,6 +23,7 @@
           default = orca.lib."${system}".create-stick orca-config;
           in-vm = orca.lib."${system}".run-in-vm (orca-config // import ./testing/vm-config.nix);
         };
+        devShells.default = orca.devShells."${system}".default;
       }
     ));
 }

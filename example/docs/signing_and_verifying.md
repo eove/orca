@@ -31,7 +31,7 @@ The authenticity of the content of the document, must be verify via cryptographi
 ```bash
 git checkout @ORCA@commit@
 ```
- * There, you can find the keys in [`src/workflow_signatory_keys/`](@ORCA@gitremote@/tree/main/src/workflow_signatory_keys).
+ * There, you can find the keys in [`workflow_signatory_keys/`](@ORCA@gitremote@/tree/main/workflow_signatory_keys).
  * Verify that these keys were added via **a valid signed commit by their owner**.
  * Use a new gpg keystore (all of the following commands will be executed with this environment variable):
 ```bash
@@ -39,7 +39,7 @@ export TMP_GPG_HOME=$(mktemp -d)
 ```
  * Import all the public keys and mark them as ultimatly trusted
 ```bash
-gpg --home="$TMP_GPG_HOME" --import /path/to/src/workflow_signatory_keys/*
+gpg --home="$TMP_GPG_HOME" --import /path/to/workflow_signatory_keys/*
 gpg --home="$TMP_GPG_HOME" --list-keys --keyid-format LONG --with-colons | sed -n -e '/^pub/{n;p}' | \
  sed -n -E 's/^fpr:([^:]*:){8}([^:]*).*$/\2:6:/p' | gpg --home="$TMP_GPG_HOME"  --import-ownertrust
 ```
