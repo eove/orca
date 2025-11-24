@@ -16,21 +16,18 @@ That event is called a *ceremony*.
 
 All commands are given for Linux using a bash shell. Please adapt according to your environment.
 
-{{#include ./common/glossary.md}}
+In case you encounter a term that you do not understand, please refer to [the O.R.CA documentation's glossary](https://github.com/eove/orca)
 
 ## Overview
 
 ### Architecture of the vault system
 
-{{#include ../architecture.md}}
+{{#include ./architecture.md}}
 
-### Secret sharing system
-
-{{#include ../secret_sharing.md}}
 
 ### Note on scripts
 
-{{#include ../note-on-scripts.md}}
+{{#include ./note-on-scripts.md}}
 
 ## Planning a ceremony
 
@@ -38,7 +35,12 @@ This whole chapter has to be done *before* the day of the ceremony.
 
 ### Creating a team to work on the vault system
 
-{{#include ./creating_a_team.md}}
+Initially, one person should take care of organising an official ceremony to manipulate the offline vault.
+This person is called the `organiser` (📢).
+
+To perform the actual work on the vault system, the organiser will need to gather a team of at least 2 tech-savy people.
+These people are called the `team members` (👥), the 📢`organiser` can be one of them.
+These people will perform preparative work *before* the ceremony and they will be present *during* the ceremony.
 
 > [!Important]  
 > All 👥`team members` should have a hardware token (Yubikey) that secures their unseal share. They will need this to both unseal the vault and sign the report.
@@ -105,7 +107,17 @@ First, we will verify the report of the last ceremony.
 
 This step *must* be performed by all 👥`team members` *before* the day of the ceremony
 
-{{#include ../offline/verifying_last_ceremony_report.md}}
+Get the last report for the corresponding environment and verify the signatures following your organisation's way of verifying a document.
+A gpg-based one can be found at the [signing and verifying annex](../signing_and_verifying.md)
+
+> [!Warning]  
+> All signatures should be valid. The check above should be valid for at least the 3 👥`team members` of the previous ceremony.
+>
+> Only **one** invalid/missing signature is enough to **stop the ceremony**. In such a case, the issue should be analysed.
+
+Once all signatures has been verified, to get ready for subsequent steps, extract from the `previous ceremony report`:
+ - the `trusted commit` that was used back then (that we will refer to as `previous trusted commit`)
+ - the checksum *C<sub>vault</sub>* of the previous vault private data that was computed when closing down the ceremony back then.
 
 #### Verifying bootable live media related changes
 
@@ -158,14 +170,56 @@ Communicate the values of *N<sub>iso</sub>* and *C<sub>iso</sub>* to the other �
 
 The bootable live media should be created by one 👥`team member` *before* the day of the ceremony. This person will be the 📝`reporter` during the ceremony.
 
-{{#include ../offline/creating_a_usb_stick.md}}
+In order to create a bootable live USB media, we will need a physical USB stick (Kanguru FlashTrust with S/N 2110142010043) that has a physical write protection switch.
+
+> [!Warning]  
+> The example below assumes `/dev/sda` is the Linux device name that will be fully erased and where the *ephemeral vault* software is going to be installed, please adapt to your setup.
+
+In order to create this bootable live media, that we will refer to as *ephemeral vault* in the rest of these instructions, we will execute the following command from the root of the vault repository:
+
+> [!Warning]  
+> Make sure you are doing this on the ✅`trusted commit`
+
+```bash
+nix run . /dev/sda
+```
+
+> [!Warning]  
+> The content of the device provided as argument will be completely destroyed
+
+By default, this script will create 3 partitions on the *ephemeral vault* media, among which the following are important to us:
+* a bootable partition with label `orca-${TARGET_VAULT}` contains the *ephemeral vault* software
+* a partition with label `VAULT_WRITABLE` contains the offline CA private data (is mounted on `/var/lib/vault`) when the *ephemeral vault* boots
+
+You can check that with :
+```bash
+lsblk -o name,label
+```
 
 > [!Warning]  
 > The rest of this section should not be executed at the first initialisation of the vault because we have no previous backup. In that case, please skip to the next section.
 
 Fetch offline CA private data backup for the corresponding environment (eg: prod, preprod etc.).
 
-{{#include ../offline/loading_backup.md}}
+The content of the previous offline vault private data should be extracted and put into the `VAULT_WRITABLE` partition.
+
+If the USB stick's partitions have been mounted automatically by your distro, the following will help in finding out the mount point for the `VAULT_WRITABLE` content:
+```bash
+lsblk -o name,mountpoint,label,size | grep VAULT_WRITABLE
+```
+
+If the above fails, then you will have to mount the `VAULT_WRITABLE` partition (manually on the CLI or by opening the volume in your file manager).  
+In the examples below, we use `/VAULT_WRITABLE/mount/point` as the mount point.
+
+You can extract the tar archive of the vault private data with:
+```bash
+sudo tar --same-owner -xvf ORCA_backup.tar -C /VAULT_WRITABLE/mount/point
+```
+
+> [!Tip]  
+> You can double-check that the data is correct with:  
+> `cd /VAULT_WRITABLE/mount/point && sudo find . -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum -`  
+> You should get the same checksum as the value *C<sub>vault</sub>* indicated in the `previous report`.
 
 ## Executing the ceremony
 
@@ -360,7 +414,11 @@ The vault service status returns "Sealed" = true ............ PASS [] / FAIL []
 > [!Warning]  
 > This section should not be executed at the first initialisation of the vault. In that case, please skip to the next section.
 
-{{#include ../offline/unseal.md}}
+After a reboot, the vault will be in sealed status.
+
+In order to unseal the vault, you will need to gather enough participants that have an unseal key share to reach the minimum quorum.
+
+On the *ephemeral vault*, insert each `team member`'s hardware tokens one after the other when instructed to.
 
 &nbsp;<br>
 

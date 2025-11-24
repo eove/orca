@@ -15,19 +15,17 @@ A gpg-based one can be found at the [signing and verifying annex](../signing_and
 This document explains how to periodically verify the PKI and its usability.
 Executing this workflow may require performing changes on the offline PKI, and thus executing an offline ceremony.
 
-{{#include ./common/glossary.md}}
-
-## Protocole de vérification
+If a word used in this document is unknown to you, the [O.R.CA documentation contains a glossary explaining key concepts](https://github.com/eove/orca)
 
 ## Overview
 
 ### Architecture of the vault system
 
-{{#include ../architecture.md}}
+{{#include ./architecture.md}}
 
 ### Note on scripts
 
-{{#include ../note-on-scripts.md}}
+{{#include ./note-on-scripts.md}}
 
 ## Prerequisites
 
@@ -79,7 +77,7 @@ Where:
 * `62413455` is the serial number of the Yubikey (as displayed, for example using `gpg --card-status`)
 
 Once all relevant GPG keys have been renewed and their public key commited to the repository, the following script should be run in a ceremony for the offline vault:  
-`templates/unauthenticated/rotate-seal-shares.sh`
+`rotate-seal-shares.sh`
 
 An unseal share rotation should be run also on the online vault.
 
@@ -128,7 +126,7 @@ The process is detailed [here](@ORCA@gitremote@/blob/main/docs/yubikeys.md#gener
 Once a new keypair has been set up on the Yubikey, extract your public key and update the env-specific directory located under folder `share_holders_keys/` in this repository.
 
 Finally, force an unseal share rotation by executing the following script. It should be run in a ceremony for the offline vault:  
-`templates/unauthenticated/rotate-seal-shares.sh`
+`rotate-seal-shares.sh`
 
 An unseal share rotation should be run also on the online vault.
 
@@ -166,7 +164,7 @@ The process is detailed [here](@ORCA@gitremote@/blob/main/docs/yubikeys.md#gener
 Once a new keypair has been setup on the Yubikey, extract your public key and update the env-specific directory located under folder `share_holders_keys/` in this repository.
 
 Finally, force an unseal share rotation by executing the following script. It should be run in a ceremony for the offline vault:  
-`templates/unauthenticated/rotate-seal-shares.sh`
+`rotate-seal-shares.sh`
 
 An unseal share rotation should be run also on the online vault.
 
@@ -355,7 +353,7 @@ You have two options there:
   This requires writing scripts for this to be run on the offline *ephemeral vault*.
 - Or you can create a brand new offline root CA.\
   This would be a brand new start of the root CA and this means re-initializing a new vault, start from an empty backup etc.\
-  Please read [the documentation on how to setup a new PKI](../offline/PKI_init.md).
+  Please read [the documentation on how to setup a new PKI](./PKI_init.md).
 
 > [!Note]  
 > In any case, the old PKI (and offline CAs) are still valid for at least 6 months, so you can use them up to the end of their validity. After their validity has elapsed, the expired CAs should be kept as read-only and won't be used anymore (except if revokation is required).

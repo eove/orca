@@ -19,6 +19,7 @@
     - [Is this for real ?](./story/verify-workflow.md)
     - [Afterword](./story/afterword.md)
 
+- [Secret Sharing](./secret_sharing.md)
 - [Local testing](./testing/README.md)
 
 -------------------
