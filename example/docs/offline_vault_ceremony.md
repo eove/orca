@@ -7,14 +7,13 @@ Document created from repository [@ORCA@gitremote@](@ORCA@gitremote@) at commit 
 ## Verifying this document
 
 Please follow your organisation's way of verifying a document to make sure this document has not been tampered with.
-A gpg-based one can be found at the [signing and verifying annex](../signing_and_verifying.md)
+A gpg-based one can be found in [the O.R.CA documentation](https://github.com/eove/orca)
 
 ## Introduction
 
 This document explains how to use the Offline Root CA from preparing the ceremony until a report is signed and shared.
 That event is called a *ceremony*.
 
-All commands are given for Linux using a bash shell. Please adapt according to your environment.
 
 In case you encounter a term that you do not understand, please refer to [the O.R.CA documentation's glossary](https://github.com/eove/orca)
 
@@ -43,7 +42,7 @@ These people are called the `team members` (👥), the 📢`organiser` can be on
 These people will perform preparative work *before* the ceremony and they will be present *during* the ceremony.
 
 > [!Important]  
-> All 👥`team members` should have a hardware token (Yubikey) that secures their unseal share. They will need this to both unseal the vault and sign the report.
+> All 👥`team members` should have a hardware token to secures their unseal share. They will need this to both unseal the vault and sign the report.
 
 The 📢`organiser` should communicate to all 👥`team members` the list of operations (and therefore scripts) that will be performed during the ceremony. The aforementionned scripts should be commited to the `actions` directory of this repository prior to the verification phase.
 
@@ -51,7 +50,7 @@ The 📢`organiser` should communicate to all 👥`team members` the list of ope
 
 The 📢`organiser` should know which environment will be worked on (`prod`/`preprod`), modify the value of `orca.environment-target` in [orca-config.nix](../../orca-config.nix) accordingly, and notify this environment to all 👥`team members`.
 
-The 📢`organiser` should get the value of the cvault present in the last report and set the value of `orca.latest_cvault` in [orca-config.nix](../../orca-config.nix) accordingly. If the ceremony is the first one for this environment, then `null` should be set. The 📢`organiser` is encourage to verify the validity of the report in the same way the 👥`team members` [will do during the verification phase](#verification-of-the-last-ceremonys-report).
+The 📢`organiser` should get the value of the *C<sub>vault</sub>* present in the last report and set the value of `orca.latest_cvault` in [orca-config.nix](../../orca-config.nix) accordingly. If the ceremony is the first one for this environment, then `null` should be set. The 📢`organiser` is encourage to verify the validity of the report in the same way the 👥`team members` [will do during the verification phase](#verification-of-the-last-ceremonys-report).
 
 The 📢`organiser` should know what will be done during the ceremony and set the values of `orca.actions_in_order` and `orca.rotate_keys` in [orca-config.nix](../../orca-config.nix) accordingly.
 
@@ -59,15 +58,14 @@ The 📢`organiser` should know what will be done during the ceremony and set th
 
 The software we are using to run the *ephemeral vault* should not be obsolete (to allow for smooth migration of data, and avoid any unpatched security weakness).
 
-Check if there is any new stable release that is more recent than what is specified in [flake.nix](../../../flake.nix)'s `inputs.nixpkgs.url`. If so, we should try to upgrade to the lastest stable release.
+Check if there is any new stable release that is more recent than what is specified in [flake.nix](../../../flake.nix)'s `inputs.nixpkgs.url` and `inputs.orca.url` . If so, we should upgrade to the lastest stable release.
 
-If a new stable release exists, then upgrade it in the input part of the flake.
 Otherwise update the `flake.lock` to the most up-to-date packages by running:
 ```bash
 nix flake update
 ```
 
-Once changes have been performed, commit the modified files to the [O.R.CA repository](@ORCA@gitremote@).
+Once changes have been performed, commit the modified files to the [repository](@ORCA@gitremote@).
 
 #### Inserting/checking up-to-date GPG public keys
 
@@ -76,6 +74,7 @@ Once changes have been performed, commit the modified files to the [O.R.CA repos
 
 The 📢`organiser` asks all `share holders` (including 👥`team members`) to check that the hardware token they own has its public key recorded in the env-specific directory located under [`share_holders_keys/`] in this repository and if it needs to be updated or added, they should do it via a signed commit.
 
+TODO tip to extract public key in O.R.CA open-source ?
 > [!Tip]  
 > Github automatically signs commits performed via the online Github web interface.
 
@@ -86,12 +85,12 @@ The 📢`organiser` asks all `share holders` (including 👥`team members`) to c
 
 #### Setting up the trusted commit
 
-When all scripts planned for the ceremony are ready and all keys are up-to-date, the 📢`organiser` writes down the last git commit of repo [O.R.CA](@ORCA@gitremote@) containing all re-inserted keys, and communicates this commit to all 👥`team members`.
+When all scripts planned for the ceremony are ready and all keys are up-to-date, the 📢`organiser` writes down the last git commit of [the repository](@ORCA@gitremote@) containing all re-inserted keys, and communicates this commit to all 👥`team members`.
 
 For the rest of this documentation, we are going to name that commit the `trusted commit` (✅)
 
 > [!Important]  
-> That commit should not change until the end of the procedure. If it does, for any valid reason, then you should restart the whole process from the beginning.
+> That commit should not change until the end of the procedure. If it does, for any reason, then you should restart the whole process from the beginning.
 
 ### Verification of the offline CAs
 
@@ -108,7 +107,7 @@ First, we will verify the report of the last ceremony.
 This step *must* be performed by all 👥`team members` *before* the day of the ceremony
 
 Get the last report for the corresponding environment and verify the signatures following your organisation's way of verifying a document.
-A gpg-based one can be found at the [signing and verifying annex](../signing_and_verifying.md)
+A gpg-based one can be found in [the O.R.CA documentation](https://github.com/eove/orca)
 
 > [!Warning]  
 > All signatures should be valid. The check above should be valid for at least the 3 👥`team members` of the previous ceremony.
@@ -138,7 +137,7 @@ git diff <previous ceremony trusted commit>
 ```
 
 > [!Important]  
-> * The ceremony's configuration (environment, cvault, etc…) that [has been set by the 📢`organiser`](#configuring-the-ceremony) should be verified.
+> * The ceremony's configuration (environment, *C<sub>vault</sub>*, etc…) that [has been set by the 📢`organiser`](#configuring-the-ceremony) should be verified.
 > * Any change displayed by the diff should be considered legitimate to you.
 > * During this step, 👥`team members` will also review and understand all the scripts that are planned for execution during the ceremony.
 > * Scripts should never ask the offline topmost root CA to sign anything that doesn't strictly remains in the offline vault (no external CSR).
@@ -148,7 +147,7 @@ Once all 👥`team members` have validated the new ✅`trusted commit`, each of 
 
 Start by building a bootable iso image:
 ```bash
-nix build .#iso-offline
+nix build
 ```
 
 Compute the size of the verifiable bytes (total size - 512) that we will call *N<sub>iso</sub>*:
@@ -170,7 +169,7 @@ Communicate the values of *N<sub>iso</sub>* and *C<sub>iso</sub>* to the other �
 
 The bootable live media should be created by one 👥`team member` *before* the day of the ceremony. This person will be the 📝`reporter` during the ceremony.
 
-In order to create a bootable live USB media, we will need a physical USB stick (Kanguru FlashTrust with S/N 2110142010043) that has a physical write protection switch.
+In order to create a bootable live USB media, we will need a physical USB stick that has a physical write protection switch.
 
 > [!Warning]  
 > The example below assumes `/dev/sda` is the Linux device name that will be fully erased and where the *ephemeral vault* software is going to be installed, please adapt to your setup.
@@ -196,6 +195,7 @@ You can check that with :
 lsblk -o name,label
 ```
 
+TODO the script could do that and check it since we know the cvault and it will be checked afterwards anyway
 > [!Warning]  
 > The rest of this section should not be executed at the first initialisation of the vault because we have no previous backup. In that case, please skip to the next section.
 
@@ -240,6 +240,7 @@ These 3 persons should be **physically present during the whole ceremony**, and 
    This person **must** be the person that created the USB stick.\
    During the whole ceremony, this person will fill in the sections framed with a <span style="border:2px dotted dodgerblue;padding-left:2px;padding-right:2px;">dotted-blue border</span>.
 
+TODO : report == asciinema ?
 > [!Tip]
 > To extract these sections from the html version of the ceremony's workflow, use the following filter:\
 >  `cat /path/to/ceremory_workflow.html | sed -e 's|<\([/]\)*code class="language-report">|\n<\1\@ORCA\@report\@>\n|g' | sed -n -e '/<\@ORCA\@report\@>/,/<\/\@ORCA\@report\@>/{s/<[/]*\@ORCA\@report\@>//;p}' | sed -e '$a\@GPG\@SIGNATURES\@' | tee /tmp/blank_report.txt`
@@ -249,6 +250,7 @@ These 3 persons should be **physically present during the whole ceremony**, and 
    The 👀`observer` will lend their computer to run the *ephemeral vault*. This machine must have a Linux x86_64 OS installed.\
    They must be sitting next to the 💻`operator`. Gets the validated ceremony workflow from the 💻`operator`, and validates that the ceremony is done *exactly* as documented.\
    Make sure that this computer has more than one USB port available:
+   TODO:still ?
    * one without adapter nor hub. This port will be used for the O.R.CA stick during the whole ceremony.
    * one or more USB port that fits the USB format of the Yubikeys (USB-A, USB-C etc.).
 
@@ -381,12 +383,9 @@ vault is immediately booted ................................. PASS [] / FAIL []
 
 </td></table>
 
-> [!Note]  
-> If you get errors while booting, make sure your key has been switched to *read/write*.
-
 From now on, the ceremony will run automatically while stopping after each step to let the 👥`team members` time to validate everything is going as planned and fill the report.
 
-A message is printed on the screen indicating the the stick can now be switched to *read/write*.
+A message is printed on the screen indicating the stick can now be switched to *read/write*.
 
 > [!Warning]
 > If anything goes wrong, the ceremony will stop and all data except the audit logs and the screen recording will be wiped.
@@ -414,7 +413,7 @@ The vault service status returns "Sealed" = true ............ PASS [] / FAIL []
 > [!Warning]  
 > This section should not be executed at the first initialisation of the vault. In that case, please skip to the next section.
 
-After a reboot, the vault will be in sealed status.
+The vault will be in sealed status.
 
 In order to unseal the vault, you will need to gather enough participants that have an unseal key share to reach the minimum quorum.
 
@@ -452,7 +451,7 @@ To close the ceremony, a serie of actions will be performed leading to a safe sh
 
 ### Root token revocation check
 
-First, the the vault will be sealed. Then the number of remaining root tokens will be displayed.
+First, the vault will be sealed. Then the number of remaining root tokens will be displayed.
 
 `0` should be displayed
 
@@ -490,8 +489,9 @@ One of the 👥`team members` inserts the USB stick on their own computer.
 The 👥`team member` that inserted the USB stick, immediately:
 1. copies the tar archive from the `VAULT_WRITABLE` partition to the backup destination corresponding to the environment.
 2. sends the tar archive from the `VAULT_WRITABLE` partition to all the participants as an attached file via e-mail
-3. gets the AIA data in folder `orca/aia/` of the current environment (prod/preprod) from `VAULT_WRITABLE` partition data and makes it available on the online vault.
+3. gets the AIA data in folder `orca/aia/` of the current environment (prod/preprod) from `VAULT_WRITABLE` partition data and makes it available online.
 
+TODO: remove ?
 > [!Note]  
 > We use a tar format here because it allows for deduplication during the enterprise-wide backup process (that includes all Google Drive content)
 
@@ -510,10 +510,11 @@ export VAULT_BACKUP=/path/to/ORCA_backup.tar
 
 The value displayed should match *C<sub>vault</sub>* grabbed from the QR code above.
 
-> [!Tip]  
-> In the backup archive, 👥`team members` will also have access to the session recording.\
-> All sessions are stored in `orca/recordings/ceremony-*.cast`, and can be viewed using:\
-> `nix develop --command asciinema cat /path/to/orca/recordings/ceremony.cast`
+In the backup archive, 👥`team members` will also have access to the session recording.\
+All sessions are stored in `orca/recordings/ceremony-*.cast`, and can be viewed using:\
+`nix develop --command asciinema play /path/to/orca/recordings/ceremony.cast`
+The recording should match what the team members experienced from the unsealing of the vault 
+to sealing it back.
 
 <table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
 
@@ -522,6 +523,7 @@ The vault private data archive has been safely stored ....... PASS [] / FAIL []
 The checksum of the tar file content matches _Cvault_ ....... PASS [] / FAIL []
 Value of the full sha256 checksum of the vault private data folder (_Cvault_):
 ...............................................................................
+The recording matches what happened for all team membmers ....... PASS [] / FAIL []
 ```
 
 </td></table>
@@ -531,9 +533,10 @@ Value of the full sha256 checksum of the vault private data folder (_Cvault_):
 Before signing the report, please verify its content, specifically:
 - the value of the ✅`trusted commit`
 - the value of the sha256 checksum of the new offline vault private data (C<sub>vault</sub>)
+- the value validity of the recording
 - name the report to contain the date of the ceremony, for example: *ceremony-report-preprod-2025-03-17*
 
 The 📝`reporter`, 💻`operator`, and 👀`observer` will all sign the report by following your organisation's way of signing documents.
-A gpg-based one can be found at the [signing and verifying annex](../signing_and_verifying.md)
+A gpg-based one can be found in [the O.R.CA documentation](https://github.com/eove/orca)
 
 All 👥`team members` should now get a copy of the signed report and perform a check of all signatures using [the same process as when checking the last ceremony's report](#verification-of-the-last-ceremonys-report).

@@ -19,6 +19,8 @@
     - [Is this for real ?](./story/verify-workflow.md)
     - [Afterword](./story/afterword.md)
 
+- [Architecture](./architecture.md)
+- [Signing and verifying](./signing_and_verifying.md)
 - [Secret Sharing](./secret_sharing.md)
 - [Local testing](./testing/README.md)
 
