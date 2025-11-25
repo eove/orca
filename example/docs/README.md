@@ -3,7 +3,7 @@
 In this document, we will explain how to work with the Public-Key Infrastructure (PKI).
 
 > [!Warning]
-> Before you start doing anything on it, you'll need to understand how [O.R.CA](https://github.com/eove/orca) works by reading it's documentation.
+> This PKI has been built using [O.R.CA](https://github.com/eove/orca) so you should also read  [O.R.CA's documentation](https://github.com/eove/orca/README.md) before you start customizing the PKI or exploiting it.
 
 If you directly want to generate a one-page html-formatted workflows, please see [here](./html_gen.md).
 
