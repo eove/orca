@@ -29,7 +29,7 @@ let
 
 in
 {
-  custom_scripts = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts ./actions);
+  custom_scripts = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts config.orca.actions_folder);
   orca_scripts = rec {
     sudoer = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts ./orca-protocol/sudoer);
     root_only = builtins.mapAttrs pkgs.writeShellScriptBin (packageScripts ./orca-protocol/root_only);

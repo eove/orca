@@ -1,4 +1,4 @@
-{ isoImage, pkgs, ... }:
+{ isoImage, pkgs, ORCA_DISK_NAME, ... }:
 let
   rootUsbScript = pkgs.writeShellScriptBin "root-iso-to-usb" ''
     set -e
@@ -18,7 +18,7 @@ let
     echo "start=,size=" | ${pkgs.util-linux}/bin/sfdisk -f -a "$TARGET_DEVICE"
     sleep 2
     force_unmount
-    ${pkgs.e2fsprogs}/bin/mkfs.ext4 -F -L "VAULT_WRITABLE" ''${TARGET_DEVICE}3
+    ${pkgs.e2fsprogs}/bin/mkfs.ext4 -F -L "${ORCA_DISK_NAME}" ''${TARGET_DEVICE}3
   '';
   usbScript = pkgs.writeShellScriptBin "iso-to-usb" ''
     set -e
