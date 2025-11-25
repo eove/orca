@@ -44,48 +44,49 @@ If fixes are needed, this means running a ceremony on preprod, and then a ceremo
 > [!Warning]  
 > In order to use scripts on the offline vault, they should be adapted in the directory  `actions`, then added to git and only then, the build of the live bootable media will run these scripts.
 
-### Yubikeys certificates that have expired should be renewed
+### Hardware token's certificates that have expired should be renewed
 
-Yubikeys' certificates last for at most 8 years.
+TODO : do we generalize ? Ask to adapt in the open-source doc ?
+Hardware token's certificates last for at most 8 years.
 
 Every year, we are expecting a minimum of 1 share to be renewed.
 
 > [!Warning]  
-> An absolute maximum of no more than the total number of shares - the quorum number be renewed during the same share rotation.
+> An absolute maximum of no more than "the total number of shares minus the quorum number" can be renewed during the same share rotation.
 > This maximum is set to prevent from locking us out of unsealing vaults during the share rotation.
 > If you plan to rotate this maximum number of shares, you should make sure that the non-renewed key are still usable before regenerating the keys on the hardware tokens.
 
-Renewal for all currently in-use Yubikeys should be spread over the full validity period of Yubikeys certificates.
-Taking 8 years as the default validity, if we have 11 valid shares (Yubikeys), then we should have a schedule of 2 Yubikeys regeneration per year for the first 3 years and 1 Yubikey for the next 5 years.
-This is especially important when initially generating certificates on Yubikeys. Many Yubikeys will not be initially valid for the whole 8 years.
+Renewal for all currently in-use hardware tokens should be spread over the full validity period of hardware token's certificates.
+Taking 8 years as the default validity, if we have 11 valid shares (hardware tokens), then we should have a schedule of 2 hardware tokens regeneration per year for the first 3 years and 1 hardware token for the next 5 years.
+This is especially important when initially generating certificates on the hardware tokens. Many hardware tokens will not be initially valid for the whole 8 years.
 
 #### Test
 
-Yubikeys certificates expire on 30/12 of the year mentioned in their public key filename (as registered in the folder `share_holders/`)
-If a Yubikey certificate is expired when performing this check, then it should be renewed.
+Hardware token's certificates expire on 30/12 of the year mentioned in their public key filename (as registered in the folder `share_holders/`)
+If a hardware token certificate is expired when performing this check, then it should be renewed.
 
-The 📢`organiser` should perform this check and ask the relevant share holders to renew their Yubikey's GPG key pair.
+The 📢`organiser` should perform this check and ask the relevant share holders to renew their hardware token's GPG key pair.
 
 #### Fix
 
-Yubikey's GPG public key should be updated and commited by their owner in the relevant folder `share_holders/`.  
-The filename storing the Yubikey's public key should follow the template:  
-`2024_firstname.lastname@email.com_yubikey-62413455.pub`  
+Hardware token's GPG public key should be updated and commited by their owner in the relevant folder `share_holders/`.  
+The filename storing the hardware token's public key should follow the template:  
+`2024_firstname.lastname@email.com_brand-62413455.pub`  
 Where:
-* `2024` is the expiry year of the Yubikey (it will expire on 30/12/2024), you can double-check the expiry using `gpg /path/to/file.pub`
-* `firstname.lastname@email.com` is the email address of the owner of this Yubikey
-* `62413455` is the serial number of the Yubikey (as displayed, for example using `gpg --card-status`)
+* `2024` is the expiry year of the hardware token (it will expire on 30/12/2024), you can double-check the expiry using `gpg /path/to/file.pub`
+* `firstname.lastname@email.com` is the email address of the owner of this hardware token
+* `brand` the brand of the hardware token 
+* `62413455` is the serial number of the hardware token (as displayed, for example using `gpg --card-status`)
 
-Once all relevant GPG keys have been renewed and their public key commited to the repository, the following script should be run in a ceremony for the offline vault:  
-`rotate-seal-shares.sh`
+Once all relevant GPG keys have been renewed and their public key commited to the repository, a key rotation should be run in a ceremony for the offline vault. This is done by setting `rotate_keys` to `true`.
 
 An unseal share rotation should be run also on the online vault.
 
 ### Every share holder can use the unseal share they own
 
-And every share holder with a Yubikey should have a GPG public key registered in the folder `share_holders/`
+Every share holder with a hardware token should have a GPG public key registered in the folder `share_holders/`
 
-Every share holder runs the following tests with their Yubikey inserted
+Every share holder runs the following tests with their hardware token inserted
 
 #### Test
 
@@ -93,18 +94,18 @@ Every share holder runs the following tests with their Yubikey inserted
 gpg --card-status
 ```
 
-This should return the serial number of the Yubikey.
+This should return the serial number of the hardware token.
 
 > [!Tip]  
 > If you have an error message `gpg: selecting card failed: No such device` and/or `gpg: OpenPGP card not available: No such device`, try to run:\
 > `pkill gpg-agent`
 
-If the Yubikey is communicating properly, we will extract its key ID:
+If the hardware token is communicating properly, we will extract its key ID:
 ```bash
 export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status | sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi') && echo "$GPG_HW_TOKEN_KEY_ID"
 ```
 
-Now let's test that the yubikey actually works (can decrypt data when it's the targeted recipient, and matches a correctly exported public GPG key):
+Now let's test that the hardware token actually works (can decrypt data when it's the targeted recipient, and matches a correctly exported public GPG key):
 ```bash
 export TMP_GPG_HOME=$(mktemp -d)
 cp ~/.gnupg/*.conf "$TMP_GPG_HOME"/
@@ -113,28 +114,29 @@ gpg --home="$TMP_GPG_HOME" --list-keys --keyid-format LONG --with-colons | sed -
 echo "It works" | gpg --home="$TMP_GPG_HOME" -e -r "$GPG_HW_TOKEN_KEY_ID" | gpg -d
 ```
 
-If the message `It works` is displayed, then your Yubikey is usable. This test is a PASS.  
-If not, the Yubikey owner should notify the organiser.  
-If at least one share holder fails to use their Yubikey even after troubleshooting, the organiser will organise the fix below.
+If the message `It works` is displayed, then your hardware token is usable. This test is a PASS.  
+If not, the hardware token's owner should notify the organiser.  
+If at least one share holder fails to use their hardware token even after troubleshooting, the organiser will organise the fix below.
 
 #### Fix
 
-The GPG keypair should be regenerated on the Yubikey of concern, keeping in mind that the new certificate generated on that Yubikey should still have the same expiry date as initially (to keep a correct spread of expiry dates).
+The GPG keypair should be regenerated on the hardware token of concern, keeping in mind that the new certificate generated on that hardware token should still have the same expiry date as initially (to keep a correct spread of expiry dates).
 
+TODO : move to open-source ? Be more generic ?
 The process is detailed [here](@ORCA@gitremote@/blob/main/docs/yubikeys.md#generating-a-new-opengpg-key).
 
-Once a new keypair has been set up on the Yubikey, extract your public key and update the env-specific directory located under folder `share_holders_keys/` in this repository.
+Once a new keypair has been set up on the hardware token, extract your public key and update the env-specific directory located under folder `share_holders_keys/` in this repository.
 
-Finally, force an unseal share rotation by executing the following script. It should be run in a ceremony for the offline vault:  
-`rotate-seal-shares.sh`
+Finally, force an unseal share rotation by running a ceremony with `rotate_keys` set to `true`.
 
+TODO: eove specific ?
 An unseal share rotation should be run also on the online vault.
 
 ### All target shared holders should have a hardware token attributed
 
-Every shareholder should have a Yubikey, and these Yubikey's GPG keys' details should match their owner's name and e-mail address at the company.
+Every shareholder should have a hardware token, and these hardware token's GPG keys' details should match their owner's name and e-mail address at the company.
 
-Every share holder runs the following tests with their Yubikey inserted
+Every share holder runs the following tests with their hardware token inserted
 
 #### Test
 
@@ -142,9 +144,10 @@ Every share holder runs the following tests with their Yubikey inserted
 gpg --card-status
 ```
 
-The details of your Yubikey will be displayed, including the serial number, that should match the [Share holders spreadsheet, both in preprod and prod folder](https://drive.google.com/drive/folders/1NJg2EfFr1zx0L8r91-SeJX-d9baYWthM).
+TODO: eove specific ?
+The details of your hardware token will be displayed, including the serial number, that should match the [Share holders spreadsheet, both in preprod and prod folder](https://drive.google.com/drive/folders/1NJg2EfFr1zx0L8r91-SeJX-d9baYWthM).
 
-The following command will get the username and email address associated with your Yubikey.
+The following command will get the username and email address associated with your hardware token.
 ```bash
 gpg --card-status  | sed -n -e '/^General key info/,//p' | sed -n -e 's@^.*pub[[:blank:]][[:blank:]]*@@p'
 ```
@@ -152,20 +155,21 @@ gpg --card-status  | sed -n -e '/^General key info/,//p' | sed -n -e 's@^.*pub[[
 The username should match your identity, the e-mail address should be yours (@company.com).
 
 If this is the case, this test is a PASS.  
-If not, the Yubikey owner should notify the organiser.  
-If at least one share holder fails to use their Yubikey even after troubleshooting, the organiser will organise the fix below.
+If not, the hardware token's owner should notify the organiser.  
 
 #### Fix
 
-The GPG keypair should be regenerated on the Yubikey of concern, keeping in mind that the new certificate generated on that Yubikey should still have the same expiry date as initially (to keep a correct spread of expiry dates).
+TODO : that's a new key => new  date
+The GPG keypair should be regenerated on the hardware token of concern, keeping in mind that the new certificate generated on that hardware token should still have the same expiry date as initially (to keep a correct spread of expiry dates).
 
+TODO : move to open-source ?
 The process is detailed [here](@ORCA@gitremote@/blob/main/docs/yubikeys.md#generating-a-new-opengpg-key).
 
-Once a new keypair has been setup on the Yubikey, extract your public key and update the env-specific directory located under folder `share_holders_keys/` in this repository.
+Once a new keypair has been setup on the hardware token, extract your public key and update the env-specific directory located under folder `share_holders_keys/` in this repository.
 
-Finally, force an unseal share rotation by executing the following script. It should be run in a ceremony for the offline vault:  
-`rotate-seal-shares.sh`
+Finally, force an unseal share rotation by running a ceremony with `rotate_keys` set to `true`.
 
+TODO: eove specific ?
 An unseal share rotation should be run also on the online vault.
 
 ### Valid certificates can be issued by the online CA during the next 18 months to come
@@ -174,8 +178,9 @@ The online CA that signs device certificates should be able to perform valid sig
 
 #### Test
 
-Take the current date now, it will be called *D<sub>now</sub>*. Add 18 months to *D<sub>now</sub>*, then add again the duration of devices certificates. The result is a date *D<sub>min</sub>*.
+Take the current date, it will be called *D<sub>now</sub>*. Add 18 months to *D<sub>now</sub>*, then add again the duration of devices certificates. The result is a date *D<sub>min</sub>*.
 
+TODO: eove specific ?
 In order to get the expiry date of the online CA currently in use to sign devices, run the following command against the **online vault** after being logged in to the vault using an account with **admin** privileges:
 ```bash
 vault read -format=json devices_pki/issuer/default/json | jq -r '.data.certificate' | openssl x509 -noout -text
@@ -196,6 +201,7 @@ A new device signing online CA should be created, signed by the offline CA and s
 > [!Warning]  
 > The previous device signing online CAs should however **not be revoked**.
 
+TODO: eove specific ?
 Before starting to generate a new device signing CA certificate, connect to the online vault and write down the current **default** issuer ID (linked to the current certificate):
 ```bash
 vault read -format=json devices_pki/issuer/default/json | jq -r '.data.issuer_id'
@@ -225,7 +231,7 @@ Generate a new **internal** CA CSR on the online vault, by running the following
 ./scripts/maintenance/create-devices-csr.sh
 ```
 
-Embed the CSR content inside that `actions/sign-csr.sh` script.
+Embed the CSR content inside the `actions/sign-csr.sh` script.
 
 This CSR content (PEM-formatted file) will be reviewed during the verification phase of the ceremony workflow.
 
@@ -299,6 +305,7 @@ exit -42
 
 Once the check have been performed, a ceremony is executed on the offline CA and the CSR is signed, we should get a certificate chain output PEM file, let's store it into `/tmp/online_cert.pem`.
 We now enable the signed private/public key pair for online PKI by running the following script against the **online vault**:
+TODO: these scripts are no more
 ```bash
 ./scripts/maintenance/import-signed-devices-certificate.sh /tmp/online_cert.pem
 ```
@@ -311,7 +318,7 @@ vault read -format=json devices_pki/issuer/default/json | jq -r '.data.issuer_id
 > [!Important]  
 > If the default issuer ID has not been updated, there may be a security risk. The imported PEM certificate could have been generated by another machine than the online vault and trust chain may be at risk.  
 > This is even more important if the CSR PKID property (aka `subject_key_id`) could not be properly verified in the previous steps above.  
-> In such situations, you should immediately [revoke (and publish) the PEM that the offline vault just signed](../../revocation.md). This requires running a new ceremony.
+> In such situations, you should immediately [revoke (and publish) the PEM that the offline vault just signed](./revocation.md). This requires running a new ceremony.
 
 ### The offline CA can sign new online intermediate CAs for their whole lifetime during the next 12 months to come
 
@@ -353,6 +360,7 @@ You have two options there:
   This requires writing scripts for this to be run on the offline *ephemeral vault*.
 - Or you can create a brand new offline root CA.\
   This would be a brand new start of the root CA and this means re-initializing a new vault, start from an empty backup etc.\
+  TODO : move to open source ?
   Please read [the documentation on how to setup a new PKI](./PKI_init.md).
 
 > [!Note]  
