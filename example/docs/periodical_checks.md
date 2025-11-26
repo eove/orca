@@ -17,6 +17,12 @@ Executing this workflow may require performing changes on the offline PKI, and t
 
 If a word used in this document is unknown to you, the [O.R.CA documentation contains a glossary explaining key concepts](https://github.com/eove/orca)
 
+> [!CAUTION]
+> There periodical checks heavily depends on the way you handle your CAs and especially your online CA (validity duration, tools, …).\
+> This means this document needs to be heavily edited.\
+> To give a complete example, we assume that the online CA is handled using a [hashicorp vault](https://developer.hashicorp.com/vault).\ 
+> We won't add `CAUTION` alerts in this case as this would make the document very hard to read.
+
 ## Overview
 
 ### Architecture of the vault system
@@ -46,7 +52,9 @@ If fixes are needed, this means running a ceremony on preprod, and then a ceremo
 
 ### Hardware token's certificates that have expired should be renewed
 
-TODO : do we generalize ? Ask to adapt in the open-source doc ?
+> [!CAUTION]
+> Adapt the durations and number of shares.
+
 Hardware token's certificates last for at most 8 years.
 
 Every year, we are expecting a minimum of 1 share to be renewed.
@@ -82,25 +90,42 @@ Once all relevant GPG keys have been renewed and their public key commited to th
 
 An unseal share rotation should be run also on the online vault.
 
-### Every share holder can use the unseal share they own
+### Every share holder have and can use the unseal share they own
 
-Every share holder with a hardware token should have a GPG public key registered in the folder `share_holders/`
+Every share holder should have a hardware token and should have a GPG public key registered in the folder `share_holders/`
+These hardware token's GPG keys' details should match their owner's name and e-mail address at the company.
 
-Every share holder runs the following tests with their hardware token inserted
+Every share holder runs the following tests.
 
 #### Test
+
+If the share holder doesn't have a hardware token, then the test is a FAIL. The hardware token's owner should notify the organiser.
+
+Insert the hardware token en type :
 
 ```bash
 gpg --card-status
 ```
 
-This should return the serial number of the hardware token.
-
 > [!Tip]  
 > If you have an error message `gpg: selecting card failed: No such device` and/or `gpg: OpenPGP card not available: No such device`, try to run:\
 > `pkill gpg-agent`
 
-If the hardware token is communicating properly, we will extract its key ID:
+> [!CAUTION]
+> Adapt the share holder spreadsheet location.
+
+The details of your hardware token will be displayed, including the serial number, that should match the [Share holders spreadsheet, both in preprod and prod folder](https://drive.google.com/drive/folders/1NJg2EfFr1zx0L8r91-SeJX-d9baYWthM).
+
+The following command will get the username and email address associated with your hardware token.
+```bash
+gpg --card-status  | sed -n -e '/^General key info/,//p' | sed -n -e 's@^.*pub[[:blank:]][[:blank:]]*@@p'
+```
+
+The username should match your identity, the e-mail address should be yours (@company.com). If not, then the test is a FAIL.
+The hardware token's owner should notify the organiser.
+
+
+Then, we will extract its key ID:
 ```bash
 export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status | sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi') && echo "$GPG_HW_TOKEN_KEY_ID"
 ```
@@ -120,56 +145,16 @@ If at least one share holder fails to use their hardware token even after troubl
 
 #### Fix
 
-The GPG keypair should be regenerated on the hardware token of concern, keeping in mind that the new certificate generated on that hardware token should still have the same expiry date as initially (to keep a correct spread of expiry dates).
+If the share holder doesn't have a hardware token, then a hardware token should be attributed before the following steps.
 
-TODO : move to open-source ? Be more generic ?
-The process is detailed [here](@ORCA@gitremote@/blob/main/docs/yubikeys.md#generating-a-new-opengpg-key).
+The GPG keypair should be generated on the hardware token of concern, keeping in mind that the renewal of certificates needs to be spread over time. For the case where the access of the keypair is lost, the same expiry date as initially should be used. For a new keypair, a new date should be attributed as far as possible while still spreading the renewals as evenly as possible.
+
+The process is detailed in [O.R.CA's documentation](https://github.com/eove/orca/yubikeys.md#generating-a-new-opengpg-key).
 
 Once a new keypair has been set up on the hardware token, extract your public key and update the env-specific directory located under folder `share_holders_keys/` in this repository.
 
 Finally, force an unseal share rotation by running a ceremony with `rotate_keys` set to `true`.
 
-TODO: eove specific ?
-An unseal share rotation should be run also on the online vault.
-
-### All target shared holders should have a hardware token attributed
-
-Every shareholder should have a hardware token, and these hardware token's GPG keys' details should match their owner's name and e-mail address at the company.
-
-Every share holder runs the following tests with their hardware token inserted
-
-#### Test
-
-```bash
-gpg --card-status
-```
-
-TODO: eove specific ?
-The details of your hardware token will be displayed, including the serial number, that should match the [Share holders spreadsheet, both in preprod and prod folder](https://drive.google.com/drive/folders/1NJg2EfFr1zx0L8r91-SeJX-d9baYWthM).
-
-The following command will get the username and email address associated with your hardware token.
-```bash
-gpg --card-status  | sed -n -e '/^General key info/,//p' | sed -n -e 's@^.*pub[[:blank:]][[:blank:]]*@@p'
-```
-
-The username should match your identity, the e-mail address should be yours (@company.com).
-
-If this is the case, this test is a PASS.  
-If not, the hardware token's owner should notify the organiser.  
-
-#### Fix
-
-TODO : that's a new key => new  date
-The GPG keypair should be regenerated on the hardware token of concern, keeping in mind that the new certificate generated on that hardware token should still have the same expiry date as initially (to keep a correct spread of expiry dates).
-
-TODO : move to open-source ?
-The process is detailed [here](@ORCA@gitremote@/blob/main/docs/yubikeys.md#generating-a-new-opengpg-key).
-
-Once a new keypair has been setup on the hardware token, extract your public key and update the env-specific directory located under folder `share_holders_keys/` in this repository.
-
-Finally, force an unseal share rotation by running a ceremony with `rotate_keys` set to `true`.
-
-TODO: eove specific ?
 An unseal share rotation should be run also on the online vault.
 
 ### Valid certificates can be issued by the online CA during the next 18 months to come
@@ -180,7 +165,6 @@ The online CA that signs device certificates should be able to perform valid sig
 
 Take the current date, it will be called *D<sub>now</sub>*. Add 18 months to *D<sub>now</sub>*, then add again the duration of devices certificates. The result is a date *D<sub>min</sub>*.
 
-TODO: eove specific ?
 In order to get the expiry date of the online CA currently in use to sign devices, run the following command against the **online vault** after being logged in to the vault using an account with **admin** privileges:
 ```bash
 vault read -format=json devices_pki/issuer/default/json | jq -r '.data.certificate' | openssl x509 -noout -text
@@ -196,40 +180,25 @@ If not, a new online CA should be generated, the fix below should be applied.
 
 #### Fix
 
-A new device signing online CA should be created, signed by the offline CA and setup to replace the current online CA in use.
+A new device-signing online CA should be created, signed by the offline CA and setup to replace the current online CA in use.
 
 > [!Warning]  
-> The previous device signing online CAs should however **not be revoked**.
+> The previous device-signing online CAs should however **not be revoked**.
 
-TODO: eove specific ?
-Before starting to generate a new device signing CA certificate, connect to the online vault and write down the current **default** issuer ID (linked to the current certificate):
+Before starting to generate a new device-signing CA certificate, connect to the online vault and write down the current **default** issuer ID (linked to the current certificate):
 ```bash
 vault read -format=json devices_pki/issuer/default/json | jq -r '.data.issuer_id'
 ```
 
 > [!Note]  
-> This obviously only applies to renewal of the device signing CA's certificate, not to the initial generation of the very first device signing only CA.
-
-Set your vault environment:
-```bash
-export TARGET_VAULT=preprod
-```
-
-or 
-
-```bash
-export TARGET_VAULT=prod
-```
+> This only applies to renewal of the device-signing CA's certificate, not to the initial generation of the very first device-signing CA.
 
 > [!Note]  
-> External CA generation should not be allowed on the online CA and would probably thus fail due to access rights.  
+> External CA generation should not be allowed on the online CA and should fail due to access rights.  
 > This is on purpose, to prevent the private key of the generated CA from being exposed.  
 > We are thus using internal generation.
 
-Generate a new **internal** CA CSR on the online vault, by running the following script against the **online vault**:
-```bash
-./scripts/maintenance/create-devices-csr.sh
-```
+Generate a new **internal** CA CSR on the online vault.
 
 Embed the CSR content inside the `actions/sign-csr.sh` script.
 
@@ -304,11 +273,7 @@ exit -42
 > However, if it fails, then it can either be a wrong CSR **or** a change in vault. Please check accordingly.
 
 Once the check have been performed, a ceremony is executed on the offline CA and the CSR is signed, we should get a certificate chain output PEM file, let's store it into `/tmp/online_cert.pem`.
-We now enable the signed private/public key pair for online PKI by running the following script against the **online vault**:
-TODO: these scripts are no more
-```bash
-./scripts/maintenance/import-signed-devices-certificate.sh /tmp/online_cert.pem
-```
+We now enable the signed private/public key pair for online PKI by importing it in the **online vault**.
 
 Once this has been done, in order to be sure that the imported certificate corresponds to a CSR generated by the online vault, please make sure that the current **default** issuer ID for the devices PKI has changed from the value you initially wrote down above:
 ```bash
@@ -318,7 +283,7 @@ vault read -format=json devices_pki/issuer/default/json | jq -r '.data.issuer_id
 > [!Important]  
 > If the default issuer ID has not been updated, there may be a security risk. The imported PEM certificate could have been generated by another machine than the online vault and trust chain may be at risk.  
 > This is even more important if the CSR PKID property (aka `subject_key_id`) could not be properly verified in the previous steps above.  
-> In such situations, you should immediately [revoke (and publish) the PEM that the offline vault just signed](./revocation.md). This requires running a new ceremony.
+> In such situations, you should immediately [revoke (and publish) the PEM that the offline vault just signed](https://github.com/eove/orca/revocation.md). This requires running a new ceremony.
 
 ### The offline CA can sign new online intermediate CAs for their whole lifetime during the next 12 months to come
 
@@ -360,8 +325,7 @@ You have two options there:
   This requires writing scripts for this to be run on the offline *ephemeral vault*.
 - Or you can create a brand new offline root CA.\
   This would be a brand new start of the root CA and this means re-initializing a new vault, start from an empty backup etc.\
-  TODO : move to open source ?
-  Please read [the documentation on how to setup a new PKI](./PKI_init.md).
+  Please read [the documentation on how to setup a new PKI](https://github.com/eove/orca/pki_init.md).
 
 > [!Note]  
 > In any case, the old PKI (and offline CAs) are still valid for at least 6 months, so you can use them up to the end of their validity. After their validity has elapsed, the expired CAs should be kept as read-only and won't be used anymore (except if revokation is required).
@@ -369,7 +333,7 @@ You have two options there:
 > [!Tip]  
 > When renewing the root CA, you may as well evaluate the following aspects:
 > - is the crypto used for the trust chain still up-to-date or should it be updated?
-> - is hashicorp vault still up-to-date and maintained, in general and in NixOS or should the PKI be setup using new tools?
+> - is hashicorp vault and O.R.CA still up-to-date and maintained, in general and in NixOS or should the PKI be setup using new tools?
 > - the environment in which the vault has been created initially has been progressively migrated from an initialization state 30 years before, it's maybe time to clean-up and start from scratch.
 > - restarting from scratch allows to detach the currently active PKI from all history of previously chained reports and audit trails.
 > - we may want to start with better security ecosystem (better crypto, improved initialisation in both hashicorp vault and our own scripts) after 30 years, it's probably time to review the whole setup in depth, including scripts, hashicorp vault, tools (hardware tokens, NixOS bootable media), and where and how backups+reports are saved.

@@ -1,5 +1,6 @@
-Since the vault system protects highly sensitive data (like the root CA), it must be impossible for a single person to manipulate it.
-Hashicorp vault encrypts (aka seals) every secret it stores. Thus, even if you have access to vault's database's files, you cannot read or change any data in that database without the encryption key.
+Since O.R.CA protects highly sensitive data (like the root CA), it must be impossible for a single person to manipulate it. For more details, see [O.R.CA's threat model](./threat_model.md).
+
+[Hashicorp vault](https://www.hashicorp.com/en/products/vault) (the tool used under the hood by O.R.CA) encrypts (aka seals) every secret it stores. Thus, even if you have access to vault's database's files, you cannot read or change any data in that database without the encryption key.
 
 The encryption key is never stored anywhere. Instead, it is split into multiple parts called "shares".
 Each share is securely given to a different human being that *must* keep it secret. We call these people "share holders".
@@ -21,4 +22,4 @@ Thus it is important to:
  - make sure that share holders can keep their share securely (in a safe encrypted storage)
 
 The first 3 items are taken care of by running the periodical check workflow.
-THe 4th item is garanteed by the fact shares are only stored encrypted, by the fact the decryption process uses secure hardware token (Yubikeys) and by the fact the cleartext share is never disclosed, and only input to the vault unseal process by an automated process (scripts).
+THe 4th item is garanteed by the fact shares are only stored encrypted, by the fact the decryption process uses secure hardware token and by the fact the cleartext share is never disclosed.

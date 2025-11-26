@@ -22,7 +22,7 @@ To double-check that the two above variables are set properly, you can run:
 vault status
 ```
 
-If a script needs more environment variables, it will tell you.
+If a script needs more environment variables, it should tell you.
 
 ## In a VM
 
@@ -42,7 +42,7 @@ This allows to keep the state of your vault across reboots and is very close to 
 Run with:
 ```bash
 chmod go-rwx testing/root_key
-nix run src/
+nix run .
 ```
 A virtual machine that will boot on the iso image (that was automatically mounted), and with a small disk will start.
 

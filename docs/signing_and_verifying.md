@@ -1,10 +1,26 @@
 # Signing and verifying a text-based document
 
+> [!WARNING]
+> If your organisation as a official way of signing and verifying documents, then you should use it instead of what is described bellow.
+
 This method works for text-based documents like markdown or HTML.
 Even though the `--clear-sign` option of gpg could be used, it adds a bit of noise at the beginning of the document that makes HTML documents rendering very poor on a webbrowser.
 This method is more manual but only adds noise **at the end** of the document, thus fixing the display of HTML documents.
 
-The last line of the document to sign **must** be `@GPG@SIGNATURES@`.
+## Prerequisites
+
+Before selecting the commit at which the OR.C.A document is signed, **please make sure both the author and verifier's hardware token's public GPG keys** are in this repo's directory `signatory_keys`. These will be required when verifying the signatures in the future.
+
+The last line of the document to sign **must** be `@GPG@SIGNATURES@`. If the line is not present, please add it.
+For HTML documents use :
+```bash
+sed -i -e '$a<hr><pre>\n@GPG@SIGNATURES@' /path/to/file.html
+```
+Otherwise use :
+```bash
+sed -i -e '$a@GPG@SIGNATURES@' /path/to/file
+```
+
 
 ## Signing 
 In sequence, each of the signatory will run the following command and transfer the resulting signed file (which name is displayed on the console) to the next signatory.
@@ -31,7 +47,7 @@ The authenticity of the content of the document, must be verify via cryptographi
 ```bash
 git checkout @ORCA@commit@
 ```
- * There, you can find the keys in [`workflow_signatory_keys/`](@ORCA@gitremote@/tree/main/workflow_signatory_keys).
+ * There, you can find the keys in `workflow_signatory_keys/`.
  * Verify that these keys were added via **a valid signed commit by their owner**.
  * Use a new gpg keystore (all of the following commands will be executed with this environment variable):
 ```bash

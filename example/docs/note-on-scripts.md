@@ -7,6 +7,3 @@
 > * `--extra-experimental-features nix-command`
 > * `--extra-experimental-features flakes`
 
-TODO: keep ?
-> [!Important]  
-> Every change must go through a script. No action should be manually performed on a vault.

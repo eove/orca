@@ -1,6 +1,9 @@
 # Summary
 
 - [Introduction](./README.md)
+    - [Architecture](./architecture.md)
+    - [Secret Sharing](./secret_sharing.md)
+    - [Threat model](./threat_model.md)
 
 - [Jules Brown, Hole-in-one's CTO](./story/README.md)
     - [Foreword](./story/foreword.md)
@@ -19,11 +22,15 @@
     - [Is this for real ?](./story/verify-workflow.md)
     - [Afterword](./story/afterword.md)
 
-- [Architecture](./architecture.md)
-- [Signing and verifying](./signing_and_verifying.md)
-- [Secret Sharing](./secret_sharing.md)
+
 - [Local testing](./testing/README.md)
+- [HTML workflow generation](./html_gen.md)
+- [Hardware tokens](./hardware_tokens.md)
+- [GPG public key](./gpg_public_key.md)
+- [Initialisation](./pki_init.md)
+
 
 -------------------
 
-[Glossary](./workflow/common/glossary.md)  
+[Signing and verifying](./signing_and_verifying.md)
+[Glossary](./glossary.md)  

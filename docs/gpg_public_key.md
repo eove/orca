@@ -16,7 +16,7 @@ Let's also write down the username it is assocated to (an hexadecimal value) (it
 Now, we can export this key into a file:
 
 ```bash
-gpg --armor --output /path/to/my/pulic/key.gpg --export 'C518 D569 FCD9 21D8 D895  EA1E 25B1 CF12 ACE6 C922'
+gpg --armor --output /path/to/my/pulic/key.gpg --export your_fingerprint
 ```
 
 You can send the `.gpg` file exported above to others.

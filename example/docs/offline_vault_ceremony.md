@@ -74,7 +74,6 @@ Once changes have been performed, commit the modified files to the [repository](
 
 The 📢`organiser` asks all `share holders` (including 👥`team members`) to check that the hardware token they own has its public key recorded in the env-specific directory located under [`share_holders_keys/`] in this repository and if it needs to be updated or added, they should do it via a signed commit.
 
-TODO tip to extract public key in O.R.CA open-source ?
 > [!Tip]  
 > Github automatically signs commits performed via the online Github web interface.
 
@@ -138,6 +137,7 @@ git diff <previous ceremony trusted commit>
 
 > [!Important]  
 > * The ceremony's configuration (environment, *C<sub>vault</sub>*, etc…) that [has been set by the 📢`organiser`](#configuring-the-ceremony) should be verified.
+> * No custom action script should ask for user input or give an interactive shell.
 > * Any change displayed by the diff should be considered legitimate to you.
 > * During this step, 👥`team members` will also review and understand all the scripts that are planned for execution during the ceremony.
 > * Scripts should never ask the offline topmost root CA to sign anything that doesn't strictly remains in the offline vault (no external CSR).
@@ -195,7 +195,6 @@ You can check that with :
 lsblk -o name,label
 ```
 
-TODO the script could do that and check it since we know the cvault and it will be checked afterwards anyway
 > [!Warning]  
 > The rest of this section should not be executed at the first initialisation of the vault because we have no previous backup. In that case, please skip to the next section.
 
@@ -240,7 +239,6 @@ These 3 persons should be **physically present during the whole ceremony**, and 
    This person **must** be the person that created the USB stick.\
    During the whole ceremony, this person will fill in the sections framed with a <span style="border:2px dotted dodgerblue;padding-left:2px;padding-right:2px;">dotted-blue border</span>.
 
-TODO : report == asciinema ?
 > [!Tip]
 > To extract these sections from the html version of the ceremony's workflow, use the following filter:\
 >  `cat /path/to/ceremory_workflow.html | sed -e 's|<\([/]\)*code class="language-report">|\n<\1\@ORCA\@report\@>\n|g' | sed -n -e '/<\@ORCA\@report\@>/,/<\/\@ORCA\@report\@>/{s/<[/]*\@ORCA\@report\@>//;p}' | sed -e '$a\@GPG\@SIGNATURES\@' | tee /tmp/blank_report.txt`
@@ -250,9 +248,13 @@ TODO : report == asciinema ?
    The 👀`observer` will lend their computer to run the *ephemeral vault*. This machine must have a Linux x86_64 OS installed.\
    They must be sitting next to the 💻`operator`. Gets the validated ceremony workflow from the 💻`operator`, and validates that the ceremony is done *exactly* as documented.\
    Make sure that this computer has more than one USB port available:
-   TODO:still ?
-   * one without adapter nor hub. This port will be used for the O.R.CA stick during the whole ceremony.
+   * one port to be used for the O.R.CA stick during the whole ceremony.
    * one or more USB port that fits the USB format of the Yubikeys (USB-A, USB-C etc.).
+
+> [!Warning]
+> At boot time, at boot time (and if possible during the whole ceremony), the only hardware that can be used is the hardware of the `observer` (👀).\
+> This means that if a USB adaptor, a hub or a external keyboard is necessary, it **must** be hardware owned by the `observer` (👀).\
+> If not, you may plug it only **after** the stick is successfully booted.
 
 For the rest of the procedure below, you can consider references to 👥`team members` as a synonym for the group of the 3 roles above.
 
@@ -490,10 +492,6 @@ The 👥`team member` that inserted the USB stick, immediately:
 1. copies the tar archive from the `VAULT_WRITABLE` partition to the backup destination corresponding to the environment.
 2. sends the tar archive from the `VAULT_WRITABLE` partition to all the participants as an attached file via e-mail
 3. gets the AIA data in folder `orca/aia/` of the current environment (prod/preprod) from `VAULT_WRITABLE` partition data and makes it available online.
-
-TODO: remove ?
-> [!Note]  
-> We use a tar format here because it allows for deduplication during the enterprise-wide backup process (that includes all Google Drive content)
 
 All 👥`team members` should now:
 1. download the attached private data archive from the e-mail they have received

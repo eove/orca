@@ -1,7 +1,7 @@
-# Getting GPG to work with Yubikeys
+# Getting GPG to work with hardware tokens
 
 > [!Warning]  
-> There are several families of PIN codes on the Yubikey.  
+> There are several families of PIN codes on the hardware token.  
 > OpenPGP PIN codes (default user PIN: 123456, default admin PIN: 12345678) are different from PIV PIN codes (PIN, PUK, MGM).  
 > In this page, when we use admin/user PIN code, we thus refer to the OpenPGP ones.
 
@@ -10,22 +10,22 @@ If neccessary, install the correct packages. Example for an Ubuntu distro:
 sudo apt install gpg gpg-agent scdaemon pcscd
 ```
 
-Insert your hardware token (Yubikey).
+Insert your hardware token.
 
-Quit any possibly running Yubico Authenticator.
+Quit any possibly running application that could use the hardware token (an authenticator, or a browser).
 
-First, make sure you can communicate with the Yubikey:
+First, make sure you can communicate with the hardware token:
 ```bash
 gpg --card-status
 ```
-should return details about your Yubikey including the serial number. If not, you should first fix communication with the Yubikey (missing libs, daemons, configuration etc.) before continuing.
+should return details about your hardware token including the serial number. If not, you should first fix communication with the hardware token (missing libs, daemons, configuration etc.) before continuing.
 
 Check that the smart card daemon is running:
 ```bash
 sudo systemctl status pcscd
 ```
 
-If not, please (re)start it after closing the Yubico Authenticator:
+If not, please (re)start it:
 ```bash
 sudo systemctl restart pcscd
 pkill gpg-agent
@@ -46,7 +46,7 @@ pkill gpg-agent
 
 # Generating a new OpenGPG key
 
-If your Yubikey is communicating correctly with gpg, the following command should return your Yubikey's serial number:
+If your hardware token is communicating correctly with gpg, the following command should return your hardware token's serial number:
 ```bash
 gpg --card-status
 ```
@@ -55,7 +55,7 @@ gpg --card-status
 gpg --card-edit
 ```
 
-Reset the yubikey (see [below](#handling-pin-locks)) if necessary.
+Reset the hardware token (see [below](#handling-pin-locks)) if necessary.
 
 Then change the user PIN:
 ```
@@ -75,6 +75,13 @@ passwd
 ```
 
 And set a new admin PIN with option 3.
+
+> [!NOTE]
+> The Ed25519/Cv25519 is an example and can be changed as you see fit.
+> The contraints are that the algorithm must be supported by
+> - the hardware token
+> - gnupg
+> - hashicorp vault's share encryption (https://developer.hashicorp.com/vault/docs/concepts/pgp-gpg-keybase#initializing-with-gnupg)
 
 Generate a new Ed25519/Cv25519 keyset:
 
@@ -102,13 +109,13 @@ N
 # Enter the validity (see the recommendations in the periodical check workflow, you can also use the tip below to ease the calculation)
 # Enter your identity name `Firstname Lastname`
 # Enter your Email address
-# Enter a comment, for example `Yubikey`, important when you have multiple GPG keys linked to the same email
+# Enter a comment, for example `Hardware token`, important when you have multiple GPG keys linked to the same email
 # Enter the admin PIN+user PIN as many times as required
 quit
 ```
 
 > [!Note]  
-> You will now have an Ed25519 key stored on your Yubikey. The private key can never leave the device.  
+> You will now have an Ed25519 key stored on your hardware token. The private key can never leave the device.  
 > A prompt for a passphrase is only required when exporting the private key into a local file, which you should not allow (your response to `Make off-card backup of encryption key?` should be `N`).
 
 > [!Tip]  
@@ -130,7 +137,7 @@ gpg --card-status
 In the last section, you will find the signature key's long ID (multiple 4 digit hexadecimal values separated with spaces), taken from the token internal data.
 Because gpg knows about this key, the last digits of the key (short ID) will also be displayed in the `General key info..` section, following a `pub ed25519/` header.
 
-Store the Yubikey's GPG key ID in a `GPG_HW_TOKEN_KEY_IDY_ID` environment variable:
+Store the hardware token's GPG key ID in a `GPG_HW_TOKEN_KEY_IDY_ID` environment variable:
 ```bash
 export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status | sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi') && echo "$GPG_HW_TOKEN_KEY_ID"
 ```
@@ -143,7 +150,7 @@ gpg --export --armor "$GPG_HW_TOKEN_KEY_ID"
 # Handling PIN locks
 
 > [!Warning]  
-> There are several domains in the Yubikey (PIV, OpenPGP, ...)
+> There are several domains in some hardware tokens (PIV, OpenPGP, ...)
 >
 
 
@@ -152,7 +159,7 @@ gpg --card-status | grep 'PIN.*counter'
 ```
 
 returns the PIN remaining counts.
-An example from a pristine Yubikey:
+An example from a pristine hardware token:
 ```
 PIN retry counter : 3 0 3
                     | | |
@@ -186,24 +193,19 @@ Q - quit
 Your selection? 2
 ```
 
-OpenPGP on the Yubikeys uses the PIV facility.
-
-> [!Note]  
-> For older Yubikeys (<5.2.3), Ed25519 is not supported, and only RSA keys are supported up to 2048 included, not larger bit size.
-
-# Using your Yubikey on a different machine
+# Using your hardware token on a different machine
 
 If your want to use a machine where the keypair was not generated, you must:
-* connect your yubikey
+* connect your hardware token
 * import the exported public key using `gpg --import`
 * run `gpg --card-status`
 
 Both your public key and private key are now available for use on this new machine.
 
 > [!Tip]  
-> If you didn't save you public key, there are [ways to use your Yubikey anyway](https://www.nicksherlock.com/2021/08/recovering-lost-gpg-public-keys-from-your-yubikey/).
+> If you didn't save you public key, there are [ways to use your hardware token anyway](https://www.nicksherlock.com/2021/08/recovering-lost-gpg-public-keys-from-your-yubikey/).
 
-# Resources
+# Resources (specific to yubikeys)
 
 * https://github.com/drduh/YubiKey-Guide
 * https://whynothugo.nl/journal/2022/07/11/using-a-yubikey-for-gpg/
