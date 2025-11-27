@@ -52,7 +52,7 @@ This risk is mitigated by randomly selecting the hardware that will be used duri
 
 ### God-like admin
 
-If one person has full admin access to all the hardware from which the hardware will be selected, then they may deploy their attack everywhere.
+If one person has full admin access to all/most of the hardware among which we draw, then they may deploy their attack everywhere.
 This make the randomization ineffective and other mitigations should be considered. Ideally, each hardware that may be selected should have a different administrator. The randomization selects the administrator more than the hardware itself.
 
 ## Non-selected but technically better mitigations
