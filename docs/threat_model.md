@@ -18,7 +18,7 @@ The issues that O.R.CA aims to solve are two fold :
 
 Working on a high-level CA is stressfull and doing it by hand is error-prone.
 O.R.CA aims to reduce stress and mistakes thanks to automation.
-Everything action made on the offline CAs **must** be automated via a script.
+Every action made on the offline CAs **must** be automated via a script.
 There is no way to do anything meaningfull on the O.R.CA system other than a script.
 O.R.CA offers a way to test these scripts in VMs and heavily recommand to have a preproduction O.R.CA to validate everything before running it on the production O.R.CA.
 If any mistake is detected by O.R.CA or someone during a ceremony, O.R.CA will make sure that no errorneous data can be exploited.
