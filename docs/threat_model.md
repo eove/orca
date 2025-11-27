@@ -41,7 +41,7 @@ This means that, for our definition, `ill-intent` is not necessarily someone `ev
 
 O.R.CA has known limits (weaknesses) that you should consider before using.
 These limits means **one ill-intent person inside your organisation** could **technically** get control over your offline root CA.
-These limits are considered acceptable in regard of the expanse necessary to solve them.
+These limits are considered acceptable with regards to the expenses and efforts that would be required to solve them.
 
 ### Non dedicated hardware
 
