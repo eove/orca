@@ -5,7 +5,7 @@ The whole chain of trust starts with the root Certificate Authority (CA). That's
 To achieve this, the PKI is split in two parts:
  - the offline CAs, that contain multiple CAs, one of them is the root CA (topmost root of trust).  
    All of these offline CAs are manipulated using O.R.CA.  
-   O.R.CA is not a machine, it is a database (a set of backup files) fetched into an ephemeral machine when manipulating the offline CAs.
+   The offline CA (managed according to O.R.CA) is not a machine, it is a database (a set of backup files) fetched into an ephemeral machine only during the time when the offline CA needs to be manipulated/modified.
  - the online CAs which are used on a daily basis.  
 
 > [!NOTE]
