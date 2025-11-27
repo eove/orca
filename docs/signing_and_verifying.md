@@ -1,7 +1,8 @@
 # Signing and verifying a text-based document
 
 > [!Warning]  
-> If your organisation as a official way of signing and verifying documents, then you should use it instead of what is described bellow.
+> If your organisation has a official way of signing and verifying documents, then you should use that process.  
+> What is described below is only a simple proposal that re-uses the hardware token already required in the workflow.
 
 This method works for text-based documents like markdown or HTML.
 Even though the `--clear-sign` option of gpg could be used, it adds a bit of noise at the beginning of the document that makes HTML documents rendering very poor on a webbrowser.
