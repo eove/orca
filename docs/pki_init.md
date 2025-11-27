@@ -17,5 +17,5 @@ To initialize a new offline CA, we will need to include the following script fro
 * [create-intermediate-CA.sh](../example/actions/create-intermediate-CA.sh)
 * [sign-csr.sh](../example/actions/sign-csr.sh)
 
-This scripts should be configured accordingly to your PKI architecture and included in that order.
+These scripts should be customised according to your own PKI architecture. They should be included in that exact order.
 When signing a CSR, you should validate it as indicated in your `exploitation manual`.
