@@ -63,7 +63,7 @@ Here are some better mitigations with the reason we chose not to keep them.
 
 We could buy a new computer for each ceremony. The whole team would go, purchase and unpack it together. That way, we are sure nobody touched it before (a supply chain attack of that scale is considered a state-level attack and is out of the scope of O.R.CA).
 
-This heavily raise the cost of each ceremony and may become an issue for any emergency level ceremony (what if every shop in town is closed?).
+This heavily raise the cost of each ceremony, may become an issue for any emergency level ceremony (what if every shop in town is closed?), and is not environment friendly.
 
 ### Dedicated hardware
 
