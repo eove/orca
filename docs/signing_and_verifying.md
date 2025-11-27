@@ -12,7 +12,7 @@ This method is more manual but only adds noise **at the end** of the document, t
 
 Before selecting the commit at which the OR.C.A document is signed, **please make sure both the author and verifier's hardware token's public GPG keys** are in this repo's directory `signatory_keys`. These will be required when verifying the signatures in the future.
 
-The last line of the document to sign **must** be `@GPG@SIGNATURES@`. If the line is not present, please add it.
+The last line of the document to sign **must** be `@GPG@SIGNATURES@`. If the line is not present, please add it.\
 For HTML documents use :
 ```bash
 sed -i -e '$a<hr><pre>\n@GPG@SIGNATURES@' /path/to/file.html
