@@ -19,7 +19,7 @@ You will now have to document your offline CA, that is to say, customise your `e
 > [!CAUTION]
 > The parts that need the most attention are highlighted with caution alerts like this one.
 
-To create your `Exploitation manual` run :
+To generate and display the default `exploitation manual` in a web-browser, run:
 ```shell
 mdbook build --open
 ```
