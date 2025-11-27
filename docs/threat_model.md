@@ -48,7 +48,7 @@ These limits are considered acceptable with regards to the expenses and efforts 
 O.R.CA doesn't ask for a dedicated computer to be used.
 This means that anyone that has full control over the computer that will be used for a ceremony could trick other people into thinking that they are using O.R.CA while they are actually using a counterfeit version.
 
-This risk is mitigated by randomly selecting the hardware that will be used between as many hardware as possible.
+This risk is mitigated by randomly selecting the hardware that will be used during each ceremony. We draw one hardware randomly among as many choices as possible.
 
 ### God-like admin
 
