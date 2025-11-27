@@ -150,7 +150,7 @@ gpg --export --armor "$GPG_HW_TOKEN_KEY_ID"
 # Handling PIN locks
 
 > [!Warning]  
-> There are several domains in some hardware tokens (PIV, OpenPGP, ...)
+> Often, on hardware tokens, there are several domains (PIV, OpenPGP, U2F ...), for encryption/decryption, we use the OpenPGP application.
 >
 
 
