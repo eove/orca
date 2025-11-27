@@ -39,7 +39,7 @@ This means that, for our definition, `ill-intent` is not necessarily someone `ev
 
 ## Limits of O.R.CA
 
-O.R.CA has known limits (weaknesses) that you should consider before using.
+O.R.CA has known limits (weaknesses) that you should consider before using it.
 These limits means **one ill-intent person inside your organisation** could **technically** get control over your offline root CA.
 These limits are considered acceptable with regards to the expenses and efforts that would be required to solve them.
 
