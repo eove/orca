@@ -12,7 +12,7 @@ To initialise your own `exploitation repository`, in an empty folder, use:
 nix flake init -t github:eove/orca/v1.0 --refresh
 ```
 You can then commit and push this folder into your own organisation's repository.
-This will be the repository where all changes to your offline root CA will be commited, thus the name `exploitation repository`.
+This will be the repository where all changes to your offline root CA will be committed (containing documentation and workflows, as well as automation scripts). We will call this the `exploitation repository`.
 
 You will now have to customize you `Exploitation manual`.
 
