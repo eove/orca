@@ -23,7 +23,10 @@ To generate and display the default `exploitation manual` in a web-browser, run:
 ```shell
 mdbook build --open
 ```
-
+> [!Note]  
+> What is displayed initially when you run the above command has directly been taken from the nix template.  
+> It contains the default documentation we have prepared. You should review it and modify the relevant `.md` files to fit your needs, regenerating and browsing the updated documentation again as needed.  
+> Next to that default `exploitation manual`, you will find default scripts to operate the offline CA.
 Before you start doing anything on it, you'll need to understand how O.R.CA works, its threat model, its limits and how to interact with it in general.
 This is the subject of the next chapters.
 
