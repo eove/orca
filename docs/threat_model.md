@@ -33,7 +33,7 @@ O.R.CA aims to protect the high-level CAs against **one ill-intent person inside
 - someone that is manipulated in order to do something compromising without understanding it
 This means that, for our definition, `ill-intent` is not necessarily someone `evil`.
 
-`A person inside your organisation` is anyone that has any privileged access to anything. It goes from the contractor that comes check your heaters to your C-level people.
+`A person inside your organisation` is anyone that has any privileged access to anything. It goes from the contractor that comes check your offices' heating system to your C-level people.
 
 `one` ill-intent person is set as the goal of O.R.CA (and the limits will show that we are no perfectly there yet). As the strech goal, anywhere that limit can be raise, O.R.CA aims to make it configurable.
 
