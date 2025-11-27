@@ -1,4 +1,4 @@
-The key feature of O.R.CA is to handle a offline part of a Public-Key Infrastructure (PKI).
+The key feature of O.R.CA is to handle the offline part of a Public-Key Infrastructure (PKI).
 
 The whole chain of trust starts with the root Certificate Authority (CA). That's why it must be kept as secured as possible.
 
