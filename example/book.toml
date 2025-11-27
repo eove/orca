@@ -1,7 +1,7 @@
 [book]
 language = "en"
 src = "docs"
-title = "Your own PKI's exploitation documentation"
+title = "Your own PKI's exploitation manual"
 build.create-missing = "false"
 
 [preprocessor.index]
