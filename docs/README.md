@@ -3,7 +3,7 @@
 In this document, we will explain how O.R.CA works.
 
 > [!Warning]
-> This document is known as the `O.R.CA documentation` and is not to be confused with the `exploitation manual` that you will have your own copy of and will have to customize.
+> This book contains the `O.R.CA documentation` and should not be confused with the `exploitation manual` (which will be your customised user manual and workflow for your own offline CA).
 
 In case you encounter a term that you do not understand, please refer to [the glossary](./workflow/common/glossary.md)
 
