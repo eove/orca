@@ -2,7 +2,7 @@
 
 The goal of O.R.CA is to give a good-enough security of the offline part of the PKI while keeping the cost as low as possible.
 
-The target audience for O.R.CA is small to medium organisation that need to create their own PKI (for IoT purposes for example) but don't have the capacity to handle it like a world wide root PKI (like Let's encrypt, banks, etc…).
+The target audience for O.R.CA is small to medium organisations that need to create their own PKI (for IoT purposes for example) but don't have the capacity to handle it like a world-wide root PKI (as Let's encrypt, banks, do, for example).
 
 This means that **O.R.CA is not suited for state-level attacks**.
 
