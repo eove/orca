@@ -14,7 +14,7 @@ nix flake init -t github:eove/orca/v1.0 --refresh
 You can then commit and push this folder into your own organisation's repository.
 This will be the repository where all changes to your offline root CA will be committed (containing documentation and workflows, as well as automation scripts). We will call this the `exploitation repository`.
 
-You will now have to customize you `Exploitation manual`.
+You will now have to document your offline CA, that is to say, customise your `exploitation manual`.
 
 > [!CAUTION]
 > The parts that need the most attention are highlighted with caution alerts like this one.
