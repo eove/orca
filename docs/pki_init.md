@@ -9,7 +9,7 @@ We describes how to initialise an offline CA using O.R.CA.
 
 # Initialisation of the offline vault
 
-The initialisation is done during a ceremony following your O.R.CA workflow.
+The initialisation is done during a ceremony. Please refer to your custom `exploitation manual` to find out the workflow for your offline vault ceremony).
 Creating the first shares is done automatically when needed.
 
 To initialize a new offline CA, we will need to include the following script from the `actions/` folder depending on what we want to perform :
