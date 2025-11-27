@@ -22,4 +22,7 @@ Thus it is important to:
  - make sure that share holders can keep their share securely (in a safe encrypted storage)
 
 The first 3 items are taken care of by running the periodical check workflow.
-THe 4th item is garanteed by the fact shares are only stored encrypted, by the fact the decryption process uses secure hardware token and by the fact the cleartext share is never disclosed.
+The 4th item is guaranteed by the fact that:
+* shares are only stored encrypted
+* the decryption process uses secure hardware token
+* the cleartext share is never disclosed
