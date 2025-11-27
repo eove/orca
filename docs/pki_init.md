@@ -5,7 +5,7 @@ We describes how to initialise an offline CA using O.R.CA.
 > [!Warning]  
 > Part of this process would probably also involve working with another (online) CA as well.  
 > We would want to sign that online CA using the offline CA and thus to get a fully functional chain of trust.  
-> All work on the offline part of the PKI thus means using your O.R.CA workflow.
+> All work on the offline part of the PKI thus means using your `exploitation manual`'s workflow.
 
 # Initialisation of the offline vault
 
