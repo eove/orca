@@ -6,7 +6,7 @@ The target audience for O.R.CA is small to medium organisations that need to cre
 
 This means that **O.R.CA is not suited for state-level attacks**.
 
-> [!WARNING]
+> [!Warning]  
 > If your organisation can financially do more than what O.R.CA offers, you probably should.
 
 The issues that O.R.CA aims to solve are two fold :
