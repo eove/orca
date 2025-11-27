@@ -1,6 +1,6 @@
 # Signing and verifying a text-based document
 
-> [!WARNING]
+> [!Warning]  
 > If your organisation as a official way of signing and verifying documents, then you should use it instead of what is described bellow.
 
 This method works for text-based documents like markdown or HTML.
