@@ -71,7 +71,7 @@ A dedicated computer could be bought and kept **safely**. By safely, we mean tha
 
 This is the same idea as [secret sharing](./secret_sharing.md), but physically.
 
-A safe with this feature doesn't exists yet (as far as we know). It would raise the cost to protect the offline root CA but would worth it since it solves, for a one time cost, the limits of O.R.CA.
+A safe with this feature would raise the cost to protect the offline root CA but would be worth it since it solves, for a one time cost, the limits of O.R.CA.
 
 The next chapters form a fiction story to explain some scenarios of attacks and missuses that O.R.CA aims to solve.
 You can skip them if you are already convinced that handling a PKI should be done with care and/or you understand the risk scenarios associated with it.
