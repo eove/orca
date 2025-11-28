@@ -27,7 +27,7 @@
       {
         lib = import ./src/lib.nix (inputs // { inherit system pkgs ORCA_DISK_NAME; });
         apps = {
-          default = self.lib."${system}".run-in-vm (import ./testing/orca-config.nix);
+          in-vm = self.lib."${system}".run-in-vm (import ./testing/orca-config.nix);
         };
         packages = {
           md-to-html = pkgs.writeShellScriptBin "md-to-html" ''
@@ -101,7 +101,6 @@
                 ${switch-usb-rw "on"}
               '';
               plug-simulated-hardware-token = pkgs.writeShellScriptBin "plug-simulated-hardware-token" ''
-                  set -x
                   if test $# -ne 1; then
                     echo "This script requires the number of the hardware token to insert as argument" >&2
                     exit 1

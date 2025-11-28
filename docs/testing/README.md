@@ -31,9 +31,6 @@ This allows to keep the state of your vault across reboots and is very close to 
 > [!Tip]  
 > You can loop mount this `.raw` image if you need to access or modify files.
 
-> [!Note]  
-> Most probably, you will want a `dev` environment while testing in a VM (not a `preprod` or `prod`) so you will have to make sure `orca.environment-target` is set to `dev` in [src/default.nix](../../src/default.nix).
-
 ### Starting the iso in a VM
 
 > [!Important]  
@@ -42,7 +39,7 @@ This allows to keep the state of your vault across reboots and is very close to 
 Run with:
 ```bash
 chmod go-rwx testing/root_key
-nix run .
+nix run .#in-vm
 ```
 A virtual machine that will boot on the iso image (that was automatically mounted), and with a small disk will start.
 

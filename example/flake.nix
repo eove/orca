@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     flake-utils.url = "github:numtide/flake-utils";
     orca = {
-      url = "github:FaustXVI/orca/create-template"; # TODO replace with "github:eove/orca/v1.0" once taged
+      url = "github:FaustXVI/orca/better-emulation"; # TODO replace with "github:eove/orca/v1.0" once taged
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
