@@ -238,7 +238,7 @@
 <p>To double-check that the two above variables are set properly, you can run:</p>
 <pre><code class="language-bash">vault status
 </code></pre>
-<p>If a script needs more environment variables, it will tell you.</p>
+<p>If a script needs more environment variables, it should tell you.</p>
 <h2 id="in-a-vm"><a class="header" href="#in-a-vm">In a VM</a></h2>
 <p>This allows to keep the state of your vault across reboots and is very close to the <em>ephemeral vault</em> setup but skipping the need to create a USB stick. The state (<code>VAULT_WRITABLE</code> partition content) is kept in a generated raw ext4 stored in a local file named <code>orca-testing-disk.raw</code>.</p>
 <div class="mdbook-alerts mdbook-alerts-tip">
@@ -265,7 +265,7 @@
 </div>
 <p>Run with:</p>
 <pre><code class="language-bash">chmod go-rwx testing/root_key
-nix run src/
+nix run .
 </code></pre>
 <p>A virtual machine that will boot on the iso image (that was automatically mounted), and with a small disk will start.</p>
 <div class="mdbook-alerts mdbook-alerts-note">
@@ -317,11 +317,11 @@ The passphrase for the simulated yubikeys is <code>test</code></p>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../offline/regenerating_root_token.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../story/afterword.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../revocation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../html_gen.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -331,11 +331,11 @@ The passphrase for the simulated yubikeys is <code>test</code></p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../offline/regenerating_root_token.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../story/afterword.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../revocation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../html_gen.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

@@ -223,22 +223,41 @@
 
 </style>
 <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>In this document, we will explain how to work with the Public-Key Infrastructure (PKI).</p>
-<p>If you directly want to generate a one-page html-formatted workflows, please see <a href="./workflow/common/html_gen.html">here</a>.</p>
-<p>You may also directly browse the workflows online:</p>
-<ul>
-<li><a href="./workflow/offline_vault_ceremony.html">Using the Offline PKI</a></li>
-<li><a href="./workflow/periodical_checks.html">Periodical checks of the PKI</a></li>
-</ul>
-<p>You can also access specific topics by browsing the left-handside menu.</p>
-<p>Each chapter describing procedures may start with the following icons:</p>
-<ul>
-<li>🚀 which means it is to be done only once in the lifetime of the vault</li>
-<li>🔁 which means it <em>must</em> be done every time we work on the vault</li>
-<li>📆 which means it is done from time to time during normal operations of the vault</li>
-</ul>
+<p>In this document, we will explain how O.R.CA works.</p>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>This book contains the <code>O.R.CA documentation</code> and should not be confused with the <code>exploitation manual</code> (which will be your customised user manual and workflow for your own offline CA).</p>
+</div>
 <p>In case you encounter a term that you do not understand, please refer to <a href="./workflow/common/glossary.html">the glossary</a></p>
-<p>Before you start doing anything on it, you'll need to understand how the vault system works and how to interact with it in general.
+<p>To create a copy of your exploitation manual, you will need to install the nix package manager on your machine, and fetch a brand new template for your offline CA, by creating a new folder, and running the following command inside this folder:</p>
+<pre><code class="language-shell">nix flake init -t github:eove/orca/v1.0 --refresh
+</code></pre>
+<p>You can then commit and push this folder into your own organisation's repository.
+This will be the repository where all changes to your offline root CA will be committed (containing documentation and workflows, as well as automation scripts). We will call this the <code>exploitation repository</code>.</p>
+<p>You will now have to document your offline CA, that is to say, customise your <code>exploitation manual</code>.</p>
+<div class="mdbook-alerts mdbook-alerts-caution">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  caution
+</p>
+<p>The parts that need the most attention are highlighted with caution alerts like this one.</p>
+</div>
+<p>To generate and display the default <code>exploitation manual</code> in a web-browser, run:</p>
+<pre><code class="language-shell">mdbook build --open
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p>What is displayed initially when you run the above command has directly been taken from the nix template.<br />
+It contains the default documentation we have prepared. You should review it and modify the relevant <code>.md</code> files to fit your needs, regenerating and browsing the updated documentation again as needed.<br />
+Next to that default <code>exploitation manual</code>, you will find default scripts to operate the offline CA.</p>
+</div>
+<p>Before you start doing anything on it, you'll need to understand how O.R.CA works, its threat model, its limits and how to interact with it in general.
 This is the subject of the next chapters.</p>
 
                     </main>

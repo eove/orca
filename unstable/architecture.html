@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Architecture of the vault system - O.R.CA&#x27;s documentation</title>
+        <title>Architecture - O.R.CA&#x27;s documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -222,43 +222,59 @@
 }
 
 </style>
-<p>One of the key feature of the vault system is to handle a Public-Key Infrastructure (PKI).</p>
+<p>The key feature of O.R.CA is to handle the offline part of a Public-Key Infrastructure (PKI).</p>
 <p>The whole chain of trust starts with the root Certificate Authority (CA). That's why it must be kept as secured as possible.</p>
-<p>To achieve this, the PKI (and thus the vault system) is split in two parts:</p>
+<p>To achieve this, the PKI is split in two parts:</p>
 <ul>
 <li>the offline CAs, that contain multiple CAs, one of them is the root CA (topmost root of trust).<br />
-All of these offline CAs are manipulated using the offline vault.<br />
-The offline vault is not a machine, it is a database (a set of backup files) fetched into an ephemeral machine when manipulating the online CAs.</li>
+All of these offline CAs are manipulated using O.R.CA.<br />
+The offline CA (managed according to O.R.CA) is not a machine, it is a database (a set of backup files) fetched into an ephemeral machine only during the time when the offline CA needs to be manipulated/modified.</li>
 <li>the online CAs which are used on a daily basis.</li>
 </ul>
-<p>In the offline vault, the root CA delegates its signing rights to offline intermediate CAs that are restricted to a given subdomain.
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p>What follows is only a recommandation. If you have good reasons not to follow it, please do so and document it in your <code>exploitation manual</code>.
+The definition of <code>short</code> here depends on your needs. The shorter the better.</p>
+</div>
+<p>In the offline part of the PKI, the root CA delegates its signing rights to offline intermediate CAs that are restricted to a given subdomain.
 This offline intermediate CA will then delegate its signing rights to an online intermediate CA that is valid for a short amount of time.
 It is up to the online intermediate CA to sign certificates on a day to day basis.</p>
-<p>Here is a graphical representation of the chain of trust:</p>
+<p>Here is a graphical representation of a chain of trust:</p>
 <pre class="mermaid">flowchart TD
 
-    subgraph Offline vault
+    subgraph Offline authorities
         ROOT_CA&gt;&quot;&lt;b&gt;ROOT CA&lt;/b&gt;
 *.example.com
 fa:fa-hourglass 30yrs&quot;]
         INTERMEDIATE_CA&gt;&quot;&lt;b&gt;Offline intermediate CA&lt;/b&gt;
-*.subdomain.example.com
+*.sub.example.com
 fa:fa-hourglass 30yrs&quot;]
+        INTERMEDIATE_CA2&gt;&quot;&lt;b&gt;Offline intermediate CA&lt;/b&gt;
+*.other.example.com
+fa:fa-hourglass 15yrs&quot;]
     end
     ROOT_CA --&gt; |delegates| INTERMEDIATE_CA
+    ROOT_CA --&gt; |delegates| INTERMEDIATE_CA2
 
     INTERMEDIATE_CA --&gt; |delegates| VAULT_PKI
+    INTERMEDIATE_CA2 --&gt; |delegates| VAULT_PKI2
 
-    subgraph Online vault
+    subgraph Online authorities
         VAULT_PKI&gt;&quot;&lt;b&gt;Online intermediate CA&lt;/b&gt;
-*.subdomain.example.com
-fa:fa-hourglass 14yrs&quot;]
-        VAULT_PKI --&gt;|signs| EOCON1(&quot;fa:fa-barcode
-        XXX.subdomain.example.com
-fa:fa-hourglass 12yrs&quot;)
-        VAULT_PKI --&gt;|signs| EOCON2(&quot;fa:fa-barcode
-        YYY.subdomain.example.com
-fa:fa-hourglass 12yrs&quot;)
+*.sub.example.com
+fa:fa-hourglass 10yrs&quot;]
+        VAULT_PKI2&gt;&quot;&lt;b&gt;Other intermediate CA&lt;/b&gt;
+*.other.example.com
+fa:fa-hourglass 5yrs&quot;]
+        VAULT_PKI --&gt;|signs| EOCON1(&quot;fa:fa-barcode XXX.sub.example.com
+fa:fa-hourglass 2yrs&quot;)
+        VAULT_PKI --&gt;|signs| EOCON2(&quot;fa:fa-barcode YYY.sub.example.com
+fa:fa-hourglass 2yrs&quot;)
+        VAULT_PKI2 --&gt;|signs| EOCON3(&quot;fa:fa-barcode ZZZ.other.example.com
+fa:fa-hourglass 1yrs&quot;)
     end
 </pre>
 

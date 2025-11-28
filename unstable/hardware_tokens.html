@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>🔁 Loading the vault backup - O.R.CA&#x27;s documentation</title>
+        <title>Hardware tokens - O.R.CA&#x27;s documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -12,33 +12,33 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../";
+            const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="toc.js"></script>
     </head>
     <body>
     <div id="body-container">
@@ -91,7 +91,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -126,7 +126,7 @@
                     <h1 class="menu-title">O.R.CA&#x27;s documentation</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -222,34 +222,199 @@
 }
 
 </style>
-<p>The content of the previous offline vault private data should be extracted and put into the <code>VAULT_WRITABLE</code> partition.</p>
-<p>If the USB stick's partitions have been mounted automatically by your distro, the following will help in finding out the mount point for the <code>VAULT_WRITABLE</code> content:</p>
-<pre><code class="language-bash">lsblk -o name,mountpoint,label,size | grep VAULT_WRITABLE
+<h1 id="getting-gpg-to-work-with-hardware-tokens"><a class="header" href="#getting-gpg-to-work-with-hardware-tokens">Getting GPG to work with hardware tokens</a></h1>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>There are several families of PIN codes on the hardware token.<br />
+OpenPGP PIN codes (default user PIN: 123456, default admin PIN: 12345678) are different from PIV PIN codes (PIN, PUK, MGM).<br />
+In this page, when we use admin/user PIN code, we thus refer to the OpenPGP ones.</p>
+</div>
+<p>If neccessary, install the correct packages. Example for an Ubuntu distro:</p>
+<pre><code class="language-bash">sudo apt install gpg gpg-agent scdaemon pcscd
 </code></pre>
-<p>If the above fails, then you will have to mount the <code>VAULT_WRITABLE</code> partition (manually on the CLI or by opening the volume in your file manager).<br />
-In the examples below, we use <code>/VAULT_WRITABLE/mount/point</code> as the mount point.</p>
-<p>You can extract the tar archive of the vault private data with:</p>
-<pre><code class="language-bash">sudo tar --same-owner -xvf ORCA_backup.tar -C /VAULT_WRITABLE/mount/point
+<p>Insert your hardware token.</p>
+<p>Quit any possibly running application that could use the hardware token (an authenticator, or a browser).</p>
+<p>First, make sure you can communicate with the hardware token:</p>
+<pre><code class="language-bash">gpg --card-status
 </code></pre>
+<p>should return details about your hardware token including the serial number. If not, you should first fix communication with the hardware token (missing libs, daemons, configuration etc.) before continuing.</p>
+<p>Check that the smart card daemon is running:</p>
+<pre><code class="language-bash">sudo systemctl status pcscd
+</code></pre>
+<p>If not, please (re)start it:</p>
+<pre><code class="language-bash">sudo systemctl restart pcscd
+pkill gpg-agent
+</code></pre>
+<p>If you get an error <code>gpg: selecting card failed: No such device</code> and/or <code>gpg: OpenPGP card not available: No such device</code>, edit or create a gpg config file in <code>~/.gnupg/scdaemon.conf</code> and insert the following content</p>
+<pre><code>disable-ccid
+pcsc-shared
+</code></pre>
+<p>(<a href="https://blog.markushuber.org/2024/09/12/yubikeys-with-gnupg-on-ubuntu-24-04/">source</a>)</p>
+<p>You will probably have to restart <code>gpg-agent</code> after editing this file to get gpg working.</p>
+<pre><code class="language-bash">pkill gpg-agent
+</code></pre>
+<h1 id="generating-a-new-opengpg-key"><a class="header" href="#generating-a-new-opengpg-key">Generating a new OpenGPG key</a></h1>
+<p>If your hardware token is communicating correctly with gpg, the following command should return your hardware token's serial number:</p>
+<pre><code class="language-bash">gpg --card-status
+</code></pre>
+<pre><code class="language-bash">gpg --card-edit
+</code></pre>
+<p>Reset the hardware token (see <a href="#handling-pin-locks">below</a>) if necessary.</p>
+<p>Then change the user PIN:</p>
+<pre><code>passwd
+</code></pre>
+<p>And set a new user PIN (by directly typing the old PIN then the new PIN, or if the old PIN is unknown, by typing <code>admin</code> first, then selecting option 1 when the option list is displayed)</p>
+<p>Switch to admin mode by typing (at the gpg prompt):</p>
+<pre><code>admin
+</code></pre>
+<p>Then change the admin PIN:</p>
+<pre><code>passwd
+</code></pre>
+<p>And set a new admin PIN with option 3.</p>
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p>The Ed25519/Cv25519 is an example and can be changed as you see fit.
+The contraints are that the algorithm must be supported by</p>
+<ul>
+<li>the hardware token</li>
+<li>gnupg</li>
+<li>hashicorp vault's share encryption (https://developer.hashicorp.com/vault/docs/concepts/pgp-gpg-keybase#initializing-with-gnupg)</li>
+</ul>
+</div>
+<p>Generate a new Ed25519/Cv25519 keyset:</p>
+<p>Enter the "card edit" command line tool:</p>
+<pre><code class="language-bash">gpg --card-edit
+</code></pre>
+<p>From the card edit prompt, here is a trace of commands &amp; answers to run:</p>
+<pre><code>admin
+key-attr
+(2) ECC
+(1) Curve 25519
+# Enter the admin PIN
+(2) ECC
+(1) Curve 25519
+# Enter the admin PIN
+(2) ECC
+(1) Curve 25519
+# Enter the admin PIN
+generate
+N
+# Enter the user PIN
+# Enter the validity (see the recommendations in the periodical check workflow, you can also use the tip below to ease the calculation)
+# Enter your identity name `Firstname Lastname`
+# Enter your Email address
+# Enter a comment, for example `Hardware token`, important when you have multiple GPG keys linked to the same email
+# Enter the admin PIN+user PIN as many times as required
+quit
+</code></pre>
+<div class="mdbook-alerts mdbook-alerts-note">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  note
+</p>
+<p>You will now have an Ed25519 key stored on your hardware token. The private key can never leave the device.<br />
+A prompt for a passphrase is only required when exporting the private key into a local file, which you should not allow (your response to <code>Make off-card backup of encryption key?</code> should be <code>N</code>).</p>
+</div>
 <div class="mdbook-alerts mdbook-alerts-tip">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
   tip
 </p>
-<p>You can double-check that the data is correct with:<br />
-<code>cd /VAULT_WRITABLE/mount/point &amp;&amp; sudo find . -type f -exec sha256sum -b {} \; | sort -k2 | sha256sum -</code><br />
-You should get the same checksum as the value <em>C<sub>vault</sub></em> indicated in the <code>previous report</code>.</p>
+<p>If you want your GPG key to be valid until the 30st December of 2027, for example, the following command will give you the number of days of validity from today:<br />
+<code>expr \( $(date --date 'Dec 30 22:00 2027' +%s) - $(date +%s) \) / 3600 / 24</code></p>
 </div>
+<p>The long key ID is displayed when exiting gpg. You can retrieve it at a later time using:</p>
+<pre><code class="language-bash">gpg --list-keys
+</code></pre>
+<h1 id="exporting-your-opengpg-public-key-from-your-yubikey"><a class="header" href="#exporting-your-opengpg-public-key-from-your-yubikey">Exporting your OpenGPG public key from your Yubikey</a></h1>
+<p>Check which gpg key is stored on your Yubikey by running:</p>
+<pre><code class="language-bash">gpg --card-status
+</code></pre>
+<p>In the last section, you will find the signature key's long ID (multiple 4 digit hexadecimal values separated with spaces), taken from the token internal data.
+Because gpg knows about this key, the last digits of the key (short ID) will also be displayed in the <code>General key info..</code> section, following a <code>pub ed25519/</code> header.</p>
+<p>Store the hardware token's GPG key ID in a <code>GPG_HW_TOKEN_KEY_IDY_ID</code> environment variable:</p>
+<pre><code class="language-bash">export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status | sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi') &amp;&amp; echo "$GPG_HW_TOKEN_KEY_ID"
+</code></pre>
+<p>To export the corresponding public key, you can execute:</p>
+<pre><code class="language-bash">gpg --export --armor "$GPG_HW_TOKEN_KEY_ID"
+</code></pre>
+<h1 id="handling-pin-locks"><a class="header" href="#handling-pin-locks">Handling PIN locks</a></h1>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>Often, on hardware tokens, there are several domains (PIV, OpenPGP, U2F ...), for encryption/decryption, we use the OpenPGP application.</p>
+<blockquote>
+</blockquote>
+</div>
+<pre><code>gpg --card-status | grep 'PIN.*counter'
+</code></pre>
+<p>returns the PIN remaining counts.
+An example from a pristine hardware token:</p>
+<pre><code>PIN retry counter : 3 0 3
+                    | | |
+                    | | +--- admin PIN attempts remaining (the 24 byte management key (aka MGM))
+                    | +----- unused
+                    +------- user PIN attempts remaining (up to 8 characters)
+</code></pre>
+<p>To force a factory-reset (if you locked the admin PIN):</p>
+<pre><code>$ gpg --card-edit
+
+gpg/card&gt; admin
+gpg/card&gt; factory-reset
+</code></pre>
+<p>(or follow https://gist.github.com/dminca/1f8b5d6169c6a6654a95f34a80983218)</p>
+<p>To reset the PIN (if you locked the user PIN), this will require to know the admin PIN:</p>
+<pre><code>$ gpg --card-edit
+
+gpg/card&gt; passwd
+gpg: OpenPGP card no. XXXXXXXXXXXXXXXXXX detected
+
+1 - change PIN
+2 - unblock PIN
+3 - change Admin PIN
+4 - set the Reset Code
+Q - quit
+
+Your selection? 2
+</code></pre>
+<h1 id="using-your-hardware-token-on-a-different-machine"><a class="header" href="#using-your-hardware-token-on-a-different-machine">Using your hardware token on a different machine</a></h1>
+<p>If your want to use a machine where the keypair was not generated, you must:</p>
+<ul>
+<li>connect your hardware token</li>
+<li>import the exported public key using <code>gpg --import</code></li>
+<li>run <code>gpg --card-status</code></li>
+</ul>
+<p>Both your public key and private key are now available for use on this new machine.</p>
+<h1 id="resources-specific-to-yubikeys"><a class="header" href="#resources-specific-to-yubikeys">Resources (specific to yubikeys)</a></h1>
+<div class="mdbook-alerts mdbook-alerts-tip">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  tip
+</p>
+<p>If you didn't save you public key, there are <a href="https://www.nicksherlock.com/2021/08/recovering-lost-gpg-public-keys-from-your-yubikey/">ways to use your hardware token anyway</a>.</p>
+</div>
+<ul>
+<li>https://github.com/drduh/YubiKey-Guide</li>
+<li>https://whynothugo.nl/journal/2022/07/11/using-a-yubikey-for-gpg/</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../offline/creating_a_usb_stick.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="html_gen.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../offline/unseal.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="gpg_public_key.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -259,11 +424,11 @@ You should get the same checksum as the value <em>C<sub>vault</sub></em> indicat
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../offline/creating_a_usb_stick.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="html_gen.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../offline/unseal.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="gpg_public_key.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -278,17 +443,17 @@ You should get the same checksum as the value <em>C<sub>vault</sub></em> indicat
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../docs/.style/mermaid.min.js"></script>
-        <script src="../docs/.style/mermaid-init.js"></script>
+        <script src="docs/.style/mermaid.min.js"></script>
+        <script src="docs/.style/mermaid-init.js"></script>
 
 
     </div>

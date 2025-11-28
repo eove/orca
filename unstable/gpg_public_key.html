@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Providing your GPG public key - O.R.CA&#x27;s documentation</title>
+        <title>GPG public key - O.R.CA&#x27;s documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -231,7 +231,7 @@
 <p>Pick the appropriate one. It (or one if its subkeys) should have encryption capability (denoted by letter <code>E</code>).</p>
 <p>Let's also write down the username it is assocated to (an hexadecimal value) (it may be necessary to specify that username if you hold more than one GPG key in your keyring)</p>
 <p>Now, we can export this key into a file:</p>
-<pre><code class="language-bash">gpg --armor --output /path/to/my/pulic/key.gpg --export 'C518 D569 FCD9 21D8 D895  EA1E 25B1 CF12 ACE6 C922'
+<pre><code class="language-bash">gpg --armor --output /path/to/my/pulic/key.gpg --export your_fingerprint
 </code></pre>
 <p>You can send the <code>.gpg</code> file exported above to others.</p>
 
@@ -239,11 +239,11 @@
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="workflow/periodical_checks.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="hardware_tokens.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="workflow/common/glossary.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="pki_init.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -253,11 +253,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="workflow/periodical_checks.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="hardware_tokens.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="workflow/common/glossary.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="pki_init.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

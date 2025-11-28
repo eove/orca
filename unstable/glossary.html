@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>🚀 Initialising the offline PKI - O.R.CA&#x27;s documentation</title>
+        <title>Glossary - O.R.CA&#x27;s documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -12,33 +12,33 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../";
+            const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="toc.js"></script>
     </head>
     <body>
     <div id="body-container">
@@ -91,7 +91,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -126,7 +126,7 @@
                     <h1 class="menu-title">O.R.CA&#x27;s documentation</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -222,92 +222,45 @@
 }
 
 </style>
-<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
-<p>This document describes how to initialise an offline CA using the O.R.CA scripts.</p>
-<div class="mdbook-alerts mdbook-alerts-warning">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  warning
-</p>
-<p>Part of this process would probably also involve working with another (online) CA as well.<br />
-We would want to sign that online CA using the offline CA and thus to get a fully functional chain of trust.<br />
-All work on the offline part of the PKI thus means using the O.R.CA workflow.</p>
-</div>
-<h1 id="shortcut-initialisation-of-the-offline-vault"><a class="header" href="#shortcut-initialisation-of-the-offline-vault">Shortcut initialisation of the offline vault</a></h1>
-<p>This section details the process to create a new offline CA, doing it fast, in one operation (for testing). If instead, you want to re-open an existing CA, following the safe process, please see <a href="workflow/offline_vault_ceremony.html">the O.R.CA workflow document</a>.</p>
-<p>As a first step, we will select the CA we're working on (<code>dev</code>, <code>preprod</code> or <code>prod</code>). This will have an impact before building the ISO as explained in <a href="workflow/offline_vault_ceremony.html#selecting-the-vault-environment">the O.R.CA workflow</a>. The value of <code>orca.environment-target</code> in <a href="../src/default.nix">src/default.nix</a> should thus be updated if needed.
-To initialize a new offline CA, we will also need to include the following script from the <code>templates/</code> folder under <code>src/scripts/*/</code> (and <code>git add</code> this script):\</p>
-<ul>
-<li><a href="../templates/unauthenticated/initialize-vault.sh">templates/unauthenticated/initialize-vault.sh</a>
-Depending on what we also want to perform during the same maintenance session, we may also include the following scripts from <code>templates/</code>:</li>
-<li><a href="../templates/authenticated/create-root-CA.sh">templates/authenticated/create-root-CA.sh</a></li>
-<li><a href="../templates/authenticated/create-intermediate-CA.sh">templates/authenticated/create-intermediate-CA.sh</a></li>
-<li><a href="../templates/authenticated/sign-csr.sh">templates/authenticated/sign-csr.sh</a></li>
-</ul>
-<p>We can now start the <em>ephemeral vault</em> by following the <a href="workflow/offline_vault_ceremony.html">instructions of the O.R.CA workflow</a>.
-When the vault is started, we can check that it is not initialized yet by running:</p>
-<pre><code class="language-bash">vault status
-</code></pre>
-<p>This should output the following line:</p>
-<pre><code>Initialized     false
-Sealed          true
-</code></pre>
-<p>During the ceremony, we initialise a brand new vault for the offline CA by running (on the <em>ephemeral vault</em>):</p>
-<pre><code class="language-bash">initialize-vault
-</code></pre>
-<div class="mdbook-alerts mdbook-alerts-tip">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  tip
-</p>
-<p>If you're testing (in <code>dev</code> environments), you can simulate hardware tokens (yubikeys) during that stage.<br />
-For more information on how to do this, please see <a href="./testing/README.html#simulating-yubikeys">here</a></p>
-</div>
-<p>This will result in <em>n</em> encrypted shares to be output the env-specific directory located under <code>/var/lib/vault/orca/shares/</code>.</p>
-<div class="mdbook-alerts mdbook-alerts-note">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  note
-</p>
-<p>This data can be sent across any communication media, it is not sensitive as it is encrypted only for the recipient</p>
-</div>
-<p>The <em>ephemeral vault</em> is now initialised, which can be verified by running once more:</p>
-<pre><code class="language-bash">vault status
-</code></pre>
-<p>This should output the following line:</p>
-<pre><code>Initialized     true
-</code></pre>
-<p>You may stop here, or continue executing the next steps (if the corresponding scripts were included into the ISO image).</p>
-<p>Let's now create the offline CA chain on the <em>ephemeral vault</em>:</p>
-<pre><code class="language-bash">create-root-CA
-</code></pre>
-<p>Then:</p>
-<pre><code class="language-bash">create-intermediate-CA
-</code></pre>
-<p>On the online CA, generate a CSR to be signed and bring it into a new ISO image to boot on the offline vault (or in dev mode, just copy over the CSR file).</p>
-<div class="mdbook-alerts mdbook-alerts-important">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  important
-</p>
-<p>This step is mandatory if you want to finish signing the whole chain of trust from the offline to the online vault.</p>
-</div>
-<p>Now sign the online CA with the offline CA:</p>
-<pre><code class="language-bash">sign-csr
-</code></pre>
-<p>TODO: improve this part</p>
+<h2 id="glossary"><a class="header" href="#glossary">Glossary</a></h2>
+<p><a href="https://en.wikipedia.org/wiki/Public_key_certificate">Certificate</a> : Digital identifier for a machine or a service. The certificat is public but can only be used when in possesion of the associated private key.</p>
+<p>PKI : <a href="https://en.wikipedia.org/wiki/Public_key_infrastructure">Public-key infrastructure</a></p>
+<p>CA : <a href="https://en.wikipedia.org/wiki/Certificate_authority">Certificate Authority</a></p>
+<p>CSR/<a href="https://en.wikipedia.org/wiki/Certificate_signing_request">Certificate Signing Request</a> : Certificate proposed to a CA for signature</p>
+<p><a href="https://en.wikipedia.org/wiki/Secret_sharing">Secret Sharing</a> : an algorithm to split a secret between multiple people</p>
+<p>SSS : <a href="https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing">Shamir Secret Sharing</a></p>
+<p>GPG/GnuPG : <a href="https://en.wikipedia.org/wiki/GNU_Privacy_Guard">GNU Privacy Guard</a>. This tool can sign and cypher messages and files thus ensuring their authenticity, integrity and/or confidentiality.</p>
+<p><a href="https://en.wikipedia.org/wiki/Digital_signature">Digital signature</a>/Cryptographic signature : Verifiable signature of a digital document, ensuring the authenticity and integrity of the document.</p>
+<p>GPG keyring : database containing all the known public keys, and possible associated private keys known from GPG, together with the related level of trust.</p>
+<p><a href="https://en.wikipedia.org/wiki/Checksum">Checksum</a> : In this documentation, we use the sha256 <a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function">cryptographic hashing function</a> as a secure checksum. A secure checksum is necessary to ensure that the input is not tampered.</p>
+<p>Hardware Token/<a href="https://en.wikipedia.org/wiki/Security_token">Security token</a> : a physical device that can securely store secrets (like private keys). This is useful to securely use a secret on any computer.</p>
+<p><a href="https://en.wikipedia.org/wiki/YubiKey">Yubikey</a> : Affordable hardware token that can be plugged on a USB port and is compatible with GPG.</p>
+<p>Vault/<a href="https://github.com/hashicorp/vault">Hashicorp Vault</a> : Web service to handle secrets and use cryptographic primitives (like CA automation).</p>
+<p>Vault Private Data : Database of Hashicorp Vault at rest. This data contains the state of the Vault and <strong>must</strong> be backed up to ensure the vault and the managed PKI is not lost.</p>
+<p>Unseal share : A part of a secret that allows unsealing a Hashicorp Vault. Multiple shares are necessary in order to unseal a vault. Reaching that threshold is called reaching a quorum.</p>
+<p>Unseal a Hashicorp Vault : A sealed vault cannot be used because it doesn't know the key to decypher the private data. To get that secret, a quorum is necessary and the vault is then unsealed.</p>
+<p>Seal a Hashicorp Vault : An unsealed vault can be sealed by anyone having the corresponding right in Vault.</p>
+<p>Token : An access token generated after a proof of identity (via login or certificate).</p>
+<p>Root token : A token with <strong>every rights</strong> on Hashicorp Vault.</p>
+<p>Ephemeral Vault : A Hashicorp Vault started for a one-time usage on a machine. Private data may be given when starting the vault and are saved one the vault is stopped. This is used to handle the Offline part of the PKI, thus the machine running the ephemeral vault should also be offline.</p>
+<p>Ceremony : An event during which operations are performed on the offline part of the PKI. This event is formalized, planned and produce an auditable report.</p>
+<p>Ceremony report : Auditable document, cryptographically signed, describing the context, the people involved and the actions that occured during a ceremony.</p>
+<p>Trusted commit : The sha of a git commit which has been audited and that can be trusted.</p>
+<p>ISO/<a href="https://en.wikipedia.org/wiki/ISO_9660">ISO9660</a> : file system format for optical disc (extended for bootable USB sticks).
+For an ephemeral vault, that image contains the whole operating system and script. It is thus umutable and self contained.</p>
+<p>Bootable live media : Mass storage with a ISO9660 image loaded.</p>
+<p>Vault writable partition : secondary partition on the ephemeral vault bootable live media.
+Unlike the ISO partition, this partition is in read/write mode.
+It contains everything that changes during a ceremony (e.g. the vault private data, logs, certificates…)</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../workflow/common/html_gen.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="signing_and_verifying.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../yubikeys.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -315,13 +268,10 @@ For more information on how to do this, please see <a href="./testing/README.htm
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../workflow/common/html_gen.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="signing_and_verifying.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../yubikeys.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>
@@ -334,17 +284,17 @@ For more information on how to do this, please see <a href="./testing/README.htm
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../docs/.style/mermaid.min.js"></script>
-        <script src="../docs/.style/mermaid-init.js"></script>
+        <script src="docs/.style/mermaid.min.js"></script>
+        <script src="docs/.style/mermaid-init.js"></script>
 
 
     </div>

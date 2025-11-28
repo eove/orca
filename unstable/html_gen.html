@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>🔁 How to generate a html version of the workflow documents - O.R.CA&#x27;s documentation</title>
+        <title>HTML workflow generation - O.R.CA&#x27;s documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -12,33 +12,33 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../../favicon.svg">
-        <link rel="shortcut icon" href="../../favicon.png">
-        <link rel="stylesheet" href="../../css/variables.css">
-        <link rel="stylesheet" href="../../css/general.css">
-        <link rel="stylesheet" href="../../css/chrome.css">
-        <link rel="stylesheet" href="../../css/print.css" media="print">
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../../fonts/fonts.css">
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../../";
+            const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../toc.js"></script>
+        <script src="toc.js"></script>
     </head>
     <body>
     <div id="body-container">
@@ -91,7 +91,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -126,7 +126,7 @@
                     <h1 class="menu-title">O.R.CA&#x27;s documentation</h1>
 
                     <div class="right-buttons">
-                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -223,22 +223,22 @@
 
 </style>
 <h1 id="how-to-generate-an-html-formatted-orca-workflow-document"><a class="header" href="#how-to-generate-an-html-formatted-orca-workflow-document">How to generate an html-formatted OR.C.A workflow document</a></h1>
-<p>At first, before selecting the commit at which the OR.C.A document is signed, <strong>please make sure both the author and verifier's hardware token's public GPG keys</strong> are in this repo's directory <code>/src/signatory_keys</code>. These will be required when verifying the signatures in the future.</p>
+<p>At first, before selecting the commit at which the OR.C.A document is signed, <strong>please make sure the prerequisites for the signing method you are going to use are fulfilled</strong> (this might involve identifying signatories, publishing public keys etc.)</p>
 <p>First, we need to select the document we want to generate:</p>
 <ul>
 <li>For the ceremony to use the Offline Root CA:</li>
 </ul>
-<pre><code class="language-bash">export ORCA_WF_AS_MD="book/markdown/workflow/offline_vault_ceremony.md"
+<pre><code class="language-bash">export ORCA_WF_AS_MD="book/markdown/offline_vault_ceremony.md"
 export ORCA_WF_TITLE="ceremony_workflow"
 </code></pre>
 <ul>
 <li>For the periodical checks of the PKI:</li>
 </ul>
-<pre><code class="language-bash">export ORCA_WF_AS_MD="book/markdown/workflow/periodical_checks.md"
+<pre><code class="language-bash">export ORCA_WF_AS_MD="book/markdown/periodical_checks.md"
 export ORCA_WF_TITLE="periodical_checks"
 </code></pre>
 <p>Next, let's setup our environment:</p>
-<pre><code class="language-bash">cd /path/to/orca # Please adapt to the path where you cloned OR.C.A
+<pre><code class="language-bash">cd /path/to/exploitation/repository # Please adapt to the path where your exploitation repository is
 git checkout &lt;commit&gt; # Replace with the commit or branch you want to use
 export ORCA_WF_REV=&lt;rev&gt; # Set this variable correctly, eg: 'A' or '1.1'
 </code></pre>
@@ -264,25 +264,24 @@ test -n $SANITY_CHECKS_OK &amp;&amp;\
      -e "s|\@ORCA\@rev\@|${ORCA_WF_REV}|g"\
    "$ORCA_WF_AS_MD" &gt; "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}_with_commit.md"
 
-nix develop --command md-to-html "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}_with_commit.md" "${ORCA_WF_TITLE} rev${ORCA_WF_REV}" |\
- sed -e '$a&lt;hr&gt;&lt;pre&gt;\n@GPG@SIGNATURES@' &gt; "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" &amp;&amp;\
+nix develop --command md-to-html "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}_with_commit.md" "${ORCA_WF_TITLE} rev${ORCA_WF_REV}" &gt; "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" &amp;&amp;\
  rm "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}_with_commit.md"
 
 command mv "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" "/tmp/${ORCA_WF_TITLE}.html" &amp;&amp;\
  command ls "/tmp/${ORCA_WF_TITLE}.html" &amp;&amp;\
  rm -rf "${TMP_OUTPUT_DIR}" &amp;&amp; unset TMP_OUTPUT_DIR
 </code></pre>
-<p>You can then sign the html document following your organisation's way of signing documents, or if you don't have any, by following the gpg-based process <a href="../../signing_and_verifying.html">here</a>.</p>
+<p>You can then sign the html document following your organisation's way of signing documents, or if you don't have any, by following the <a href="./signing_and_verifying.html">gpg-based process</a>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../offline/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="testing/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../offline/PKI_init.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="hardware_tokens.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -292,11 +291,11 @@ command mv "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" "/tmp/${ORCA_WF_TITLE}.html
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../offline/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="testing/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../offline/PKI_init.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="hardware_tokens.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -311,17 +310,17 @@ command mv "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" "/tmp/${ORCA_WF_TITLE}.html
         </script>
 
 
-        <script src="../../elasticlunr.min.js"></script>
-        <script src="../../mark.min.js"></script>
-        <script src="../../searcher.js"></script>
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
 
-        <script src="../../clipboard.min.js"></script>
-        <script src="../../highlight.js"></script>
-        <script src="../../book.js"></script>
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../../docs/.style/mermaid.min.js"></script>
-        <script src="../../docs/.style/mermaid-init.js"></script>
+        <script src="docs/.style/mermaid.min.js"></script>
+        <script src="docs/.style/mermaid-init.js"></script>
 
 
     </div>

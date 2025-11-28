@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Signing and verifying a document - O.R.CA&#x27;s documentation</title>
+        <title>Signing and verifying - O.R.CA&#x27;s documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -223,10 +223,26 @@
 
 </style>
 <h1 id="signing-and-verifying-a-text-based-document"><a class="header" href="#signing-and-verifying-a-text-based-document">Signing and verifying a text-based document</a></h1>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>If your organisation has a official way of signing and verifying documents, then you should use that process.<br />
+What is described below is only a simple proposal that re-uses the hardware token already required in the workflow.</p>
+</div>
 <p>This method works for text-based documents like markdown or HTML.
 Even though the <code>--clear-sign</code> option of gpg could be used, it adds a bit of noise at the beginning of the document that makes HTML documents rendering very poor on a webbrowser.
 This method is more manual but only adds noise <strong>at the end</strong> of the document, thus fixing the display of HTML documents.</p>
-<p>The last line of the document to sign <strong>must</strong> be <code>@GPG@SIGNATURES@</code>.</p>
+<h2 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h2>
+<p>Before selecting the commit at which the OR.C.A document is signed, <strong>please make sure both the author and verifier's hardware token's public GPG keys</strong> are in this repo's directory <code>signatory_keys</code>. These will be required when verifying the signatures in the future.</p>
+<p>The last line of the document to sign <strong>must</strong> be <code>@GPG@SIGNATURES@</code>. If the line is not present, please add it.<br />
+For HTML documents use :</p>
+<pre><code class="language-bash">sed -i -e '$a&lt;hr&gt;&lt;pre&gt;\n@GPG@SIGNATURES@' /path/to/file.html
+</code></pre>
+<p>Otherwise use :</p>
+<pre><code class="language-bash">sed -i -e '$a@GPG@SIGNATURES@' /path/to/file
+</code></pre>
 <h2 id="signing"><a class="header" href="#signing">Signing</a></h2>
 <p>In sequence, each of the signatory will run the following command and transfer the resulting signed file (which name is displayed on the console) to the next signatory.</p>
 <div class="mdbook-alerts mdbook-alerts-note">
@@ -252,10 +268,10 @@ sed -e '/^@GPG@SIGNATURES@$/q' "$INPUT_TO_SIGN" |\
 <ul>
 <li>Find the public keys of the signatories. To do that, go to the commit found in the header of the document:</li>
 </ul>
-<pre><code class="language-bash">git checkout @ORCA@commit@
+<pre><code class="language-bash">git checkout commit_in_the_header
 </code></pre>
 <ul>
-<li>There, you can find the keys in <a href="@ORCA@gitremote@/tree/main/src/workflow_signatory_keys"><code>src/workflow_signatory_keys/</code></a>.</li>
+<li>There, you can find the keys in <code>workflow_signatory_keys/</code>.</li>
 <li>Verify that these keys were added via <strong>a valid signed commit by their owner</strong>.</li>
 <li>Use a new gpg keystore (all of the following commands will be executed with this environment variable):</li>
 </ul>
@@ -264,7 +280,7 @@ sed -e '/^@GPG@SIGNATURES@$/q' "$INPUT_TO_SIGN" |\
 <ul>
 <li>Import all the public keys and mark them as ultimatly trusted</li>
 </ul>
-<pre><code class="language-bash">gpg --home="$TMP_GPG_HOME" --import /path/to/src/workflow_signatory_keys/*
+<pre><code class="language-bash">gpg --home="$TMP_GPG_HOME" --import /path/to/workflow_signatory_keys/*
 gpg --home="$TMP_GPG_HOME" --list-keys --keyid-format LONG --with-colons | sed -n -e '/^pub/{n;p}' | \
  sed -n -E 's/^fpr:([^:]*:){8}([^:]*).*$/\2:6:/p' | gpg --home="$TMP_GPG_HOME"  --import-ownertrust
 </code></pre>
@@ -293,11 +309,11 @@ sed -e '/^@GPG@SIGNATURES@$/q' "$INPUT_TO_VERIFY" &gt; /tmp/document_without_sig
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="revocation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="pki_init.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="workflow/offline_vault_ceremony.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="glossary.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -307,11 +323,11 @@ sed -e '/^@GPG@SIGNATURES@$/q' "$INPUT_TO_VERIFY" &gt; /tmp/document_without_sig
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="revocation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="pki_init.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="workflow/offline_vault_ceremony.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="glossary.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
