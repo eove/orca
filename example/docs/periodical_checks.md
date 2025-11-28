@@ -101,7 +101,7 @@ Every share holder runs the following tests.
 
 If the share holder doesn't have a hardware token, then the test is a FAIL. The hardware token's owner should notify the organiser.
 
-Insert the hardware token en type :
+Insert the hardware token and type:
 
 ```bash
 gpg --card-status
