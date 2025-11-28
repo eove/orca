@@ -1,4 +1,6 @@
-If a CA signed by an offline CA has been compromised (excluding the offline root CA), the script `revoke-certificate.sh` should be run in a ceremony to revoke the CA's certificate.
+In the event of a compromised CA/certificate, you will have to revoke the compromised item. When that compromised item was signed by an offline CA, you should invoke the offline ephemeral vault.
+For this reason, we provide the script `revoke-certificate.sh` that needs to be executed during a ceremony to revoke compromised item.
+Note that you cannot revoke the offline root CA itself using that script.
 
 You should then regenerate all children of the compromised CA (but not end device certificates)
 
