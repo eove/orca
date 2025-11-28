@@ -8,7 +8,7 @@ The documentation is present in the `docs` folder as markdown files and [automat
 If you are looking for a stable version of the documentation please see :
 - [v1.0.0](https://eove.github.io/orca/v1.0.0)
 
-You can open it in a web browser on your machine by running the following command:
+You can open it locally in a web browser on your machine by running the following command:
 ```bash
 mdbook watch --open
 ```
