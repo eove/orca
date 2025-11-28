@@ -233,7 +233,9 @@
 <p>This book contains the <code>O.R.CA documentation</code> and should not be confused with the <code>exploitation manual</code> (which will be your customised user manual and workflow for your own offline CA).</p>
 </div>
 <p>In case you encounter a term that you do not understand, please refer to <a href="./workflow/common/glossary.html">the glossary</a></p>
-<p>To create a copy of your exploitation manual, you will need to install the nix package manager on your machine, and fetch a brand new template for your offline CA, by creating a new folder, and running the following command inside this folder:</p>
+<p>To create a copy of your exploitation manual, you will need to install the <a href="https://nixos.org/download/">nix package manager</a> on your machine.
+Make sure the <a href="https://nix.dev/manual/nix/2.28/development/experimental-features.html#xp-feature-flakes">flakes</a> and <a href="https://nix.dev/manual/nix/2.28/development/experimental-features.html#xp-feature-nix-command">nix-command</a> features are enabled (otherwise you'll have to explicitly enable them for each nix command).</p>
+<p>Then fetch a brand new template for your offline CA, by creating a new folder, and running the following command inside this folder:</p>
 <pre><code class="language-shell">nix flake init -t github:eove/orca/v1.0 --refresh
 </code></pre>
 <p>You can then commit and push this folder into your own organisation's repository.
@@ -247,7 +249,7 @@ This will be the repository where all changes to your offline root CA will be co
 <p>The parts that need the most attention are highlighted with caution alerts like this one.</p>
 </div>
 <p>To generate and display the default <code>exploitation manual</code> in a web-browser, run:</p>
-<pre><code class="language-shell">mdbook build --open
+<pre><code class="language-shell">nix develop --command mdbook build --open
 </code></pre>
 <div class="mdbook-alerts mdbook-alerts-note">
 <p class="mdbook-alerts-title">
@@ -2195,13 +2197,6 @@ See chapters <a href="story/./story/verify-workflow.html">Is this for real?</a> 
 </p>
 <p>You can loop mount this <code>.raw</code> image if you need to access or modify files.</p>
 </div>
-<div class="mdbook-alerts mdbook-alerts-note">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  note
-</p>
-<p>Most probably, you will want a <code>dev</code> environment while testing in a VM (not a <code>preprod</code> or <code>prod</code>) so you will have to make sure <code>orca.environment-target</code> is set to <code>dev</code> in <a href="testing/../../src/default.nix">src/default.nix</a>.</p>
-</div>
 <h3 id="starting-the-iso-in-a-vm"><a class="header" href="#starting-the-iso-in-a-vm">Starting the iso in a VM</a></h3>
 <div class="mdbook-alerts mdbook-alerts-important">
 <p class="mdbook-alerts-title">
@@ -2212,7 +2207,7 @@ See chapters <a href="story/./story/verify-workflow.html">Is this for real?</a> 
 </div>
 <p>Run with:</p>
 <pre><code class="language-bash">chmod go-rwx testing/root_key
-nix run .
+nix run .#in-vm
 </code></pre>
 <p>A virtual machine that will boot on the iso image (that was automatically mounted), and with a small disk will start.</p>
 <div class="mdbook-alerts mdbook-alerts-note">
@@ -2225,14 +2220,14 @@ nix run .
 </code></pre>
 </div>
 <h3 id="simulating-a-key-with-a-readwrite-switch"><a class="header" href="#simulating-a-key-with-a-readwrite-switch">Simulating a key with a read/write switch</a></h3>
-<p>At the very beginning, in "dev" env, you have a prompt allowing you to remount the disk as read only.</p>
-<p>You can do so with :</p>
-<pre><code class="language-bash">ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key mount -o remount,ro /var/lib/vault
+<p>At the very beginning, you have a prompt allowing you to switch the stick to read-write.</p>
+<p>You can do in a terminal <strong>on the host machine</strong>, at the root of O.R.CA, with:</p>
+<pre><code class="language-bash">nix develop --command switch-to-readwrite
 </code></pre>
-<p>To switch the "key" to read/write use :</p>
-<pre><code class="language-bash">ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key mount -o remount /var/lib/vault
+<p>To switch the "key" to readonly use :</p>
+<pre><code class="language-bash">nix develop --command switch-to-readonly
 </code></pre>
-<h3 id="simulating-yubikeys"><a class="header" href="#simulating-yubikeys">Simulating Yubikeys</a></h3>
+<h3 id="simulating-hardware-tokens"><a class="header" href="#simulating-hardware-tokens">Simulating Hardware Tokens</a></h3>
 <div class="mdbook-alerts mdbook-alerts-warning">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
@@ -2240,13 +2235,13 @@ nix run .
 </p>
 <p>This is only available if you are using the <code>dev</code> environment-target</p>
 </div>
-<p>While a yubikey should be inserted in real life, in the VM, you can simulate.
-When asked to plug a yubikey, in a terminal <strong>on the host machine</strong>, at the root of O.R.CA, run:</p>
-<pre><code class="language-bash">ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key plug-simulated-yubikey &lt;n&gt;
+<p>While a hardware token should be inserted in real life, in the VM, you can simulate.
+When asked to plug a hardware token, in a terminal <strong>on the host machine</strong>, at the root of O.R.CA, run:</p>
+<pre><code class="language-bash">nix develop --command plug-simulated-hardware-token &lt;n&gt;
 </code></pre>
-<p>where <code>&lt;n&gt;</code> is the number (1 to 4) of the yubikey you want to insert.
+<p>where <code>&lt;n&gt;</code> is the number (1 to 4) of the hardware token you want to insert.
 Then continue in the VM as in real life.
-The passphrase for the simulated yubikeys is <code>test</code></p>
+The passphrase for the simulated hardware token is <code>hwtoken</code></p>
 <h3 id="ssh-to-the-vm"><a class="header" href="#ssh-to-the-vm">SSH to the VM</a></h3>
 <div class="mdbook-alerts mdbook-alerts-warning">
 <p class="mdbook-alerts-title">
