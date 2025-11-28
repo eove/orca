@@ -28,6 +28,7 @@
 - [Hardware tokens](./hardware_tokens.md)
 - [GPG public key](./gpg_public_key.md)
 - [Initialisation](./pki_init.md)
+- [Revocation](./revocation.md)
 
 
 -------------------
