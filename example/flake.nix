@@ -5,17 +5,25 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     flake-utils.url = "github:numtide/flake-utils";
     orca = {
-      url = "../"; # TODO replace with "github:eove/orca/v1.0" once taged
+      url = "github:FaustXVI/orca/create-template"; # TODO replace with "github:eove/orca/v1.0" once taged
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
   outputs = { flake-utils, orca, ... }@inputs:
     (flake-utils.lib.eachDefaultSystem (system:
+      let
+        orca-config = import ./orca-config.nix;
+      in
       {
-        apps = {
-          default = orca.lib.x86_64-linux.create-stick (import ./orca-config.nix);
+        packages = {
+          default = orca.lib."${system}".create-iso orca-config;
         };
+        apps = {
+          default = orca.lib."${system}".create-stick orca-config;
+          in-vm = orca.lib."${system}".run-in-vm (orca-config // import ./testing/vm-config.nix);
+        };
+        devShells.default = orca.devShells."${system}".default;
       }
     ));
 }

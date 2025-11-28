@@ -1,0 +1,19 @@
+[book]
+language = "en"
+src = "docs"
+title = "Your own PKI's exploitation manual"
+build.create-missing = "false"
+
+[preprocessor.index]
+
+[preprocessor.links]
+
+[preprocessor.alerts]
+
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
+
+[output.html]
+additional-js = ["docs/.style/mermaid.min.js", "docs/.style/mermaid-init.js"]
+
+[output.markdown]

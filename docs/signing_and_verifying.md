@@ -1,10 +1,27 @@
 # Signing and verifying a text-based document
 
+> [!Warning]  
+> If your organisation has a official way of signing and verifying documents, then you should use that process.  
+> What is described below is only a simple proposal that re-uses the hardware token already required in the workflow.
+
 This method works for text-based documents like markdown or HTML.
 Even though the `--clear-sign` option of gpg could be used, it adds a bit of noise at the beginning of the document that makes HTML documents rendering very poor on a webbrowser.
 This method is more manual but only adds noise **at the end** of the document, thus fixing the display of HTML documents.
 
-The last line of the document to sign **must** be `@GPG@SIGNATURES@`.
+## Prerequisites
+
+Before selecting the commit at which the OR.C.A document is signed, **please make sure both the author and verifier's hardware token's public GPG keys** are in this repo's directory `signatory_keys`. These will be required when verifying the signatures in the future.
+
+The last line of the document to sign **must** be `@GPG@SIGNATURES@`. If the line is not present, please add it.\
+For HTML documents use :
+```bash
+sed -i -e '$a<hr><pre>\n@GPG@SIGNATURES@' /path/to/file.html
+```
+Otherwise use :
+```bash
+sed -i -e '$a@GPG@SIGNATURES@' /path/to/file
+```
+
 
 ## Signing 
 In sequence, each of the signatory will run the following command and transfer the resulting signed file (which name is displayed on the console) to the next signatory.
@@ -29,9 +46,9 @@ sed -e '/^@GPG@SIGNATURES@$/q' "$INPUT_TO_SIGN" |\
 The authenticity of the content of the document, must be verify via cryptographic signatures before executing it.
  * Find the public keys of the signatories. To do that, go to the commit found in the header of the document:
 ```bash
-git checkout @ORCA@commit@
+git checkout commit_in_the_header
 ```
- * There, you can find the keys in [`src/workflow_signatory_keys/`](@ORCA@gitremote@/tree/main/src/workflow_signatory_keys).
+ * There, you can find the keys in `workflow_signatory_keys/`.
  * Verify that these keys were added via **a valid signed commit by their owner**.
  * Use a new gpg keystore (all of the following commands will be executed with this environment variable):
 ```bash
@@ -39,7 +56,7 @@ export TMP_GPG_HOME=$(mktemp -d)
 ```
  * Import all the public keys and mark them as ultimatly trusted
 ```bash
-gpg --home="$TMP_GPG_HOME" --import /path/to/src/workflow_signatory_keys/*
+gpg --home="$TMP_GPG_HOME" --import /path/to/workflow_signatory_keys/*
 gpg --home="$TMP_GPG_HOME" --list-keys --keyid-format LONG --with-colons | sed -n -e '/^pub/{n;p}' | \
  sed -n -E 's/^fpr:([^:]*:){8}([^:]*).*$/\2:6:/p' | gpg --home="$TMP_GPG_HOME"  --import-ownertrust
 ```

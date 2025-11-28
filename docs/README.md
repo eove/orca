@@ -1,21 +1,32 @@
 # Introduction
 
-In this document, we will explain how to work with the Public-Key Infrastructure (PKI).
+In this document, we will explain how O.R.CA works.
 
-If you directly want to generate a one-page html-formatted workflows, please see [here](./workflow/common/html_gen.md).
-
-You may also directly browse the workflows online:
- - [Using the Offline PKI](./workflow/offline_vault_ceremony.md)
- - [Periodical checks of the PKI](./workflow/periodical_checks.md)
-
-You can also access specific topics by browsing the left-handside menu.
-
-Each chapter describing procedures may start with the following icons:
- - 🚀 which means it is to be done only once in the lifetime of the vault
- - 🔁 which means it *must* be done every time we work on the vault
- - 📆 which means it is done from time to time during normal operations of the vault
+> [!Warning]
+> This book contains the `O.R.CA documentation` and should not be confused with the `exploitation manual` (which will be your customised user manual and workflow for your own offline CA).
 
 In case you encounter a term that you do not understand, please refer to [the glossary](./workflow/common/glossary.md)
 
-Before you start doing anything on it, you'll need to understand how the vault system works and how to interact with it in general.
+To create a copy of your exploitation manual, you will need to install the nix package manager on your machine, and fetch a brand new template for your offline CA, by creating a new folder, and running the following command inside this folder:
+```shell
+nix flake init -t github:eove/orca/v1.0 --refresh
+```
+You can then commit and push this folder into your own organisation's repository.
+This will be the repository where all changes to your offline root CA will be committed (containing documentation and workflows, as well as automation scripts). We will call this the `exploitation repository`.
+
+You will now have to document your offline CA, that is to say, customise your `exploitation manual`.
+
+> [!CAUTION]
+> The parts that need the most attention are highlighted with caution alerts like this one.
+
+To generate and display the default `exploitation manual` in a web-browser, run:
+```shell
+mdbook build --open
+```
+> [!Note]  
+> What is displayed initially when you run the above command has directly been taken from the nix template.  
+> It contains the default documentation we have prepared. You should review it and modify the relevant `.md` files to fit your needs, regenerating and browsing the updated documentation again as needed.  
+> Next to that default `exploitation manual`, you will find default scripts to operate the offline CA.
+Before you start doing anything on it, you'll need to understand how O.R.CA works, its threat model, its limits and how to interact with it in general.
 This is the subject of the next chapters.
+
