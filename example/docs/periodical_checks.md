@@ -79,7 +79,7 @@ The 📢`organiser` should perform this check and ask the relevant share holders
 
 Hardware token's GPG public key should be updated and commited by their owner in the relevant folder `share_holders/`.  
 The filename storing the hardware token's public key should follow the template:  
-`2024_firstname.lastname@email.com_brand-62413455.pub`  
+`2024_firstname.lastname@email.com_serial.pub`  
 Where:
 * `2024` is the expiry year of the hardware token (it will expire on 30/12/2024), you can double-check the expiry using `gpg /path/to/file.pub`
 * `firstname.lastname@email.com` is the email address of the owner of this hardware token
