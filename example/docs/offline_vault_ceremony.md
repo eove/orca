@@ -42,7 +42,7 @@ These people are called the `team members` (👥), the 📢`organiser` can be on
 These people will perform preparative work *before* the ceremony and they will be present *during* the ceremony.
 
 > [!Important]  
-> All 👥`team members` should have a hardware token to secures their unseal share. They will need this to both unseal the vault and sign the report.
+> All 👥`team members` should have a hardware token to secure their unseal share. They will need this to both unseal the vault and sign the report.
 
 The 📢`organiser` should communicate to all 👥`team members` the list of operations (and therefore scripts) that will be performed during the ceremony. The aforementionned scripts should be commited to the `actions` directory of this repository prior to the verification phase.
 
