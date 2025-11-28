@@ -5,7 +5,7 @@ Note that you cannot revoke the offline root CA itself using that script.
 You should then regenerate all children of the compromised CA (but not end device certificates)
 
 If the root CA has been compromised, then you need to contact all services that rely on it as a trusted CA so that they stop trusting it.
-Then revoke all CAs under it using the script `revoke-certificate.sh`.
+Then revoke all children CAs using the script `revoke-certificate.sh`.
 Finally you should create a whole new PKI to replace the old one.
 
 > [!Important]
