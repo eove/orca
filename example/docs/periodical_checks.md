@@ -114,7 +114,7 @@ gpg --card-status
 > [!CAUTION]
 > Adapt the share holder spreadsheet location.
 
-The details of your hardware token will be displayed, including the serial number, that should match the [Share holders spreadsheet, both in preprod and prod folder](https://drive.google.com/drive/folders/1NJg2EfFr1zx0L8r91-SeJX-d9baYWthM).
+The details of your hardware token will be displayed, including the serial number, that should match the share holders spreadsheet for your organisation.
 
 The following command will get the username and email address associated with your hardware token.
 ```bash
