@@ -31,9 +31,6 @@ This allows to keep the state of your vault across reboots and is very close to 
 > [!Tip]  
 > You can loop mount this `.raw` image if you need to access or modify files.
 
-> [!Note]  
-> Most probably, you will want a `dev` environment while testing in a VM (not a `preprod` or `prod`) so you will have to make sure `orca.environment-target` is set to `dev` in [src/default.nix](../../src/default.nix).
-
 ### Starting the iso in a VM
 
 > [!Important]  
@@ -42,7 +39,7 @@ This allows to keep the state of your vault across reboots and is very close to 
 Run with:
 ```bash
 chmod go-rwx testing/root_key
-nix run .
+nix run .#in-vm
 ```
 A virtual machine that will boot on the iso image (that was automatically mounted), and with a small disk will start.
 
@@ -55,34 +52,34 @@ A virtual machine that will boot on the iso image (that was automatically mounte
 
 ### Simulating a key with a read/write switch
 
-At the very beginning, in "dev" env, you have a prompt allowing you to remount the disk as read only.
+At the very beginning, you have a prompt allowing you to switch the stick to read-write.
 
-You can do so with :
+You can do in a terminal **on the host machine**, at the root of O.R.CA, with:
 
 ```bash
-ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key mount -o remount,ro /var/lib/vault
+nix develop --command switch-to-readwrite
 ```
 
-To switch the "key" to read/write use :
+To switch the "key" to readonly use :
 ```bash
-ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key mount -o remount /var/lib/vault
+nix develop --command switch-to-readonly
 ```
 
-### Simulating Yubikeys
+### Simulating Hardware Tokens
 
 > [!Warning]
 > This is only available if you are using the `dev` environment-target
 
-While a yubikey should be inserted in real life, in the VM, you can simulate.
-When asked to plug a yubikey, in a terminal **on the host machine**, at the root of O.R.CA, run:
+While a hardware token should be inserted in real life, in the VM, you can simulate.
+When asked to plug a hardware token, in a terminal **on the host machine**, at the root of O.R.CA, run:
 
 ```bash
-ssh root@localhost -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=accept-new" -p 2222 -i testing/root_key plug-simulated-yubikey <n>
+nix develop --command plug-simulated-hardware-token <n>
 ```
 
-where `<n>` is the number (1 to 4) of the yubikey you want to insert.
+where `<n>` is the number (1 to 4) of the hardware token you want to insert.
 Then continue in the VM as in real life.
-The passphrase for the simulated yubikeys is `test`
+The passphrase for the simulated hardware token is `hwtoken`
 
 ### SSH to the VM
 

@@ -10,9 +10,11 @@
 
       run_ceremony = pkgs.writeShellScriptBin "run_ceremony" (import ./run_ceremony.nix (args // { inherit (pkgs) lib; inherit orca_user pkgs all_scripts; }));
       inherit (config.orca) latest_cvault;
-      has_dev_hack = config.orca.has_dev_hack;
       # record everything that happens on the terminal
       record_session = pkgs.writeShellScriptBin "record_session" ''
+            mkdir -p ~/.gnupg
+            echo "disable-ccid" > ~/.gnupg/scdaemon.conf
+            chmod 600 ~/.gnupg
             C_VAULT=$(${pkgs.lib.getExe all_scripts.orca_scripts.orca_user.compute_c_vault})
             echo "Cvault : "
             ${ if latest_cvault != null then ''
@@ -30,17 +32,10 @@
             echo "This is the first time O.R.CA is started so no Cvault needs to be checked"
             ''}
               
-            ${if has_dev_hack then
-             ''
-             echo -e "\n Testing hack : You can mount ${VAULT_STORAGE_PATH} as read-only now then press enter\n"
-            read -s
-            '' else ""}
-
-            if ! sudo test -w ${VAULT_STORAGE_PATH}
+            if ! test -w ${VAULT_STORAGE_PATH}
             then
               cat << EOF
               You successfully booted O.R.CA for the ${config.orca.environment-target} environment in read-only mode.
-              To start the ceremony, please switch the stick so read/write.
         EOF
             else
 
@@ -53,28 +48,28 @@
               poweroff
             fi
 
-            while ! test -w ${VAULT_STORAGE_PATH}
+            DEVICE=$(df  ${VAULT_STORAGE_PATH} | tail -1 | cut -d " " -f 1 | xargs basename)
+            umount ${VAULT_STORAGE_PATH}
+            echo "Switch the stick to read-write to start the ceremony"
+            RO_FILE="/sys/class/block/''${DEVICE}/ro"
+            until [ -e $RO_FILE ] && [ $(cat $RO_FILE 2> /dev/null || echo 1) -eq  0 ]
             do
               sleep 1
-            ${if has_dev_hack then ""
-            else "mount -o remount ${VAULT_STORAGE_PATH} 2> /dev/null"}
             done
+              
+            mount /dev/''${DEVICE} ${VAULT_STORAGE_PATH}
             systemctl start ${config.systemd.services.vault.name}
 
             mkdir -p ${RECORDINGS_FOLDER}
+
             ${pkgs.lib.getExe pkgs.asciinema} rec -q -t "Ceremony for ${config.orca.environment-target} on $(date +'%F at %T') using $(tty)" -i 1 ${RECORDINGS_FOLDER}/ceremony-${config.orca.environment-target}-$(date +"%F_%T")$(tty | tr '/' '-').cast -c "sudo -u ${orca_user.name} ${pkgs.lib.getExe run_ceremony}"
 
+            systemctl stop ${config.systemd.services.vault.name}
             DEVICE=$(df  ${VAULT_STORAGE_PATH} | tail -1 | cut -d " " -f 1 | xargs basename)
             umount ${VAULT_STORAGE_PATH}
             echo "Switch the stick to read-only to finish the ceremony"
             RO_FILE="/sys/class/block/''${DEVICE}/ro"
-            ${if has_dev_hack then ''
-              echo "reading from $RO_FILE"
-              cat $RO_FILE
-              read -s
-            ''
-            else ''''}
-            until [ $(cat /sys/class/block/''${DEVICE}/ro) -eq  ${if has_dev_hack then "0" else "1"} ]
+            until [ -e $RO_FILE ] && [ $(cat $RO_FILE 2> /dev/null || echo 0) -eq  1 ]
             do
               sleep 1
             done
@@ -109,10 +104,6 @@
             type = types.str;
             default = "VAULT_WRITABLE";
           };
-          has_dev_hack = mkOption {
-            type = types.bool;
-            default = false;
-          };
         };
       };
       config = {
@@ -131,10 +122,6 @@ It is possible that they were saved in the wrong folder.
 
 If it should indeed be allowed to run as root, please double check them for security risk and then add it's name to the allowed_scripts above.
               '';
-            }
-            {
-              assertion = config.orca.environment-target == "dev" || config.orca.has_dev_hack == false;
-              message = "Dev hack cannot be active on non dev envirnment";
             }
           ];
         environment = {
@@ -176,6 +163,12 @@ If it should indeed be allowed to run as root, please double check them for secu
           users.root.initialHashedPassword = "";
         };
 
+        hardware.gpgSmartcards.enable = true;
+            services = {
+      pcscd = {
+        enable = true;
+      };
+    };
 
         security = {
           # Don't require sudo/root to `reboot` or `poweroff`.
@@ -224,7 +217,10 @@ If it should indeed be allowed to run as root, please double check them for secu
 
         services = {
           # Automatically log in at the virtual consoles.
-          getty.autologinUser = orca_user.name;
+          getty = {
+            autologinUser = orca_user.name;
+            autologinOnce = true;
+          };
           xserver.xkb = {
             layout = "fr,fr,us";
             variant = "oss,bepo,";

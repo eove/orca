@@ -27,7 +27,7 @@
       {
         lib = import ./src/lib.nix (inputs // { inherit system pkgs ORCA_DISK_NAME; });
         apps = {
-          default = self.lib."${system}".run-in-vm (import ./testing/orca-config.nix);
+          in-vm = self.lib."${system}".run-in-vm (import ./testing/orca-config.nix);
         };
         packages = {
           md-to-html = pkgs.writeShellScriptBin "md-to-html" ''
@@ -85,6 +85,31 @@
         };
         devShells = {
           default = pkgs.mkShell (
+            let
+              to-qemu = "${pkgs.lib.getExe pkgs.socat} - unix-connect:/tmp/orca-monitor-socket";
+              switch-usb-rw = value: ''
+                echo device_del vault_writable | ${to-qemu}
+                sleep 1
+                echo drive_add 42 if=none,id=usbstick,format=raw,file=$(pwd)/orca-testing-disk.raw,read-only=${value} | ${to-qemu}
+                sleep 1
+                echo device_add usb-storage,bus=xhci.0,drive=usbstick,removable=on,id=vault_writable | ${to-qemu}
+              '';
+              switch-to-readwrite = pkgs.writeShellScriptBin "switch-to-readwrite" ''
+                ${switch-usb-rw "off"}
+              '';
+              switch-to-readonly = pkgs.writeShellScriptBin "switch-to-readonly" ''
+                ${switch-usb-rw "on"}
+              '';
+              plug-simulated-hardware-token = pkgs.writeShellScriptBin "plug-simulated-hardware-token" ''
+                  if test $# -ne 1; then
+                    echo "This script requires the number of the hardware token to insert as argument" >&2
+                    exit 1
+                  fi
+                echo device_del canokey | ${to-qemu}
+                sleep 1
+                echo device_add canokey,file=$(pwd)/testing/simulated-hardware-tokens/canokey''${1},id=canokey | ${to-qemu}
+              '';
+            in
             {
               packages = with pkgs; [
                 vault-bin
@@ -95,6 +120,10 @@
                 mdbook-mermaid
                 self.packages."${system}".md-to-html
                 asciinema
+                switch-to-readwrite
+                switch-to-readonly
+                plug-simulated-hardware-token
+                socat
               ];
             }
           );

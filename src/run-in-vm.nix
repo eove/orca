@@ -9,31 +9,11 @@ let
           orca = orca_config;
         })
         ({ config, ... }:
-          let
-            dev-scripts = builtins.mapAttrs pkgs.writeShellScriptBin {
-              plug-simulated-yubikey = ''
-                if test $# -ne 1; then
-                  echo "This script requires the number of the yubikey to insert as argument" >&2
-                  exit 1
-                fi
-                if ! test -e ${config.orca.vm.simulated_yubikeys_folder}/yubikey''${1}/.gnupg; then
-                  echo "Invalid yubikey number" >&2
-                  exit 1
-                fi
-                rm -rf ~/.gnupg 2> /dev/null
-                cp -r ${config.orca.vm.simulated_yubikeys_folder}/yubikey''${1}/.gnupg/ ~
-                chmod +w,og-rwx -R ~/.gnupg
-              '';
-            };
-          in
           {
             options = with pkgs.lib; {
               orca = {
                 vm = {
                   root_public_key = mkOption {
-                    type = types.path;
-                  };
-                  simulated_yubikeys_folder = mkOption {
                     type = types.path;
                   };
                 };
@@ -44,15 +24,12 @@ let
               "${nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
             ];
             config = {
-              assertions = [
+                assertions = [
                 {
                   assertion = config.orca.environment-target == "dev";
                   message = "O.R.CA vm can only be started in dev environment";
                 }
               ];
-              environment.systemPackages = [
-                pkgs.vim
-              ] ++ (builtins.attrValues dev-scripts);
               services.openssh = {
                 enable = pkgs.lib.mkForce true;
                 settings.PermitRootLogin = "yes";
@@ -74,13 +51,11 @@ let
                 forwardPorts = [{ host.port = 2222; guest.port = 22; }];
                 qemu = {
                   options = [
-                    "-bios ${pkgs.OVMF.fd}/FV/OVMF.fd"
-                  ];
-                  drives = [
-                    {
-                      file = ''''${VAULT_WRITABLE_DISK}'';
-                      driveExtraOpts = { format = "raw"; };
-                    }
+                    "-bios" "${pkgs.OVMF.fd}/FV/OVMF.fd"
+                    "-monitor" "unix:/tmp/orca-monitor-socket,server,nowait"
+                    ''-drive if=none,id=usbstick,format=raw,file=''${VAULT_WRITABLE_DISK},read-only=on''
+    "-device nec-usb-xhci,id=xhci"
+    "-device usb-storage,bus=xhci.0,drive=usbstick,id=vault_writable,removable=on"
                   ];
                 };
               };
