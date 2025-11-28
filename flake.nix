@@ -12,7 +12,7 @@
       templates = {
         default = {
           path = ./example;
-          description = "O.R.CA ceremony creation";
+          description = "O.R.CA exploitation repository template";
         };
       };
     }) //
