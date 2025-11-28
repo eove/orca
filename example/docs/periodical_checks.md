@@ -83,7 +83,7 @@ The filename storing the hardware token's public key should follow the template:
 Where:
 * `2024` is the expiry year of the hardware token (it will expire on 30/12/2024), you can double-check the expiry using `gpg /path/to/file.pub`
 * `firstname.lastname@email.com` is the email address of the owner of this hardware token
-* `62413455` is the serial number of the hardware token (as displayed, for example using `gpg --card-status`)
+* `serial` is the serial number of the hardware token (as displayed, for example using `gpg --card-status`)
 
 Once all relevant GPG keys have been renewed and their public key commited to the repository, a key rotation should be run in a ceremony for the offline vault. This is done by setting `rotate_keys` to `true`.
 
