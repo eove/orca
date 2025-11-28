@@ -54,13 +54,13 @@ A virtual machine that will boot on the iso image (that was automatically mounte
 
 At the very beginning, you have a prompt allowing you to switch the stick to read-write.
 
-You can do in a terminal **on the host machine**, at the root of O.R.CA, with:
+You can do in a terminal **on the host machine**, at the root of the repository, with:
 
 ```bash
 nix develop --command switch-to-readwrite
 ```
 
-To switch the "key" to readonly use :
+To switch the "key" to readonly use:
 ```bash
 nix develop --command switch-to-readonly
 ```
@@ -71,7 +71,7 @@ nix develop --command switch-to-readonly
 > This is only available if you are using the `dev` environment-target
 
 While a hardware token should be inserted in real life, in the VM, you can simulate.
-When asked to plug a hardware token, in a terminal **on the host machine**, at the root of O.R.CA, run:
+When asked to plug a hardware token, in a terminal **on the host machine**, at the root of the repository, run:
 
 ```bash
 nix develop --command plug-simulated-hardware-token <n>
