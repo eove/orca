@@ -84,7 +84,7 @@ The 📢`organiser` asks all `share holders` (including 👥`team members`) to c
 
 #### Setting up the trusted commit
 
-When all scripts planned for the ceremony are ready and all keys are up-to-date, the 📢`organiser` writes down the last git commit of [the repository](@ORCA@gitremote@) containing all re-inserted keys, and communicates this commit to all 👥`team members`.
+When all scripts planned for the ceremony are ready and all keys are up-to-date, the 📢`organiser` writes down the last git commit of [the exploitation repository](@ORCA@gitremote@) containing all re-inserted keys, and communicates this commit to all 👥`team members`.
 
 For the rest of this documentation, we are going to name that commit the `trusted commit` (✅)
 
