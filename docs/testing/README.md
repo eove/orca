@@ -57,12 +57,12 @@ At the very beginning, you have a prompt allowing you to switch the stick to rea
 You can do in a terminal **on the host machine**, at the root of O.R.CA, with:
 
 ```bash
-switch-to-readwrite
+nix develop --command switch-to-readwrite
 ```
 
 To switch the "key" to readonly use :
 ```bash
-switch-to-readonly
+nix develop --command switch-to-readonly
 ```
 
 ### Simulating Hardware Tokens
@@ -74,12 +74,12 @@ While a hardware token should be inserted in real life, in the VM, you can simul
 When asked to plug a hardware token, in a terminal **on the host machine**, at the root of O.R.CA, run:
 
 ```bash
-plug-simulated-yubikey <n>
+nix develop --command plug-simulated-hardware-token <n>
 ```
 
-where `<n>` is the number (1 to 4) of the yubikey you want to insert.
+where `<n>` is the number (1 to 4) of the hardware token you want to insert.
 Then continue in the VM as in real life.
-The passphrase for the simulated yubikeys is `hwtoken`
+The passphrase for the simulated hardware token is `hwtoken`
 
 ### SSH to the VM
 
