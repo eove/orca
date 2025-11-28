@@ -521,7 +521,7 @@ The vault private data archive has been safely stored ....... PASS [] / FAIL []
 The checksum of the tar file content matches _Cvault_ ....... PASS [] / FAIL []
 Value of the full sha256 checksum of the vault private data folder (_Cvault_):
 ...............................................................................
-The recording matches what happened for all team membmers ....... PASS [] / FAIL []
+The recording matches what happened for all team members .... PASS [] / FAIL []
 ```
 
 </td></table>
