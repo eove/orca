@@ -11,4 +11,4 @@ Finally you should create a whole new PKI to replace the old one.
 > [!Important]
 > If the root CA is ever compromised. You **must** find how it happens and fix the problem.\
 > Maybe it's a unknown weakness in O.R.CA, maybe O.R.CA is not suited for your organisation or maybe it's something completely different !\
-> The important part is that if you don't fix the issue, it **will** happen again !
+> The important point here is that if you don't fix the issue, it **will** happen again !
