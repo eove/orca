@@ -1,7 +1,7 @@
 > [!CAUTION]
 > This is just an example, please document your own PKI organisation.
 
-Following the recommendations given in [the O.R.CA documentation](https://github.com/eove/orca), here is a schema of our PKI :
+Following the recommendations given in [the O.R.CA documentation](https://eove.github.io/orca/unstable), here is a schema of our PKI :
 
 ```mermaid
 flowchart TD
