@@ -531,7 +531,7 @@ The recording matches what happened for all team members .... PASS [] / FAIL []
 Before signing the report, please verify its content, specifically:
 - the value of the ✅`trusted commit`
 - the value of the sha256 checksum of the new offline vault private data (C<sub>vault</sub>)
-- the value validity of the recording
+- the validity of the recording
 - name the report to contain the date of the ceremony, for example: *ceremony-report-preprod-2025-03-17*
 
 The 📝`reporter`, 💻`operator`, and 👀`observer` will all sign the report by following your organisation's way of signing documents.
