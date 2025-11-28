@@ -46,7 +46,7 @@ sed -e '/^@GPG@SIGNATURES@$/q' "$INPUT_TO_SIGN" |\
 The authenticity of the content of the document, must be verify via cryptographic signatures before executing it.
  * Find the public keys of the signatories. To do that, go to the commit found in the header of the document:
 ```bash
-git checkout @ORCA@commit@
+git checkout commit_in_the_header
 ```
  * There, you can find the keys in `workflow_signatory_keys/`.
  * Verify that these keys were added via **a valid signed commit by their owner**.

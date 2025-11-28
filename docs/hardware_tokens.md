@@ -202,10 +202,10 @@ If your want to use a machine where the keypair was not generated, you must:
 
 Both your public key and private key are now available for use on this new machine.
 
+# Resources (specific to yubikeys)
+
 > [!Tip]  
 > If you didn't save you public key, there are [ways to use your hardware token anyway](https://www.nicksherlock.com/2021/08/recovering-lost-gpg-public-keys-from-your-yubikey/).
-
-# Resources (specific to yubikeys)
 
 * https://github.com/drduh/YubiKey-Guide
 * https://whynothugo.nl/journal/2022/07/11/using-a-yubikey-for-gpg/

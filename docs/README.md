@@ -7,7 +7,7 @@ In this document, we will explain how O.R.CA works.
 
 In case you encounter a term that you do not understand, please refer to [the glossary](./workflow/common/glossary.md)
 
-To initialise your own `exploitation repository`, in an empty folder, use:
+To create a copy of your exploitation manual, you will need to install the nix package manager on your machine, and fetch a brand new template for your offline CA, by creating a new folder, and running the following command inside this folder:
 ```shell
 nix flake init -t github:eove/orca/v1.0 --refresh
 ```
