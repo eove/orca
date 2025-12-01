@@ -7,7 +7,7 @@ Document created from repository [@ORCA@gitremote@](@ORCA@gitremote@) at commit 
 ## Verifying this document
 
 Please follow your organisation's way of verifying a document to make sure this document has not been tampered with.
-A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable)
+A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable/signing_and_verifying.html)
 
 ## Introduction
 
@@ -106,7 +106,7 @@ First, we will verify the report of the last ceremony.
 This step *must* be performed by all 👥`team members` *before* the day of the ceremony
 
 Get the last report for the corresponding environment and verify the signatures following your organisation's way of verifying a document.
-A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable/gpg_public_key.html)
+A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable/signing_and_verifying.html)
 
 > [!Warning]  
 > All signatures should be valid. The check above should be valid for at least the 3 👥`team members` of the previous ceremony.
@@ -535,6 +535,6 @@ Before signing the report, please verify its content, specifically:
 - name the report to contain the date of the ceremony, for example: *ceremony-report-preprod-2025-03-17*
 
 The 📝`reporter`, 💻`operator`, and 👀`observer` will all sign the report by following your organisation's way of signing documents.
-A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable/gpg_public_key.html)
+A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable/signing_and_verifying.html)
 
 All 👥`team members` should now get a copy of the signed report and perform a check of all signatures using [the same process as when checking the last ceremony's report](#verification-of-the-last-ceremonys-report).
