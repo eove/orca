@@ -82,6 +82,19 @@
 
             rm -rf "$DIR/"
           '';
+          patch-links-for-release = pkgs.writeShellScriptBin "patch-links-for-release" ''
+            if [ "$#" -ne 1 ]; then
+              echo "We need a version number" >&2
+              exit -1
+            fi
+            VERSION="$1"
+            for file in $(grep -lR 'https://eove.github.io/orca/unstable' * | grep -v flake.nix)
+            do
+             sed -i s@https://eove.github.io/orca/unstable@https://eove.github.io/orca/$VERSION@g $file
+            done
+            sed -i s@github:eove/orca@github:eove/orca/$VERSION@g example/flake.nix
+            '';
+
         };
         devShells = {
           default = pkgs.mkShell (
@@ -132,6 +145,7 @@
               mdbook
               mdbook-alerts
               mdbook-mermaid
+              self.packages."${system}".patch-links-for-release
             ];
           };
         };
