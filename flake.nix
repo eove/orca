@@ -93,6 +93,7 @@
              sed -i s@https://eove.github.io/orca/unstable@https://eove.github.io/orca/$VERSION@g $file
             done
             sed -i s@github:eove/orca@github:eove/orca/$VERSION@g example/flake.nix
+            sed -i s@github:eove/orca@github:eove/orca/$VERSION@g docs/README.md
             '';
 
         };
