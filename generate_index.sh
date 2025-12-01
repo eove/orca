@@ -1,4 +1,4 @@
-#/usr/bin/env bash
+#!/usr/bin/env bash
 
 cat << EOF > index.html
 <!DOCTYPE html>
