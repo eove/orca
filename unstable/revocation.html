@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Signing and verifying - O.R.CA&#x27;s documentation</title>
+        <title>Revocation - O.R.CA&#x27;s documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -222,98 +222,32 @@
 }
 
 </style>
-<h1 id="signing-and-verifying-a-text-based-document"><a class="header" href="#signing-and-verifying-a-text-based-document">Signing and verifying a text-based document</a></h1>
-<div class="mdbook-alerts mdbook-alerts-warning">
+<p>In the event of a compromised CA/certificate, you will have to revoke the compromised item. When that compromised item was signed by an offline CA, you should invoke the offline ephemeral vault.
+For this reason, we provide the script <code>revoke-certificate.sh</code> that needs to be executed during a ceremony to revoke compromised item.
+Note that you cannot revoke the offline root CA itself using that script.</p>
+<p>You should then regenerate all children of the compromised CA (but not end device certificates)</p>
+<p>If the root CA has been compromised, then you need to contact all services that rely on it as a trusted CA so that they stop trusting it.
+Then revoke all children CAs using the script <code>revoke-certificate.sh</code>.
+Finally you should create a whole new PKI to replace the old one.</p>
+<div class="mdbook-alerts mdbook-alerts-important">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
-  warning
+  important
 </p>
-<p>If your organisation has a official way of signing and verifying documents, then you should use that process.<br />
-What is described below is only a simple proposal that re-uses the hardware token already required in the workflow.</p>
+<p>If the root CA is ever compromised. You <strong>must</strong> find how it happens and fix the problem.<br />
+Maybe it's a unknown weakness in O.R.CA, maybe O.R.CA is not suited for your organisation or maybe it's something completely different !<br />
+The important point here is that if you don't fix the issue, it <strong>will</strong> happen again !</p>
 </div>
-<p>This method works for text-based documents like markdown or HTML.
-Even though the <code>--clear-sign</code> option of gpg could be used, it adds a bit of noise at the beginning of the document that makes HTML documents rendering very poor on a webbrowser.
-This method is more manual but only adds noise <strong>at the end</strong> of the document, thus fixing the display of HTML documents.</p>
-<h2 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h2>
-<p>Before selecting the commit at which the OR.C.A document is signed, <strong>please make sure both the author and verifier's hardware token's public GPG keys</strong> are in this repo's directory <code>signatory_keys</code>. These will be required when verifying the signatures in the future.</p>
-<p>The last line of the document to sign <strong>must</strong> be <code>@GPG@SIGNATURES@</code>. If the line is not present, please add it.<br />
-For HTML documents use :</p>
-<pre><code class="language-bash">sed -i -e '$a&lt;hr&gt;&lt;pre&gt;\n@GPG@SIGNATURES@' /path/to/file.html
-</code></pre>
-<p>Otherwise use :</p>
-<pre><code class="language-bash">sed -i -e '$a@GPG@SIGNATURES@' /path/to/file
-</code></pre>
-<h2 id="signing"><a class="header" href="#signing">Signing</a></h2>
-<p>In sequence, each of the signatory will run the following command and transfer the resulting signed file (which name is displayed on the console) to the next signatory.</p>
-<div class="mdbook-alerts mdbook-alerts-note">
-<p class="mdbook-alerts-title">
-  <span class="mdbook-alerts-icon"></span>
-  note
-</p>
-<p>In the shell snippet below, we catch the hardware token public key ID from the signing key ID in the token, and store this inside variable <code>GPG_HW_TOKEN_KEY_ID</code>.<br />
-You might also do it manually (for example using <code>gpg --card-status</code> or <code>gpg --list-keys --fingerprint</code>) if this sed oneliner doesn't do the job properly.</p>
-</div>
-<pre><code class="language-bash">export INPUT_TO_SIGN=/path/to/document # Adapt this to your path
-export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status |\
- sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi')
-
-sed -e '/^@GPG@SIGNATURES@$/q' "$INPUT_TO_SIGN" |\
- gpg --armor --output - -u "$GPG_HW_TOKEN_KEY_ID" --detach-sign &gt; "$INPUT_TO_SIGN.sig.asc" &amp;&amp;\
- cat "$INPUT_TO_SIGN" "$INPUT_TO_SIGN.sig.asc" &gt; "$INPUT_TO_SIGN".signed &amp;&amp;\
- rm "$INPUT_TO_SIGN.sig.asc" &amp;&amp;\
- command ls "$INPUT_TO_SIGN".signed &gt;&amp;2
-</code></pre>
-<h2 id="verifying"><a class="header" href="#verifying">Verifying</a></h2>
-<p>The authenticity of the content of the document, must be verify via cryptographic signatures before executing it.</p>
-<ul>
-<li>Find the public keys of the signatories. To do that, go to the commit found in the header of the document:</li>
-</ul>
-<pre><code class="language-bash">git checkout commit_in_the_header
-</code></pre>
-<ul>
-<li>There, you can find the keys in <code>workflow_signatory_keys/</code>.</li>
-<li>Verify that these keys were added via <strong>a valid signed commit by their owner</strong>.</li>
-<li>Use a new gpg keystore (all of the following commands will be executed with this environment variable):</li>
-</ul>
-<pre><code class="language-bash">export TMP_GPG_HOME=$(mktemp -d)
-</code></pre>
-<ul>
-<li>Import all the public keys and mark them as ultimatly trusted</li>
-</ul>
-<pre><code class="language-bash">gpg --home="$TMP_GPG_HOME" --import /path/to/workflow_signatory_keys/*
-gpg --home="$TMP_GPG_HOME" --list-keys --keyid-format LONG --with-colons | sed -n -e '/^pub/{n;p}' | \
- sed -n -E 's/^fpr:([^:]*:){8}([^:]*).*$/\2:6:/p' | gpg --home="$TMP_GPG_HOME"  --import-ownertrust
-</code></pre>
-<ul>
-<li>Specify the filename of the document to verify:</li>
-</ul>
-<pre><code class="language-bash">export INPUT_TO_VERIFY=/path/to/document.signed # Adapt this to your path
-</code></pre>
-<ul>
-<li>Split the document in two parts (the signatures on one hand, and the document without signatures on the other hand):</li>
-</ul>
-<pre><code class="language-bash">sed -e '1,/^@GPG@SIGNATURES@$/ d' "$INPUT_TO_VERIFY" &gt; /tmp/document.sig
-sed -e '/^@GPG@SIGNATURES@$/q' "$INPUT_TO_VERIFY" &gt; /tmp/document_without_signatures
-</code></pre>
-<ul>
-<li>Verify all signatures:</li>
-</ul>
-<pre><code class="language-bash">gpg --home="$TMP_GPG_HOME" --verify /tmp/document.sig /tmp/document_without_signatures &amp;&amp; \
- echo "All signatures verified"
-</code></pre>
-<ul>
-<li>The validity of the signatures will be confirmed with <code>Good signature from xxxx</code> <strong>for each signatory</strong> and a last line <code>All signatures verified</code> must be prompted.</li>
-</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="revocation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="pki_init.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="glossary.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="signing_and_verifying.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -323,11 +257,11 @@ sed -e '/^@GPG@SIGNATURES@$/q' "$INPUT_TO_VERIFY" &gt; /tmp/document_without_sig
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="revocation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="pki_init.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="glossary.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="signing_and_verifying.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
