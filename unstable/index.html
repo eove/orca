@@ -234,10 +234,13 @@
 <p>In case you encounter a term that you do not understand, please refer to <a href="./workflow/common/glossary.html">the glossary</a></p>
 <p>To create a copy of your exploitation manual, you will need to install the <a href="https://nixos.org/download/">nix package manager</a> on your machine.
 Make sure the <a href="https://nix.dev/manual/nix/2.28/development/experimental-features.html#xp-feature-flakes">flakes</a> and <a href="https://nix.dev/manual/nix/2.28/development/experimental-features.html#xp-feature-nix-command">nix-command</a> features are enabled (otherwise you'll have to explicitly enable them for each nix command).</p>
-<p>Then fetch a brand new template for your offline CA, by creating a new folder, and running the following command inside this folder:</p>
-<pre><code class="language-shell">nix flake init -t github:eove/orca/v1.0 --refresh
+<p>Then fetch a brand new template for your offline CA, by creating a new folder, and running the following commands inside this folder:</p>
+<pre><code class="language-shell">nix flake init -t github:eove/orca --refresh
+git init .
+git add .
+git commit -m "Initialisation of our O.R.CA exploitation repository"
 </code></pre>
-<p>You can then commit and push this folder into your own organisation's repository.
+<p>Then push this folder into a new repository in your organisation.
 This will be the repository where all changes to your offline root CA will be committed (containing documentation and workflows, as well as automation scripts). We will call this the <code>exploitation repository</code>.</p>
 <p>You will now have to document your offline CA, that is to say, customise your <code>exploitation manual</code>.</p>
 <div class="mdbook-alerts mdbook-alerts-caution">
