@@ -20,7 +20,7 @@ Working on a high-level CA is stressfull and doing it by hand is error-prone.
 O.R.CA aims to reduce stress and mistakes thanks to automation.
 Every action made on the offline CAs **must** be automated via a script.
 There is no way to do anything meaningfull on the O.R.CA system other than a script.
-This is made easy thanks to the fact O.R.CA offers [a way to test these scripts in VMs](https://eove.github.io/orca/unstable/testing). On top of this, we heavily recommend to have a preproduction PKI to validate everything before running it on the production PKI.
+This is made easy thanks to the fact O.R.CA offers [a way to test these scripts in VMs](https://eove.github.io/orca/v0.1.0/testing). On top of this, we heavily recommend to have a preproduction PKI to validate everything before running it on the production PKI.
 If any mistake is detected by O.R.CA or someone during a ceremony, O.R.CA will make sure that no erroneous data can be exploited.
 
 ## Ill-intent actions
