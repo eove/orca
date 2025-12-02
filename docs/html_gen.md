@@ -24,16 +24,16 @@ export ORCA_WF_REV=<rev> # Set this variable correctly, eg: 'A' or '1.1'
 
 And finally, let's generate the workflow document as a self-standing file for the subsequent signature process.
 ```bash
-export GIT_REMOTE_URL=$(git config --get remote.origin.url | sed -E -e 's|^.*git@(.+):(.+)|https://\1/\2|p')
+export GIT_REMOTE_URL=$(git config --get remote.origin.url | sed -E -e 's|^.*git@(.+):(.+)|https://\1/\2|')
 export GIT_CURRENT_HASH=$(git log --pretty=format:'%H' -n 1)
 
 unset SANITY_CHECKS_OK
 
-if test -z $ORCA_WF_REV; then echo "ERROR: no ORCA_WF_REV set">&2; false; else\
- if test -z $ORCA_WF_TITLE; then echo "ERROR: no ORCA_WF_TITLE set">&2; false; else\
- if test -z $ORCA_WF_AS_MD; then echo "ERROR: no ORCA_WF_AS_MD set">&2; false; else\
- if test -z $GIT_CURRENT_HASH; then echo "ERROR: no GIT_CURRENT_HASH set">&2; false; else\
- if test -z $GIT_REMOTE_URL; then echo "ERROR: no GIT_REMOTE_URL set">&2; false; else\
+if test -z "$ORCA_WF_REV"; then echo "ERROR: no ORCA_WF_REV set">&2; false; else\
+ if test -z "$ORCA_WF_TITLE"; then echo "ERROR: no ORCA_WF_TITLE set">&2; false; else\
+ if test -z "$ORCA_WF_AS_MD"; then echo "ERROR: no ORCA_WF_AS_MD set">&2; false; else\
+ if test -z "$GIT_CURRENT_HASH"; then echo "ERROR: no GIT_CURRENT_HASH set">&2; false; else\
+ if test -z "$GIT_REMOTE_URL"; then echo "ERROR: no GIT_REMOTE_URL set">&2; false; else\
   SANITY_CHECKS_OK=true; fi; fi; fi; fi; fi
 
 unset TMP_OUTPUT_DIR;TMP_OUTPUT_DIR=$(mktemp -p ~ -d)

@@ -1,0 +1,70 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: "The version to release"
+permissions:
+  contents: write
+jobs:
+  build-and-deploy-doc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v6
+
+      - name: Setup git
+        run: |
+          git config --global user.name "GitHub Actions by eoverobot"
+          git config --global user.email "<eoverobot@eove.fr>"
+          git config --global --type bool push.autoSetupRemote true
+          git checkout -b ${{ github.event.inputs.version }}
+
+
+      - uses: nixbuild/nix-quick-install-action@v30
+
+      - name: Patch links
+        run: |
+          nix develop .#ci --command patch-links-for-release ${{ github.event.inputs.version }}
+          
+      - name: Commit index 🚀
+        run: |
+          git commit -am "Release ${{ github.event.inputs.version }}"
+          git push
+
+      - name: Build documentation
+        run: |
+          nix develop .#ci --command mdbook build
+
+      - name: Deploy documentation 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: book/html
+          branch: docs
+          target-folder: ${{ github.event.inputs.version }}
+
+  update-doc-index:
+    needs: build-and-deploy-doc
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v6
+        with:
+          ref: 'docs'
+
+      - name: Setup git config
+        run: |
+          git config --global user.name "GitHub Actions by eoverobot"
+          git config --global user.email "<eoverobot@eove.fr>"
+
+      - name: Regenerate the index file
+        run: |
+          bash generate_index.sh
+          
+      - name: Commit index 🚀
+        run: |
+          git add index.html
+          git commit -m "Auto-update index.html" || exit 0
+          git pull --rebase
+          git push

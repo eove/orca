@@ -8,7 +8,7 @@ Document created from repository [@ORCA@gitremote@](@ORCA@gitremote@) at commit 
 ## Verifying this document
 
 Please follow your organisation's way of verifying a document to make sure this document has not been tampered with.
-A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable)
+A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable/signing_and_verifying.html)
 
 ## Introduction
 
