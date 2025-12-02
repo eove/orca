@@ -24,7 +24,7 @@
 
 
 - [Local testing](./testing/README.md)
-- [HTML workflow generation](./html_gen.md)
+- [Workflow document generation](./document_generation.md)
 - [Hardware tokens](./hardware_tokens.md)
 - [GPG public key](./gpg_public_key.md)
 - [Initialisation](./pki_init.md)
