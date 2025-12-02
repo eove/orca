@@ -72,7 +72,7 @@ Once changes have been performed, commit the modified files to the [repository](
 > [!Warning]  
 > This section should only be executed if there was any change in the set of keys in use. In all other cases, please skip to the next section.
 
-The 📢`organiser` asks all `share holders` (including 👥`team members`) to check that the hardware token they own has its public key recorded in the env-specific directory located under [`share_holders_keys/`] in this repository and if it needs to be updated or added, they should do it via a signed commit.
+The 📢`organiser` asks all `share holders` (including 👥`team members`) to check that the [hardware token](https://eove.github.io/orca/unstable/hardware_tokens.html) they own has its [public key](https://eove.github.io/orca/unstable/gpg_public_key.html) recorded in the env-specific directory located under [`share_holders_keys/`] in this repository and if it needs to be updated or added, they should do it via a signed commit.
 
 > [!Tip]  
 > Github automatically signs commits performed via the online Github web interface.
