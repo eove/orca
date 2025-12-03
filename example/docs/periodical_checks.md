@@ -214,6 +214,13 @@ This PKID value should be identical between:
 * the PEM-formatted CSR (that will be inlined inside the `sign-csr` script).
 * the online vault that emitted the CSR.
 
+
+> [!Caution]
+> The following script is only usefull if you use hashicorp vault for your online PKI and needs to be customized.\
+> The main things to changes are: 
+> - the urls 
+> - the login method (assumed to be via github)
+
 You can copy the following lines in a file and run the script to automatically do that check.
 ```bash
 #!/usr/bin/env bash
@@ -226,6 +233,12 @@ if [ -z $CSR ]
 then
     echo "Usage $0 /path/to/file.csr"
     exit -1
+fi
+
+if [ -z $TARGET_VAULT ]
+then
+    echo "TARGET_VAULT environment variable should be set to either prod or preprod"
+    exit -2
 fi
 
 # Get the PKID of the given CSR
