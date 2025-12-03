@@ -1,6 +1,6 @@
-# How to generate an OR.C.A workflow document
+# How to generate an O.R.CA workflow document
 
-At first, before selecting the commit at which the OR.C.A document is signed, **please make sure the prerequisites for the signing method you are going to use are fulfilled** (this might involve identifying signatories, publishing public keys etc.)
+At first, before selecting the commit at which the O.R.CA document is signed, **please make sure the prerequisites for the signing method you are going to use are fulfilled** (this might involve identifying signatories, publishing public keys etc.)
 
 First, we need to select the document we want to generate:
 * For the ceremony to use the Offline Root CA:
