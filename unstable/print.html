@@ -37,11 +37,23 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
@@ -82,10 +94,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -119,7 +134,7 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -136,7 +151,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -2324,8 +2344,8 @@ The passphrase for the simulated hardware token is <code>hwtoken</code></p>
 }
 
 </style>
-<h1 id="how-to-generate-an-html-formatted-orca-workflow-document"><a class="header" href="#how-to-generate-an-html-formatted-orca-workflow-document">How to generate an html-formatted OR.C.A workflow document</a></h1>
-<p>At first, before selecting the commit at which the OR.C.A document is signed, <strong>please make sure the prerequisites for the signing method you are going to use are fulfilled</strong> (this might involve identifying signatories, publishing public keys etc.)</p>
+<h1 id="how-to-generate-an-orca-workflow-document"><a class="header" href="#how-to-generate-an-orca-workflow-document">How to generate an O.R.CA workflow document</a></h1>
+<p>At first, before selecting the commit at which the O.R.CA document is signed, <strong>please make sure the prerequisites for the signing method you are going to use are fulfilled</strong> (this might involve identifying signatories, publishing public keys etc.)</p>
 <p>First, we need to select the document we want to generate:</p>
 <ul>
 <li>For the ceremony to use the Offline Root CA:</li>
@@ -2374,6 +2394,15 @@ command mv "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" "/tmp/${ORCA_WF_TITLE}.html
  rm -rf "${TMP_OUTPUT_DIR}" &amp;&amp; unset TMP_OUTPUT_DIR
 </code></pre>
 <p>You can then sign the html document following your organisation's way of signing documents, or if you don't have any, by following the <a href="./signing_and_verifying.html">gpg-based process</a>.</p>
+<div class="mdbook-alerts mdbook-alerts-tip">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  tip
+</p>
+<p>If your organisation prefer to use PDFs documents, you can transform the HTML to a PDFs with :</p>
+<pre><code class="language-bash">nix develop --command html-to-pdf /tmp/${ORCA_WF_TITLE}.html /tmp/${ORCA_WF_TITLE}.pdf
+</code></pre>
+</div>
 <div style="break-before: page; page-break-before: always;"></div><style>
 .mdbook-alerts {
   padding: 8px 16px;
@@ -2955,7 +2984,7 @@ What is described below is only a simple proposal that re-uses the hardware toke
 Even though the <code>--clear-sign</code> option of gpg could be used, it adds a bit of noise at the beginning of the document that makes HTML documents rendering very poor on a webbrowser.
 This method is more manual but only adds noise <strong>at the end</strong> of the document, thus fixing the display of HTML documents.</p>
 <h2 id="prerequisites-1"><a class="header" href="#prerequisites-1">Prerequisites</a></h2>
-<p>Before selecting the commit at which the OR.C.A document is signed, <strong>please make sure both the author and verifier's hardware token's public GPG keys</strong> are in this repo's directory <code>signatory_keys</code>. These will be required when verifying the signatures in the future.</p>
+<p>Before selecting the commit at which the O.R.CA document is signed, <strong>please make sure both the author and verifier's hardware token's public GPG keys</strong> are in this repo's directory <code>signatory_keys</code>. These will be required when verifying the signatures in the future.</p>
 <p>The last line of the document to sign <strong>must</strong> be <code>@GPG@SIGNATURES@</code>. If the line is not present, please add it.<br />
 For HTML documents use :</p>
 <pre><code class="language-bash">sed -i -e '$a&lt;hr&gt;&lt;pre&gt;\n@GPG@SIGNATURES@' /path/to/file.html
@@ -3164,6 +3193,7 @@ It contains everything that changes during a ceremony (e.g. the vault private da
             window.setTimeout(window.print, 100);
         });
         </script>
+
 
     </div>
     </body>
