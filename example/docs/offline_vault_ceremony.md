@@ -252,7 +252,7 @@ These 3 persons should be **physically present during the whole ceremony**, and 
    * one or more USB port that fits the USB format of the Yubikeys (USB-A, USB-C etc.).
 
 > [!Warning]
-> At boot time, at boot time (and if possible during the whole ceremony), the only hardware that can be used is the hardware of the `observer` (👀).\
+> At boot time, and if possible during the whole ceremony, the only hardware that can be used is the hardware of the `observer` (👀).\
 > This means that if a USB adaptor, a hub or a external keyboard is necessary, it **must** be hardware owned by the `observer` (👀).\
 > If not, you may plug it only **after** the stick is successfully booted.
 
