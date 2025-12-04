@@ -1,6 +1,6 @@
-# How to generate an html-formatted OR.C.A workflow document
+# How to generate an O.R.CA workflow document
 
-At first, before selecting the commit at which the OR.C.A document is signed, **please make sure the prerequisites for the signing method you are going to use are fulfilled** (this might involve identifying signatories, publishing public keys etc.)
+At first, before selecting the commit at which the O.R.CA document is signed, **please make sure the prerequisites for the signing method you are going to use are fulfilled** (this might involve identifying signatories, publishing public keys etc.)
 
 First, we need to select the document we want to generate:
 * For the ceremony to use the Offline Root CA:
@@ -54,3 +54,9 @@ command mv "${TMP_OUTPUT_DIR}/${ORCA_WF_TITLE}.html" "/tmp/${ORCA_WF_TITLE}.html
 ```
 
 You can then sign the html document following your organisation's way of signing documents, or if you don't have any, by following the [gpg-based process](./signing_and_verifying.md).
+
+> [!Tip]
+> If your organisation prefer to use PDFs documents, you can transform the HTML to a PDFs with :
+> ```bash
+> nix develop --command html-to-pdf /tmp/${ORCA_WF_TITLE}.html /tmp/${ORCA_WF_TITLE}.pdf
+> ```

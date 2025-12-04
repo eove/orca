@@ -10,7 +10,7 @@ We can create our own `actions` scripts or use [the templates given by `O.R.CA`]
 
 Scripts should be [tested in a VM](https://eove.github.io/orca/unstable/testing/index.html) before being used during a ceremony.
 
-During a ceremony, we must follow a [one-page html-formatted exploitation workflow](https://eove.github.io/orca/unstable/html_gen.html) that is present in this repository.
+During a ceremony, we must follow a [one-page exploitation workflow](https://eove.github.io/orca/unstable/document_generation.html) that is present in this repository.
 
 The available exploitation workflows are:
  - [Using the Offline PKI](./offline_vault_ceremony.md)
@@ -20,6 +20,6 @@ The available exploitation workflows are:
 > The first thing to do, after reading [O.R.CA's documentation](https://eove.github.io/orca/unstable), is probably to [initialise the PKI](https://eove.github.io/orca/unstable/pki_init.html)
 
 > [!Important]
-> If a CA is compromise you should [revoke it](https://eove.github.io/orca/unstable/revocation.html) as soon as possible during a [ceremony](./offline_vault_ceremony.md).
+> If a CA is compromised you should [revoke it](https://eove.github.io/orca/unstable/revocation.html) as soon as possible during a [ceremony](./offline_vault_ceremony.md).
 
 In case you encounter a term that you do not understand, please refer to [the O.R.CA documentation's glossary](https://eove.github.io/orca/unstable/glossary.html)
