@@ -9,7 +9,7 @@ Document created from repository [@ORCA@gitremote@](@ORCA@gitremote@) at commit 
 Please follow your organisation's way of verifying a document to make sure this document has not been tampered with.
 A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable/signing_and_verifying.html)
 
-Once ce document is verified, for easier copy/paste of commands in this document, we recommend to use a [HTML version of this workflow](https://eove.github.io/orca/unstable/document_generation.html), generated at the above commit.
+Once this document is verified, for easier copy/paste of commands in this document, we recommend to use a [HTML version of this workflow](https://eove.github.io/orca/unstable/document_generation.html), generated at the above commit.
 
 ## Introduction
 
@@ -52,7 +52,7 @@ The 📢`organiser` should communicate to all 👥`team members` the list of ope
 
 The 📢`organiser` should know which environment will be worked on (`prod`/`preprod`), modify the value of `orca.environment-target` in [orca-config.nix](../../orca-config.nix) accordingly, and notify this environment to all 👥`team members`.
 
-The 📢`organiser` should get the value of the *C<sub>vault</sub>* present in the last report and set the value of `orca.latest_cvault` in [orca-config.nix](../../orca-config.nix) accordingly. If the ceremony is the first one for this environment, then `null` should be set. It is highly recommended that the 📢`organiser` verifies the validity of the report in the same way the 👥`team members` [will do during the verification phase](#verification-of-the-last-ceremonys-report).
+The 📢`organiser` should get the value of the *C<sub>vault</sub>* present in the last report and set the value of `orca.latest_cvault` in [orca-config.nix](../../orca-config.nix) accordingly. If the ceremony is the first one for this environment, then `null` should be set. It is recommended that the 📢`organiser` verifies the validity of the report in the same way the 👥`team members` [will do during the verification phase](#verification-of-the-last-ceremonys-report).
 
 The 📢`organiser` should know what will be done during the ceremony and set the values of `orca.actions_in_order` and `orca.rotate_keys` in [orca-config.nix](../../orca-config.nix) accordingly.
 
