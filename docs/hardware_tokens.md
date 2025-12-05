@@ -127,9 +127,9 @@ The long key ID is displayed when exiting gpg. You can retrieve it at a later ti
 gpg --list-keys
 ```
 
-# Exporting your OpenGPG public key from your Yubikey
+# Exporting your OpenGPG public key from your hardware token
 
-Check which gpg key is stored on your Yubikey by running:
+Check which gpg key is stored on your hardware token by running:
 ```bash
 gpg --card-status
 ```

@@ -10,6 +10,8 @@ Document created from repository [@ORCA@gitremote@](@ORCA@gitremote@) at commit 
 Please follow your organisation's way of verifying a document to make sure this document has not been tampered with.
 A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable/signing_and_verifying.html)
 
+Once ce document is verified, for easier copy/paste of commands in this document, we recommend to use a [HTML version of this workflow](https://eove.github.io/orca/unstable/document_generation.html), generated at the above commit.
+
 ## Introduction
 
 This document explains how to periodically verify the PKI and its usability.
@@ -48,7 +50,7 @@ Checks (and fixes) below should be performed first on the preprod environment, t
 If fixes are needed, this means running a ceremony on preprod, and then a ceremony on prod.
 
 > [!Warning]  
-> In order to use scripts on the offline vault, they should be adapted in the directory  `actions`, then added to git and only then, the build of the live bootable media will run these scripts.
+> In order to run scripts on the offline vault, samples files are provided in the `actions` directory. You should adapt these scripts to your need, then commit to git. Only then, will the live bootable media contain the updated version of these scripts.
 
 ### Hardware token's certificates that have expired should be renewed
 
@@ -66,7 +68,7 @@ Every year, we are expecting a minimum of 1 share to be renewed.
 
 Renewal for all currently in-use hardware tokens should be spread over the full validity period of hardware token's certificates.
 Taking 8 years as the default validity, if we have 11 valid shares (hardware tokens), then we should have a schedule of 2 hardware tokens regeneration per year for the first 3 years and 1 hardware token for the next 5 years.
-This is especially important when initially generating certificates on the hardware tokens. Many hardware tokens will not be initially valid for the whole 8 years.
+This is especially important because, when initially generating certificates on the hardware tokens, many of them will initially have a validity shorter than the nominal one.
 
 #### Test
 
@@ -199,7 +201,7 @@ vault read -format=json devices_pki/issuer/default/json | jq -r '.data.issuer_id
 
 Generate a new **internal** CA CSR on the online vault.
 
-Embed the CSR content inside the `actions/sign-csr.sh` script.
+Embed the CSR content inside the `actions/sign-csr.sh` script, add the script to the offline ceremony actions and commit this to the exploitation repository.
 
 This CSR content (PEM-formatted file) will be reviewed during the verification phase of the ceremony workflow.
 
@@ -345,7 +347,7 @@ You have two options there:
 > [!Tip]  
 > When renewing the root CA, you may as well evaluate the following aspects:
 > - is the crypto used for the trust chain still up-to-date or should it be updated?
-> - is hashicorp vault and O.R.CA still up-to-date and maintained, in general and in NixOS or should the PKI be setup using new tools?
+> - is hashicorp vault and upstream O.R.CA version (used as a template) still up-to-date and maintained, in general and in NixOS or should the PKI be setup using new tools?
 > - the environment in which the vault has been created initially has been progressively migrated from an initialization state 30 years before, it's maybe time to clean-up and start from scratch.
 > - restarting from scratch allows to detach the currently active PKI from all history of previously chained reports and audit trails.
 > - we may want to start with better security ecosystem (better crypto, improved initialisation in both hashicorp vault and our own scripts) after 30 years, it's probably time to review the whole setup in depth, including scripts, hashicorp vault, tools (hardware tokens, NixOS bootable media), and where and how backups+reports are saved.
