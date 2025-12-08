@@ -9,6 +9,8 @@ Document created from repository [@ORCA@gitremote@](@ORCA@gitremote@) at commit 
 Please follow your organisation's way of verifying a document to make sure this document has not been tampered with.
 A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable/signing_and_verifying.html)
 
+Once this document is verified, for easier copy/paste of commands in this document, we recommend to use a [HTML version of this workflow](https://eove.github.io/orca/unstable/document_generation.html), generated at the above commit.
+
 ## Introduction
 
 This document explains how to use the Offline Root CA from preparing the ceremony until a report is signed and shared.
@@ -50,7 +52,7 @@ The 📢`organiser` should communicate to all 👥`team members` the list of ope
 
 The 📢`organiser` should know which environment will be worked on (`prod`/`preprod`), modify the value of `orca.environment-target` in [orca-config.nix](../../orca-config.nix) accordingly, and notify this environment to all 👥`team members`.
 
-The 📢`organiser` should get the value of the *C<sub>vault</sub>* present in the last report and set the value of `orca.latest_cvault` in [orca-config.nix](../../orca-config.nix) accordingly. If the ceremony is the first one for this environment, then `null` should be set. The 📢`organiser` is encourage to verify the validity of the report in the same way the 👥`team members` [will do during the verification phase](#verification-of-the-last-ceremonys-report).
+The 📢`organiser` should get the value of the *C<sub>vault</sub>* present in the last report and set the value of `orca.latest_cvault` in [orca-config.nix](../../orca-config.nix) accordingly. If the ceremony is the first one for this environment, then `null` should be set. It is recommended that the 📢`organiser` verifies the validity of the report in the same way the 👥`team members` [will do during the verification phase](#verification-of-the-last-ceremonys-report).
 
 The 📢`organiser` should know what will be done during the ceremony and set the values of `orca.actions_in_order` and `orca.rotate_keys` in [orca-config.nix](../../orca-config.nix) accordingly.
 
@@ -58,7 +60,7 @@ The 📢`organiser` should know what will be done during the ceremony and set th
 
 The software we are using to run the *ephemeral vault* should not be obsolete (to allow for smooth migration of data, and avoid any unpatched security weakness).
 
-Check if there is any new stable release that is more recent than what is specified in [flake.nix](../../../flake.nix)'s `inputs.nixpkgs.url` and `inputs.orca.url` . If so, we should upgrade to the lastest stable release.
+Check if there is any new stable release that is more recent than what is specified in the exploitation repository's [flake.nix](../../../flake.nix)'s `inputs.nixpkgs.url` and `inputs.orca.url` . If so, we should upgrade to the lastest stable release.
 
 Otherwise update the `flake.lock` to the most up-to-date packages by running:
 ```bash
@@ -72,7 +74,7 @@ Once changes have been performed, commit the modified files to the [repository](
 > [!Warning]  
 > This section should only be executed if there was any change in the set of keys in use. In all other cases, please skip to the next section.
 
-The 📢`organiser` asks all `share holders` (including 👥`team members`) to check that the [hardware token](https://eove.github.io/orca/unstable/hardware_tokens.html) they own has its [public key](https://eove.github.io/orca/unstable/gpg_public_key.html) recorded in the env-specific directory located under [`share_holders_keys/`] in this repository and if it needs to be updated or added, they should do it via a signed commit.
+The 📢`organiser` asks all `share holders` (including 👥`team members`) to check that the [hardware token](https://eove.github.io/orca/unstable/hardware_tokens.html) they own has its [public key](https://eove.github.io/orca/unstable/gpg_public_key.html) recorded in the env-specific directory located under [`share_holders_keys/`] in the exploitation repository and if it needs to be updated or added, they should do it via a signed commit.
 
 > [!Tip]  
 > Github automatically signs commits performed via the online Github web interface.
@@ -249,12 +251,12 @@ These 3 persons should be **physically present during the whole ceremony**, and 
    They must be sitting next to the 💻`operator`. Gets the validated ceremony workflow from the 💻`operator`, and validates that the ceremony is done *exactly* as documented.\
    Make sure that this computer has more than one USB port available:
    * one port to be used for the O.R.CA stick during the whole ceremony.
-   * one or more USB port that fits the USB format of the Yubikeys (USB-A, USB-C etc.).
+   * one or more USB port that fits the USB format of the hardware tokens (USB-A, USB-C etc.).
 
 > [!Warning]
-> At boot time, at boot time (and if possible during the whole ceremony), the only hardware that can be used is the hardware of the `observer` (👀).\
+> At boot time, and if possible during the whole ceremony, the only hardware that can be used is the hardware of the `observer` (👀).\
 > This means that if a USB adaptor, a hub or a external keyboard is necessary, it **must** be hardware owned by the `observer` (👀).\
-> If not, you may plug it only **after** the stick is successfully booted.
+> If not, you may plug it only **after** the `ephemeral vault` has successfully been booted from the stick.
 
 For the rest of the procedure below, you can consider references to 👥`team members` as a synonym for the group of the 3 roles above.
 
@@ -312,11 +314,11 @@ The sha256 checksum of the *N* verifiable bytes is (value of *Ciso*):
 The review of changes/content of the bootable live media has been performed by:
 the operator ................................................ PASS [] / FAIL []
 the reporter ................................................ PASS [] / FAIL []
-All changes are legitimate ....................... PASS [] / FAIL []
+All changes are legitimate ..........e....................... PASS [] / FAIL []
 
 A key rotation will be performed (Yes/No) : ...............
 
-Scripts that will be executed during the maintenance phase:
+Scripts that will be executed during the maintenance phase (content of `orca.actions_in_order`):
 ...............................................................................
 ...............................................................................
 ...............................................................................
@@ -442,7 +444,7 @@ Each maintenance script (key rotation, csr signature, CA creation, ...) will now
 <table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
 
 ```report
-All maintenance script has been executed successfully ....... PASS [] / FAIL []
+All maintenance script have been executed successfully ....... PASS [] / FAIL []
 ```
 
 </td></table>
@@ -473,7 +475,7 @@ While the *ephemeral vault* is sealed, we have access to the vault private data 
 
 This data needs to be backed-up to retain the last state of the offline vault.
 
-The script will create a tar archive of the data in the `VAULT_WRITABLE` partition.
+The ceremony workflow execution will create a tar archive of the data in the `VAULT_WRITABLE` partition.
 
 The value *C<sub>vault</sub>* is displayed on the *ephemeral vault*'s terminal, together with its graphical representation as a QR code. It is a checksum over the vault private data folder.\
 All 👥`team members` should keep a copy of this *C<sub>vault</sub>* value. It will be used to verify that the backup was not altered when extracted from the USB stick.
