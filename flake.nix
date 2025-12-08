@@ -94,6 +94,7 @@
             done
             sed -i s@github:eove/orca@github:eove/orca/$VERSION@g example/flake.nix
             sed -i s@github:eove/orca@github:eove/orca/$VERSION@g docs/README.md
+            sed -i "s@O.R.CA unstable@O.R.CA ''${VERSION}@g" example/README.md
             '';
           html-to-pdf = pkgs.writeShellScriptBin "html-to-pdf" ''
               if [ "$#" -lt 2 ]; then
