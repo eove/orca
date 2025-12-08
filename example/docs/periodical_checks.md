@@ -87,7 +87,7 @@ Where:
 * `firstname.lastname@email.com` is the email address of the owner of this hardware token
 * `serial` is the serial number of the hardware token (as displayed, for example using `gpg --card-status`)
 
-Once all relevant GPG keys have been renewed and their public key commited to the repository, a key rotation should be run in a ceremony for the offline vault. This is done by setting `rotate_keys` to `true` in [the orca config file](../../orca-config.nix).
+Once all relevant GPG keys have been renewed and their public key commited to the repository, a key rotation should be run in a ceremony for the offline vault. This is done by setting `rotate_keys` to `true` in the orca-config.nix file.
 
 An unseal share rotation should be run also on the online vault.
 
