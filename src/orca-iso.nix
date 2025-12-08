@@ -10,10 +10,12 @@
       imports = [
         "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
       ];
+      image = {
+        baseName = pkgs.lib.mkForce "orca-${config.orca.environment-target}";
+      };
       isoImage = {
         squashfsCompression = "gzip -Xcompression-level 1";
-        volumeID = "${config.isoImage.isoBaseName}";
-        isoBaseName = pkgs.lib.mkForce "orca-${config.orca.environment-target}";
+        volumeID = "${config.image.baseName}";
         makeEfiBootable = true;
         makeUsbBootable = true;
         appendToMenuLabel = "";
