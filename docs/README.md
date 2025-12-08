@@ -12,7 +12,7 @@ Make sure the [flakes](https://nix.dev/manual/nix/2.28/development/experimental-
 
 Then fetch a brand new template for your offline CA, by creating a new folder, and running the following commands inside this folder:
 ```shell
-nix flake init -t github:eove/orca --refresh
+nix flake init -t github:eove/orca/v0.3.0 --refresh
 git init .
 git add .
 git commit -m "Initialisation of our O.R.CA exploitation repository"
