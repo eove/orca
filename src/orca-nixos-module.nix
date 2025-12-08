@@ -164,11 +164,11 @@ If it should indeed be allowed to run as root, please double check them for secu
         };
 
         hardware.gpgSmartcards.enable = true;
-            services = {
-      pcscd = {
-        enable = true;
-      };
-    };
+        services = {
+          pcscd = {
+            enable = true;
+          };
+        };
 
         security = {
           # Don't require sudo/root to `reboot` or `poweroff`.
