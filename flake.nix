@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-    nixpkgsQemu.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgsQemu.url = "github:NixOS/nixpkgs/nixos-25.05"; # see https://github.com/eove/orca/issues/45
     flake-utils.url = "github:numtide/flake-utils";
   };
 
