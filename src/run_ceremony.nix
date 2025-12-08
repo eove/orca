@@ -20,7 +20,6 @@ let
     (if expect_initialized then "- Unseal the vault and get a root token" else "- Initialise the vault and get a root token")
     (if rotate_keys then ''- Rotate the vault keys
     '' else "")
-    (if has_actions then ''- Get a root token'' else "")
   ]
   ++ (builtins.map
     (script: ''- Run ${script.name} '')

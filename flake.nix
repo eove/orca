@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgsQemu.url = "github:NixOS/nixpkgs/nixos-25.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -95,14 +96,14 @@
             sed -i s@github:eove/orca@github:eove/orca/$VERSION@g example/flake.nix
             sed -i s@github:eove/orca@github:eove/orca/$VERSION@g docs/README.md
             sed -i "s@O.R.CA unstable@O.R.CA ''${VERSION}@g" example/README.md
-            '';
+          '';
           html-to-pdf = pkgs.writeShellScriptBin "html-to-pdf" ''
-              if [ "$#" -lt 2 ]; then
-                echo "Usage : $0 /path/to/input-file.html /path/to/output-file.pdf" >&2
-                exit -1
-              fi
-              ${pkgs.lib.getExe pkgs.html2pdf} -o "$2" --paper A4 "$1"
-            '';
+            if [ "$#" -lt 2 ]; then
+              echo "Usage : $0 /path/to/input-file.html /path/to/output-file.pdf" >&2
+              exit -1
+            fi
+            ${pkgs.lib.getExe pkgs.html2pdf} -o "$2" --paper A4 "$1"
+          '';
         };
         devShells = {
           default = pkgs.mkShell (

@@ -1,7 +1,7 @@
-{ nixpkgs, self, system, pkgs, ORCA_DISK_NAME, orca_config, ... }:
+{ nixpkgs, self, system, pkgs, ORCA_DISK_NAME, orca_config, nixpkgsQemu, ... }:
 
 let
-  vm-system = (nixpkgs.lib.nixosSystem
+  vm-system = (nixpkgsQemu.lib.nixosSystem
     {
       inherit system;
       modules = [
@@ -21,10 +21,10 @@ let
             };
             imports = [
               # We need to import that to make it work.
-              "${nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
+              "${nixpkgsQemu}/nixos/modules/virtualisation/qemu-vm.nix"
             ];
             config = {
-                assertions = [
+              assertions = [
                 {
                   assertion = config.orca.environment-target == "dev";
                   message = "O.R.CA vm can only be started in dev environment";
@@ -51,11 +51,13 @@ let
                 forwardPorts = [{ host.port = 2222; guest.port = 22; }];
                 qemu = {
                   options = [
-                    "-bios" "${pkgs.OVMF.fd}/FV/OVMF.fd"
-                    "-monitor" "unix:/tmp/orca-monitor-socket,server,nowait"
+                    "-bios"
+                    "${pkgs.OVMF.fd}/FV/OVMF.fd"
+                    "-monitor"
+                    "unix:/tmp/orca-monitor-socket,server,nowait"
                     ''-drive if=none,id=usbstick,format=raw,file=''${VAULT_WRITABLE_DISK},read-only=on''
-    "-device nec-usb-xhci,id=xhci"
-    "-device usb-storage,bus=xhci.0,drive=usbstick,id=vault_writable,removable=on"
+                    "-device nec-usb-xhci,id=xhci"
+                    "-device usb-storage,bus=xhci.0,drive=usbstick,id=vault_writable,removable=on"
                   ];
                 };
               };
