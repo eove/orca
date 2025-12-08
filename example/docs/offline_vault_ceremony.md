@@ -314,7 +314,7 @@ The sha256 checksum of the *N* verifiable bytes is (value of *Ciso*):
 The review of changes/content of the bootable live media has been performed by:
 the operator ................................................ PASS [] / FAIL []
 the reporter ................................................ PASS [] / FAIL []
-All changes are legitimate ..........e....................... PASS [] / FAIL []
+All changes are legitimate .................................. PASS [] / FAIL []
 
 A key rotation will be performed (Yes/No) : ...............
 
