@@ -1,7 +1,7 @@
-{ nixpkgs, self, system, pkgs, ORCA_DISK_NAME, orca_config, ... }:
+{ nixpkgs, self, system, pkgs, ORCA_DISK_NAME, orca_config,  nixpkgsQemu, ... }:
 
 let
-  vm-system = (nixpkgs.lib.nixosSystem
+  vm-system = (nixpkgsQemu.lib.nixosSystem
     {
       inherit system;
       modules = [
@@ -21,7 +21,7 @@ let
             };
             imports = [
               # We need to import that to make it work.
-              "${nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
+              "${nixpkgsQemu}/nixos/modules/virtualisation/qemu-vm.nix"
             ];
             config = {
                 assertions = [
