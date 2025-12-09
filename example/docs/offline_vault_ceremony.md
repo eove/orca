@@ -407,15 +407,11 @@ A message is printed on the screen indicating the stick can now be switched to *
 
 ### Checking boot-time verifications
 
-In order to be sure that offline private data has not been tampered with (or downgraded to an old state), at boot, we compute a cryptographically secure checksum on the vault private data *C<sub>vault</sub>*, that should match the *C<sub>vault</sub>* announced in the previous ceremony's report.
-
-After booting, that computed checksum is displayed on the screen, as well as the existing root token count (that should be 0) and the vault status.
+After booting, the existing root token count (that should be 0) and the vault status are displayed.
 
 <table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
 
 ```report
-The vault private data checksum displayed at boot (_Cvault_) matches the ......
-previous ceremony's backup sha256 checksum ................. PASS [] / FAIL* []
 0 token exists in the vault private data at startup ......... PASS [] / FAIL []
 The vault service status returns "Initialized" = true ...... PASS [] / FAIL* []
 The vault service status returns "Sealed" = true ............ PASS [] / FAIL []
