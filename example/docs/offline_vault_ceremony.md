@@ -414,9 +414,6 @@ The vault service status returns "Sealed" = true ............ PASS [] / FAIL []
 
 ### Unsealing the *ephemeral vault*
 
-> [!Warning]  
-> This section should not be executed at the first initialisation of the vault. In that case, please skip to the next section.
-
 The vault will be in sealed status.
 
 In order to unseal the vault, you will need to gather enough participants that have an unseal key share to reach the minimum quorum.
