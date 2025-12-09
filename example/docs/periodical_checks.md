@@ -335,7 +335,7 @@ If not, a new offline CA should be generated, the fix below should be applied.
 
 We will need a new device signing offline CA, which also probably implies that a new root offline CA should be created as well.
 You have two options there:
-- Either the current offline root CA can be rotated (see [https://developer.hashicorp.com/vault/tutorials/pki/pki-engine#step-7-rotate-root-ca](https://developer.hashicorp.com/vault/tutorials/pki/pki-engine#step-7-rotate-root-ca))\
+- Either the current offline root CA can be rotated (see [Vault's documentation](https://developer.hashicorp.com/vault/tutorials/pki/pki-engine#step-7-rotate-root-ca))\
   This requires writing scripts for this to be run on the offline *ephemeral vault*.
 - Or you can create a brand new offline root CA.\
   This would be a brand new start of the root CA and this means re-initializing a new vault, start from an empty backup etc.\
