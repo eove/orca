@@ -37,7 +37,9 @@
             if ! test -w ${VAULT_STORAGE_PATH}
             then
               cat << EOF
+
               You successfully booted O.R.CA for the ${config.orca.environment-target} environment in read-only mode.
+
         EOF
             else
 
