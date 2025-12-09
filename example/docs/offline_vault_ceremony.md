@@ -282,6 +282,11 @@ Reporter: .....................................................................
 Observer: .....................................................................
 These 3 roles are handled by 3 different people ............. PASS [] / FAIL []
 These 3 people are located in the same physical room ........ PASS [] / FAIL []
+Other participants and their role (share holder, observer, ...)
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
 
 Date of the ceremony:
 ...............................................................................
@@ -372,17 +377,12 @@ When booting *ephemeral vault*, a NixOS logo will appear with a boot menu mentio
 ```report
 The key with the vault iso image is set as read only ........ PASS [] / FAIL []
 
-The operator's machine:
-can select the key as boot device ........................... PASS [] / FAIL []
-can successfully complete boot on the readonly key .......... PASS [] / FAIL []
-
 While performing the USB stick content check on the operator's machine:
 the first partition is the only one marked as bootable ............... PASS [] / FAIL []
 the checksum *Ciso* is correct ....................................... PASS [] / FAIL []
-the computer has been powered off while the USB stick was still read-only .. PASS [] / FAIL []
 
-The key for the ephemeral vault is then set as read/write and the ephemeral ...
-vault is immediately booted ................................. PASS [] / FAIL []
+The operator's computer is successfully booted on the USB stick ...... PASS [] / FAIL []
+The USB stick stayed in read-only mode until then .................... PASS [] / FAIL []
 ```
 
 </td></table>
@@ -428,11 +428,7 @@ On the *ephemeral vault*, insert each `team member`'s hardware tokens one after 
 <table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
 
 ```report
-The offline vault has been unsealed ........................ PASS [] / FAIL* []
-Share holders that participated to the unseal process:
-...............................................................................
-...............................................................................
-...............................................................................
+The offline vault has been unsealed ........................ PASS [] / FAIL []
 ```
 
 </td></table>
