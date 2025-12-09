@@ -40,7 +40,7 @@ If a word used in this document is unknown to you, the [O.R.CA documentation con
 In order to execute the current document, you will need:
 * An initialised offline vault
 * An initialised and running online vault
-* To fulfill all the prerequisites to run an ceremony
+* To fulfill all the prerequisites to run a ceremony
 
 ## Recurrent checks
 

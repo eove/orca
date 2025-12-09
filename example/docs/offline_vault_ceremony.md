@@ -81,8 +81,18 @@ The 📢`organiser` asks all `share holders` (including 👥`team members`) to c
 
 > [!Tip]  
 > The public key can be checked with the corresponding hardware token plugged in and with the public key imported in gpg.\
-> For this, enter the following command:\
-> `echo "It works" | gpg -e -f /path/to/public/key.pub | gpg -d`
+> For this, enter the following commands with the correct path to the keys :
+```
+export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status | sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi') && echo "$GPG_HW_TOKEN_KEY_ID"
+export TMP_GPG_HOME=$(mktemp -d)
+cp ~/.gnupg/*.conf "$TMP_GPG_HOME"/
+##############
+# Configure the next line
+##############
+gpg --home="$TMP_GPG_HOME" --import /path/to/share_holders_keys/env/*
+gpg --home="$TMP_GPG_HOME" --list-keys --keyid-format LONG --with-colons | sed -n -e '/^pub/{n;p}' | sed -n -E 's/^fpr:([^:]*:){8}([^:]*).*$/\2:6:/p' | gpg --home="$TMP_GPG_HOME" --import-ownertrust
+echo "It works" | gpg --home="$TMP_GPG_HOME" -e -r "$GPG_HW_TOKEN_KEY_ID" | gpg -d
+```
 
 #### Setting up the trusted commit
 
@@ -257,6 +267,9 @@ These 3 persons should be **physically present during the whole ceremony**, and 
 > If not, you may plug it only **after** the `ephemeral vault` has successfully been booted from the stick.
 
 For the rest of the procedure below, you can consider references to 👥`team members` as a synonym for the group of the 3 roles above.
+
+> [!Warning]
+> The 👀`observer` will have to access the keyboard to give sudo access during the checks. The other 👥`team members` should be able to keep an eye on the USB stick while not seeing the keyboard at that moment.
 
 > [!Important]  
 > In the report below, and only when initializing the vault the first time, a few `FAIL`ed items are expected.\
