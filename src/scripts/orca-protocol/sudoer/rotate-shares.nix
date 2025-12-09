@@ -10,7 +10,7 @@ in
 
   THRESHOLD=3
 
-  PUBLIC_KEYS_FILES=$(find ${PUBLIC_KEYS_FOLDER} -type f | grep -v '\.gitignore')
+  PUBLIC_KEYS_FILES=$(find ${PUBLIC_KEYS_FOLDER} -type f | grep -v '\.git.*')
   PUBLIC_KEYS=$(echo -e $PUBLIC_KEYS_FILES | tr ' ' ',')
   NB_SHARES=$(ls "${PUBLIC_KEYS_FOLDER}" | wc -l)
 
