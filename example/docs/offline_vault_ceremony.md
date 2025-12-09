@@ -368,7 +368,7 @@ sudo fdisk -l /dev/sda &&\
 
 If the checksum *C<sub>iso</sub>* is correct and only the first partition is bootable:
 - Power off the 👀`observer`'s computer.
-- The 👀`observer`'s computer is rebooted once more on the USB stick.
+- The 👀`observer`'s computer is booted on the USB stick.
 
 When booting *ephemeral vault*, a NixOS logo will appear with a boot menu mentionning `O.R.CA xxxx`.
 
