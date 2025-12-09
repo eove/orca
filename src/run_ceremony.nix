@@ -84,9 +84,9 @@ let
 
         cat << EOF
 
-      Here is the ceremony plan :
-      ${plan}
-    EOF
+Here is the ceremony plan :
+${plan}
+EOF
 
       confirm
   

@@ -27,6 +27,8 @@
         EOF
               read -s
               poweroff
+            else
+              echo "A Cvault of ${latest_cvault} was found. Everything is fine, we can continue the ceremony"
             fi
             '' else ''
             echo "This is the first time O.R.CA is started so no Cvault needs to be checked"
@@ -35,7 +37,9 @@
             if ! test -w ${VAULT_STORAGE_PATH}
             then
               cat << EOF
+
               You successfully booted O.R.CA for the ${config.orca.environment-target} environment in read-only mode.
+
         EOF
             else
 
