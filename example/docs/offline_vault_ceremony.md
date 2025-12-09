@@ -50,11 +50,11 @@ The 📢`organiser` should communicate to all 👥`team members` the list of ope
 
 #### Configuring the ceremony
 
-The 📢`organiser` should know which environment will be worked on (`prod`/`preprod`), modify the value of `orca.environment-target` in orca-config.nix accordingly, and notify this environment to all 👥`team members`.
+The 📢`organiser` should know which environment will be worked on (`prod`/`preprod`), modify the value of `environment-target` in orca-config.nix accordingly, and notify this environment to all 👥`team members`.
 
-The 📢`organiser` should get the value of the *C<sub>vault</sub>* present in the last report and set the value of `orca.latest_cvault` in orca-config.nix accordingly. If the ceremony is the first one for this environment, then `null` should be set. It is recommended that the 📢`organiser` verifies the validity of the report in the same way the 👥`team members` [will do during the verification phase](#verification-of-the-last-ceremonys-report).
+The 📢`organiser` should get the value of the *C<sub>vault</sub>* present in the last report and set the value of `latest_cvault` in orca-config.nix accordingly. If the ceremony is the first one for this environment, then `null` should be set. It is recommended that the 📢`organiser` verifies the validity of the report in the same way the 👥`team members` [will do during the verification phase](#verification-of-the-last-ceremonys-report).
 
-The 📢`organiser` should know what will be done during the ceremony and set the values of `orca.actions_in_order` and `orca.rotate_keys` in orca-config.nix accordingly.
+The 📢`organiser` should know what will be done during the ceremony and set the values of `actions_in_order` and `rotate_keys` in orca-config.nix accordingly.
 
 #### Updating the version of the offline vault
 
@@ -143,7 +143,7 @@ git diff <previous ceremony trusted commit>
 > * Any change displayed by the diff should be considered legitimate to you.
 > * During this step, 👥`team members` will also review and understand all the scripts that are planned for execution during the ceremony.
 > * Scripts should never ask the offline topmost root CA to sign anything that doesn't strictly remains in the offline vault (no external CSR).
-> * If the offline CA is signing a CSR from a third party (for example online) CA, the authenticity of the CSR file should be checked. Please consult your online PKI documentation to know how to authentify the emitter of the CSR.
+> * If the offline CA is signing a CSR from a third party (for example online) CA, the authenticity of the CSR file should be checked. Please consult your online PKI documentation to know how to authenticate the emitter of the CSR.
 
 Once all 👥`team members` have validated the new ✅`trusted commit`, each of them will gather some fingerprinting data concerning the bootable media that will be used during the ceremony:
 
@@ -243,7 +243,7 @@ These 3 persons should be **physically present during the whole ceremony**, and 
 
 > [!Tip]
 > To extract these sections from the html version of the ceremony's workflow, use the following filter:\
->  `cat /path/to/ceremory_workflow.html | sed -e 's|<\([/]\)*code class="language-report">|\n<\1\@ORCA\@report\@>\n|g' | sed -n -e '/<\@ORCA\@report\@>/,/<\/\@ORCA\@report\@>/{s/<[/]*\@ORCA\@report\@>//;p}' | sed -e '$a\@GPG\@SIGNATURES\@' | tee /tmp/blank_report.txt`
+>  `cat /path/to/ceremory_workflow.html | sed -e 's|<\([/]\)*code class="language-report">|\n<\1\@ORCA\@report\@>\n|g' | sed -n -e '/<\@ORCA\@report\@>/,/<\/\@ORCA\@report\@>/{s/<[/]*\@ORCA\@report\@>//;p}' | tee /tmp/blank_report.txt`
 
 3. The third role is the `observer` (👀).\
    This person should be [randomly](https://www.random.org/lists/) picked among all share holders except the two other 👥`team members`. The random draw will be performed by either the 💻`operator` or 📝`reporter`.\
@@ -282,6 +282,11 @@ Reporter: .....................................................................
 Observer: .....................................................................
 These 3 roles are handled by 3 different people ............. PASS [] / FAIL []
 These 3 people are located in the same physical room ........ PASS [] / FAIL []
+Other participants and their role (share holder, observer, ...)
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
 
 Date of the ceremony:
 ...............................................................................
@@ -318,7 +323,7 @@ All changes are legitimate .................................. PASS [] / FAIL []
 
 A key rotation will be performed (Yes/No) : ...............
 
-Scripts that will be executed during the maintenance phase (content of `orca.actions_in_order`):
+Scripts that will be executed during the maintenance phase (content of `actions_in_order` in orca-config.nix):
 ...............................................................................
 ...............................................................................
 ...............................................................................
@@ -363,7 +368,7 @@ sudo fdisk -l /dev/sda &&\
 
 If the checksum *C<sub>iso</sub>* is correct and only the first partition is bootable:
 - Power off the 👀`observer`'s computer.
-- The 👀`observer`'s computer is rebooted once more on the USB stick.
+- The 👀`observer`'s computer is booted on the USB stick.
 
 When booting *ephemeral vault*, a NixOS logo will appear with a boot menu mentionning `O.R.CA xxxx`.
 
@@ -372,17 +377,12 @@ When booting *ephemeral vault*, a NixOS logo will appear with a boot menu mentio
 ```report
 The key with the vault iso image is set as read only ........ PASS [] / FAIL []
 
-The operator's machine:
-can select the key as boot device ........................... PASS [] / FAIL []
-can successfully complete boot on the readonly key .......... PASS [] / FAIL []
-
 While performing the USB stick content check on the operator's machine:
 the first partition is the only one marked as bootable ............... PASS [] / FAIL []
 the checksum *Ciso* is correct ....................................... PASS [] / FAIL []
-the computer has been powered off while the USB stick was still read-only .. PASS [] / FAIL []
 
-The key for the ephemeral vault is then set as read/write and the ephemeral ...
-vault is immediately booted ................................. PASS [] / FAIL []
+The operator's computer is successfully booted on the USB stick ...... PASS [] / FAIL []
+The USB stick stayed in read-only mode until then .................... PASS [] / FAIL []
 ```
 
 </td></table>
@@ -414,9 +414,6 @@ The vault service status returns "Sealed" = true ............ PASS [] / FAIL []
 
 ### Unsealing the *ephemeral vault*
 
-> [!Warning]  
-> This section should not be executed at the first initialisation of the vault. In that case, please skip to the next section.
-
 The vault will be in sealed status.
 
 In order to unseal the vault, you will need to gather enough participants that have an unseal key share to reach the minimum quorum.
@@ -428,11 +425,7 @@ On the *ephemeral vault*, insert each `team member`'s hardware tokens one after 
 <table width=100% style="border:2px dotted dodgerblue;"><td style="padding:0;">
 
 ```report
-The offline vault has been unsealed ........................ PASS [] / FAIL* []
-Share holders that participated to the unseal process:
-...............................................................................
-...............................................................................
-...............................................................................
+The offline vault has been unsealed ........................ PASS [] / FAIL []
 ```
 
 </td></table>

@@ -91,7 +91,7 @@ Once all relevant GPG keys have been renewed and their public key commited to th
 
 An unseal share rotation should be run also on the online vault.
 
-### Every share holder have and can use the unseal share they own
+### Every share holder have and can use their hardware token's GPG key
 
 Every share holder should have a hardware token and should have a GPG public key registered in the folder `share_holders/`
 These hardware token's GPG keys' details should match their owner's name and e-mail address at the company.
@@ -152,7 +152,7 @@ The GPG keypair should be generated on the hardware token of concern, keeping in
 
 The process is detailed in [O.R.CA's documentation](https://eove.github.io/orca/unstable/hardware_tokens.html).
 
-Once a new keypair has been set up on the hardware token, extract your public key and update the env-specific directory located under folder `share_holders_keys/` in this repository.
+Once a new keypair has been set up on the hardware token, extract your public key and update the env-specific directory located under folder `share_holders_keys/` in the exploitation repository.
 
 Finally, force an unseal share rotation by running a ceremony with `rotate_keys` set to `true`.
 
@@ -205,7 +205,7 @@ Embed the CSR content inside the `actions/sign-csr.sh` script, add the script to
 
 This CSR content (PEM-formatted file) will be reviewed during the verification phase of the ceremony workflow.
 
-Finally, on the offline vault, organise an ceremony to execute the updated sign-csr script. The organiser should also direct all team members to the instructions below. Indeed, these provide step-by-step instructions on how to make sure the CSR comes from the online vault.
+Finally, on the offline vault, organise a ceremony to execute the updated sign-csr script. The organiser should also direct all team members to the instructions below. Indeed, these provide step-by-step instructions on how to make sure the CSR comes from the online vault.
 
 > [!Note]  
 > Because the online vault has been configured to only generate internal CSR (the associated private key never leaves the vault), we are sure that if the CSR is coming from the online vault, then only that vault can use it and is seen as trusted by the offline vault.
@@ -335,7 +335,7 @@ If not, a new offline CA should be generated, the fix below should be applied.
 
 We will need a new device signing offline CA, which also probably implies that a new root offline CA should be created as well.
 You have two options there:
-- Either the current offline root CA can be rotated (see https://developer.hashicorp.com/vault/tutorials/pki/pki-engine#step-7-rotate-root-ca)\
+- Either the current offline root CA can be rotated (see [Vault's documentation](https://developer.hashicorp.com/vault/tutorials/pki/pki-engine#step-7-rotate-root-ca))\
   This requires writing scripts for this to be run on the offline *ephemeral vault*.
 - Or you can create a brand new offline root CA.\
   This would be a brand new start of the root CA and this means re-initializing a new vault, start from an empty backup etc.\
