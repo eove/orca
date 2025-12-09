@@ -3,23 +3,23 @@
 In this document, we will explain how to work with the Public-Key Infrastructure (PKI).
 
 > [!Warning]
-> This PKI has been built using [O.R.CA](https://github.com/eove/orca) so you should also read  [O.R.CA's documentation](https://eove.github.io/orca/unstable) before you start customizing the PKI or exploiting it.
+> This PKI has been built using [O.R.CA](https://github.com/eove/orca) so you should also read  [O.R.CA's documentation](https://eove.github.io/orca/v0.7.0) before you start customizing the PKI or exploiting it.
 
 The scripts in the `actions` folder can be embedded during a ceremony by adding them to `actions_in_order` in the `orca-config.nix` file.
 We can create our own `actions` scripts or use [the templates given by `O.R.CA`](https://github.com/eove/orca/tree/main/example/actions).
 
-Scripts should be [tested in a VM](https://eove.github.io/orca/unstable/testing/index.html) before being used during a ceremony.
+Scripts should be [tested in a VM](https://eove.github.io/orca/v0.7.0/testing/index.html) before being used during a ceremony.
 
-During a ceremony, we must follow a [one-page exploitation workflow](https://eove.github.io/orca/unstable/document_generation.html) that is present in this repository.
+During a ceremony, we must follow a [one-page exploitation workflow](https://eove.github.io/orca/v0.7.0/document_generation.html) that is present in this repository.
 
 The available exploitation workflows are:
  - [Using the Offline PKI](./offline_vault_ceremony.md)
  - [Periodical checks of the PKI](./periodical_checks.md)
 
 > [!Tip]
-> The first thing to do, after reading [O.R.CA's documentation](https://eove.github.io/orca/unstable), is probably to [initialise the PKI](https://eove.github.io/orca/unstable/pki_init.html)
+> The first thing to do, after reading [O.R.CA's documentation](https://eove.github.io/orca/v0.7.0), is probably to [initialise the PKI](https://eove.github.io/orca/v0.7.0/pki_init.html)
 
 > [!Important]
-> If a CA is compromised you should [revoke it](https://eove.github.io/orca/unstable/revocation.html) as soon as possible during a [ceremony](./offline_vault_ceremony.md).
+> If a CA is compromised you should [revoke it](https://eove.github.io/orca/v0.7.0/revocation.html) as soon as possible during a [ceremony](./offline_vault_ceremony.md).
 
-In case you encounter a term that you do not understand, please refer to [the O.R.CA documentation's glossary](https://eove.github.io/orca/unstable/glossary.html)
+In case you encounter a term that you do not understand, please refer to [the O.R.CA documentation's glossary](https://eove.github.io/orca/v0.7.0/glossary.html)
