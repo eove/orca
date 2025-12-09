@@ -81,8 +81,18 @@ The 📢`organiser` asks all `share holders` (including 👥`team members`) to c
 
 > [!Tip]  
 > The public key can be checked with the corresponding hardware token plugged in and with the public key imported in gpg.\
-> For this, enter the following command:\
-> `echo "It works" | gpg -e -f /path/to/public/key.pub | gpg -d`
+> For this, enter the following commands with the correct path to the keys :
+```
+export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status | sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi') && echo "$GPG_HW_TOKEN_KEY_ID"
+export TMP_GPG_HOME=$(mktemp -d)
+cp ~/.gnupg/*.conf "$TMP_GPG_HOME"/
+##############
+# Configure the next line
+##############
+gpg --home="$TMP_GPG_HOME" --import /path/to/share_holders_keys/env/*
+gpg --home="$TMP_GPG_HOME" --list-keys --keyid-format LONG --with-colons | sed -n -e '/^pub/{n;p}' | sed -n -E 's/^fpr:([^:]*:){8}([^:]*).*$/\2:6:/p' | gpg --home="$TMP_GPG_HOME" --import-ownertrust
+echo "It works" | gpg --home="$TMP_GPG_HOME" -e -r "$GPG_HW_TOKEN_KEY_ID" | gpg -d
+```
 
 #### Setting up the trusted commit
 
@@ -111,9 +121,7 @@ Get the last report for the corresponding environment and verify the signatures 
 A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable/signing_and_verifying.html)
 
 > [!Warning]  
-> All signatures should be valid. The check above should be valid for at least the 3 👥`team members` of the previous ceremony.
->
-> Only **one** invalid/missing signature is enough to **stop the ceremony**. In such a case, the issue should be analysed.
+> **Any** invalid/missing/incomplete signature is enough to **stop the ceremony**. In such a case, the issue should be analysed.
 
 Once all signatures has been verified, to get ready for subsequent steps, extract from the `previous ceremony report`:
  - the `trusted commit` that was used back then (that we will refer to as `previous trusted commit`)
@@ -243,7 +251,7 @@ These 3 persons should be **physically present during the whole ceremony**, and 
 
 > [!Tip]
 > To extract these sections from the html version of the ceremony's workflow, use the following filter:\
->  `cat /path/to/ceremory_workflow.html | sed -e 's|<\([/]\)*code class="language-report">|\n<\1\@ORCA\@report\@>\n|g' | sed -n -e '/<\@ORCA\@report\@>/,/<\/\@ORCA\@report\@>/{s/<[/]*\@ORCA\@report\@>//;p}' | tee /tmp/blank_report.txt`
+>  `cat /path/to/ceremony_workflow.html | sed -e 's|<\([/]\)*code class="language-report">|\n<\1\@ORCA\@report\@>\n|g' | sed -n -e '/<\@ORCA\@report\@>/,/<\/\@ORCA\@report\@>/{s/<[/]*\@ORCA\@report\@>//;p}' | tee /tmp/blank_report.txt`
 
 3. The third role is the `observer` (👀).\
    This person should be [randomly](https://www.random.org/lists/) picked among all share holders except the two other 👥`team members`. The random draw will be performed by either the 💻`operator` or 📝`reporter`.\
@@ -259,6 +267,9 @@ These 3 persons should be **physically present during the whole ceremony**, and 
 > If not, you may plug it only **after** the `ephemeral vault` has successfully been booted from the stick.
 
 For the rest of the procedure below, you can consider references to 👥`team members` as a synonym for the group of the 3 roles above.
+
+> [!Warning]
+> The 👀`observer` will have to access the keyboard to give sudo access during the checks. The other 👥`team members` should be able to keep an eye on the USB stick while not seeing the keyboard at that moment.
 
 > [!Important]  
 > In the report below, and only when initializing the vault the first time, a few `FAIL`ed items are expected.\

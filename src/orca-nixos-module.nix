@@ -98,6 +98,16 @@
             type = types.ints.positive;
             default = 3;
           };
+          xkb = {
+            layout = mkOption {
+              type = types.str;
+              default = "us";
+            };
+            variant = mkOption {
+              type = types.str;
+              default = "";
+            };
+          };
           actions_folder = mkOption {
             type = types.path;
           };
@@ -225,11 +235,9 @@ If it should indeed be allowed to run as root, please double check them for secu
             autologinUser = orca_user.name;
             autologinOnce = true;
           };
-          xserver.xkb = {
-            layout = "fr,fr,us";
-            variant = "oss,bepo,";
+          xserver.xkb = config.orca.xkb // ({
             options = "grp:menu_toggle";
-          };
+          });
           # Configure vault
           vault = {
             enable = true;
