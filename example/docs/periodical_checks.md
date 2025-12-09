@@ -91,7 +91,7 @@ Once all relevant GPG keys have been renewed and their public key commited to th
 
 An unseal share rotation should be run also on the online vault.
 
-### Every share holder have and can use the unseal share they own
+### Every share holder have and can use their hardware token's GPG key
 
 Every share holder should have a hardware token and should have a GPG public key registered in the folder `share_holders/`
 These hardware token's GPG keys' details should match their owner's name and e-mail address at the company.
@@ -152,7 +152,7 @@ The GPG keypair should be generated on the hardware token of concern, keeping in
 
 The process is detailed in [O.R.CA's documentation](https://eove.github.io/orca/unstable/hardware_tokens.html).
 
-Once a new keypair has been set up on the hardware token, extract your public key and update the env-specific directory located under folder `share_holders_keys/` in this repository.
+Once a new keypair has been set up on the hardware token, extract your public key and update the env-specific directory located under folder `share_holders_keys/` in the exploitation repository.
 
 Finally, force an unseal share rotation by running a ceremony with `rotate_keys` set to `true`.
 
