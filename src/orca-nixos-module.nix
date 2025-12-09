@@ -94,6 +94,10 @@
           rotate_keys = mkOption {
             type = types.bool;
           };
+          keys_threshold = mkOption {
+            type = types.ints.positive;
+            default = 3;
+          };
           actions_folder = mkOption {
             type = types.path;
           };

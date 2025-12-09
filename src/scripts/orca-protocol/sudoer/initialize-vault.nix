@@ -6,7 +6,7 @@ let
 in
 ''
   set -e
-  THRESHOLD=3
+  THRESHOLD=${builtins.toString config.orca.keys_threshold}
 
   PUBLIC_KEYS_FILES=$(find ${PUBLIC_KEYS_FOLDER} -type f | grep -v '\.git.*')
   PUBLIC_KEYS=$(echo -e $PUBLIC_KEYS_FILES | tr ' ' ',')
