@@ -205,7 +205,7 @@ Embed the CSR content inside the `actions/sign-csr.sh` script, add the script to
 
 This CSR content (PEM-formatted file) will be reviewed during the verification phase of the ceremony workflow.
 
-Finally, on the offline vault, organise an ceremony to execute the updated sign-csr script. The organiser should also direct all team members to the instructions below. Indeed, these provide step-by-step instructions on how to make sure the CSR comes from the online vault.
+Finally, on the offline vault, organise a ceremony to execute the updated sign-csr script. The organiser should also direct all team members to the instructions below. Indeed, these provide step-by-step instructions on how to make sure the CSR comes from the online vault.
 
 > [!Note]  
 > Because the online vault has been configured to only generate internal CSR (the associated private key never leaves the vault), we are sure that if the CSR is coming from the online vault, then only that vault can use it and is seen as trusted by the offline vault.
@@ -335,7 +335,7 @@ If not, a new offline CA should be generated, the fix below should be applied.
 
 We will need a new device signing offline CA, which also probably implies that a new root offline CA should be created as well.
 You have two options there:
-- Either the current offline root CA can be rotated (see https://developer.hashicorp.com/vault/tutorials/pki/pki-engine#step-7-rotate-root-ca)\
+- Either the current offline root CA can be rotated (see [https://developer.hashicorp.com/vault/tutorials/pki/pki-engine#step-7-rotate-root-ca](https://developer.hashicorp.com/vault/tutorials/pki/pki-engine#step-7-rotate-root-ca))\
   This requires writing scripts for this to be run on the offline *ephemeral vault*.
 - Or you can create a brand new offline root CA.\
   This would be a brand new start of the root CA and this means re-initializing a new vault, start from an empty backup etc.\

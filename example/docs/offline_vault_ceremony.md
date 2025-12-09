@@ -143,7 +143,7 @@ git diff <previous ceremony trusted commit>
 > * Any change displayed by the diff should be considered legitimate to you.
 > * During this step, 👥`team members` will also review and understand all the scripts that are planned for execution during the ceremony.
 > * Scripts should never ask the offline topmost root CA to sign anything that doesn't strictly remains in the offline vault (no external CSR).
-> * If the offline CA is signing a CSR from a third party (for example online) CA, the authenticity of the CSR file should be checked. Please consult your online PKI documentation to know how to authentify the emitter of the CSR.
+> * If the offline CA is signing a CSR from a third party (for example online) CA, the authenticity of the CSR file should be checked. Please consult your online PKI documentation to know how to authenticate the emitter of the CSR.
 
 Once all 👥`team members` have validated the new ✅`trusted commit`, each of them will gather some fingerprinting data concerning the bootable media that will be used during the ceremony:
 
