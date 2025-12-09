@@ -243,7 +243,7 @@ These 3 persons should be **physically present during the whole ceremony**, and 
 
 > [!Tip]
 > To extract these sections from the html version of the ceremony's workflow, use the following filter:\
->  `cat /path/to/ceremory_workflow.html | sed -e 's|<\([/]\)*code class="language-report">|\n<\1\@ORCA\@report\@>\n|g' | sed -n -e '/<\@ORCA\@report\@>/,/<\/\@ORCA\@report\@>/{s/<[/]*\@ORCA\@report\@>//;p}' | tee /tmp/blank_report.txt`
+>  `cat /path/to/ceremony_workflow.html | sed -e 's|<\([/]\)*code class="language-report">|\n<\1\@ORCA\@report\@>\n|g' | sed -n -e '/<\@ORCA\@report\@>/,/<\/\@ORCA\@report\@>/{s/<[/]*\@ORCA\@report\@>//;p}' | tee /tmp/blank_report.txt`
 
 3. The third role is the `observer` (👀).\
    This person should be [randomly](https://www.random.org/lists/) picked among all share holders except the two other 👥`team members`. The random draw will be performed by either the 💻`operator` or 📝`reporter`.\
