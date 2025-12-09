@@ -13,4 +13,8 @@
   vm = {
     root_public_key = ./root_key.pub;
   };
+  xkb = {
+    layout = "fr,fr,us";
+    variant = "oss,bepo,";
+  };
 }
