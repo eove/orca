@@ -4,7 +4,7 @@
 
 O.R.CA is an Offline Root Certificate Authority.
 
-The documentation is present in the `docs` folder as markdown files and [automatically rendered online](https://eove.github.io/orca/unstable).
+The documentation is present in the `docs` folder as markdown files and [automatically rendered online](https://eove.github.io/orca/v1.0.0).
 If you are looking for a specific version of the documentation please see [the list of all versions](https://eove.github.io/orca)
 
 You can open it locally in a web browser on your machine by running the following command:

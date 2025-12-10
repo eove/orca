@@ -7,9 +7,9 @@ Document created from repository [@ORCA@gitremote@](@ORCA@gitremote@) at commit 
 ## Verifying this document
 
 Please follow your organisation's way of verifying a document to make sure this document has not been tampered with.
-A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable/signing_and_verifying.html)
+A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/v1.0.0/signing_and_verifying.html)
 
-Once this document is verified, for easier copy/paste of commands in this document, we recommend to use a [HTML version of this workflow](https://eove.github.io/orca/unstable/document_generation.html), generated at the above commit.
+Once this document is verified, for easier copy/paste of commands in this document, we recommend to use a [HTML version of this workflow](https://eove.github.io/orca/v1.0.0/document_generation.html), generated at the above commit.
 
 ## Introduction
 
@@ -17,7 +17,7 @@ This document explains how to use the Offline Root CA from preparing the ceremon
 That event is called a *ceremony*.
 
 
-In case you encounter a term that you do not understand, please refer to [the O.R.CA documentation's glossary](https://eove.github.io/orca/unstable/glossary.html)
+In case you encounter a term that you do not understand, please refer to [the O.R.CA documentation's glossary](https://eove.github.io/orca/v1.0.0/glossary.html)
 
 ## Overview
 
@@ -74,7 +74,7 @@ Once changes have been performed, commit the modified files to the [repository](
 > [!Warning]  
 > This section should only be executed if there was any change in the set of keys in use. In all other cases, please skip to the next section.
 
-The 📢`organiser` asks all `share holders` (including 👥`team members`) to check that the [hardware token](https://eove.github.io/orca/unstable/hardware_tokens.html) they own has its [public key](https://eove.github.io/orca/unstable/gpg_public_key.html) recorded in the env-specific directory located under [`share_holders_keys/`] in the exploitation repository and if it needs to be updated or added, they should do it via a signed commit.
+The 📢`organiser` asks all `share holders` (including 👥`team members`) to check that the [hardware token](https://eove.github.io/orca/v1.0.0/hardware_tokens.html) they own has its [public key](https://eove.github.io/orca/v1.0.0/gpg_public_key.html) recorded in the env-specific directory located under [`share_holders_keys/`] in the exploitation repository and if it needs to be updated or added, they should do it via a signed commit.
 
 > [!Tip]  
 > Github automatically signs commits performed via the online Github web interface.
@@ -118,7 +118,7 @@ First, we will verify the report of the last ceremony.
 This step *must* be performed by all 👥`team members` *before* the day of the ceremony
 
 Get the last report for the corresponding environment and verify the signatures following your organisation's way of verifying a document.
-A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable/signing_and_verifying.html)
+A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/v1.0.0/signing_and_verifying.html)
 
 > [!Warning]  
 > **Any** invalid/missing/incomplete signature is enough to **stop the ceremony**. In such a case, the issue should be analysed.
@@ -537,6 +537,6 @@ Before signing the report, please verify its content, specifically:
 - name the report to contain the date of the ceremony, for example: *ceremony-report-preprod-2025-03-17*
 
 The 📝`reporter`, 💻`operator`, and 👀`observer` will all sign the report by following your organisation's way of signing documents.
-A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/unstable/signing_and_verifying.html)
+A gpg-based one can be found in [the O.R.CA documentation](https://eove.github.io/orca/v1.0.0/signing_and_verifying.html)
 
 All 👥`team members` should now get a copy of the signed report and perform a check of all signatures using [the same process as when checking the last ceremony's report](#verification-of-the-last-ceremonys-report).

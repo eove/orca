@@ -1,6 +1,6 @@
 # Exploitation repository for [O.R.CA](https://github.com/eove/orca)
 
-This repository uses [O.R.CA unstable](https://eove.github.io/orca/unstable) as written in the [flake.nix](./flake.nix) file
+This repository uses [O.R.CA v1.0.0](https://eove.github.io/orca/v1.0.0) as written in the [flake.nix](./flake.nix) file
 
 The documentation is present in the `docs` folder as markdown files.
 
