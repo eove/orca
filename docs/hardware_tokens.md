@@ -27,9 +27,12 @@ sudo systemctl status pcscd
 
 If not, please (re)start it:
 ```bash
-sudo systemctl restart pcscd
-pkill gpg-agent
+sudo systemctl restart pcscd;sleep 1;pkill gpg-agent
 ```
+
+> [!Warning]  
+> You may have to go through the above one-liner restart command when PIN codes are mistaken or when an error occurs.\
+> One symptom for the need to go through a restart is the following error message: `gpg: error getting current key info: Card error`
 
 If you get an error `gpg: selecting card failed: No such device` and/or `gpg: OpenPGP card not available: No such device`, edit or create a gpg config file in `~/.gnupg/scdaemon.conf` and insert the following content
 ```
@@ -59,19 +62,19 @@ Reset the hardware token (see [below](#handling-pin-locks)) if necessary.
 
 Then change the user PIN:
 ```
-passwd
+gpg/card> passwd
 ```
 
 And set a new user PIN (by directly typing the old PIN then the new PIN, or if the old PIN is unknown, by typing `admin` first, then selecting option 1 when the option list is displayed)
 
 Switch to admin mode by typing (at the gpg prompt):
 ```
-admin
+gpg/card> admin
 ```
 
 Then change the admin PIN:
 ```
-passwd
+gpg/card> passwd
 ```
 
 And set a new admin PIN with option 3.
@@ -90,27 +93,76 @@ Enter the "card edit" command line tool:
 gpg --card-edit
 ```
 
-From the card edit prompt, here is a trace of commands & answers to run:
+From the card edit prompt, here is a trace of commands & answers needed in order to select the correct crypto algorithms:
 ```
-admin
-key-attr
+gpg/card> admin
+Admin commands are allowed
+gpg/card> key-attr
+Changing card key attribute for: Signature key
+Please select what kind of key you want:
+   (1) RSA
+   (2) ECC
+Your selection? 2
 (2) ECC
 (1) Curve 25519
-# Enter the admin PIN
-(2) ECC
-(1) Curve 25519
-# Enter the admin PIN
-(2) ECC
-(1) Curve 25519
-# Enter the admin PIN
-generate
-N
+Please select which elliptic curve you want:
+   (1) Curve 25519 *default*
+   (4) NIST P-384
+   (6) Brainpool P-256
+Your selection? 1
+# You should enter your key's admin PIN here...
+The card will now be re-configured to generate a key of type: ed25519
+Note: There is no guarantee that the card supports the requested
+      key type or size.  If the key generation does not succeed,
+      please check the documentation of your card to see which
+      key types and sizes are supported.
+Changing card key attribute for: Encryption key
+Please select what kind of key you want:
+   (1) RSA
+   (2) ECC
+Your selection? 2
+Please select which elliptic curve you want:
+   (1) Curve 25519 *default*
+   (4) NIST P-384
+   (6) Brainpool P-256
+Your selection? 1
+# You should enter your key's admin PIN here...
+The card will now be re-configured to generate a key of type: cv25519
+Changing card key attribute for: Authentication key
+Please select what kind of key you want:
+   (1) RSA
+   (2) ECC
+Your selection? 2
+Please select which elliptic curve you want:
+   (1) Curve 25519 *default*
+   (4) NIST P-384
+   (6) Brainpool P-256
+Your selection? 1
+# You should enter your key's admin PIN here...
+The card will now be re-configured to generate a key of type: ed25519
+```
+
+We can now generate the new keys:
+```bash
+gpg --card-edit
+```
+
+In the output of the aboev command, you will notice that the key attributes are now listed as `ed25519 cv25519 ed25519`.
+
+```
+gpg/card> admin
+Admin commands are allowed
+gpg/card> generate
+Make off-card backup of encryption key? (Y/n) n
 # Enter the user PIN
+Key is valid for?
 # Enter the validity (see the recommendations in the periodical check workflow, you can also use the tip below to ease the calculation)
+Key expires at ...
+Is this correct? (y/N) y
 # Enter your identity name `Firstname Lastname`
 # Enter your Email address
-# Enter a comment, for example `Hardware token`, important when you have multiple GPG keys linked to the same email
-# Enter the admin PIN+user PIN as many times as required
+# Enter a comment, for example `Hardware token xyz`, important when you have multiple GPG keys linked to the same email
+# Enter the admin PIN+user PIN as many times as required (the title of the message should specify "Admin" when you have to use your admin PIN)
 quit
 ```
 
@@ -137,7 +189,7 @@ gpg --card-status
 In the last section, you will find the signature key's long ID (multiple 4 digit hexadecimal values separated with spaces), taken from the token internal data.
 Because gpg knows about this key, the last digits of the key (short ID) will also be displayed in the `General key info..` section, following a `pub ed25519/` header.
 
-Store the hardware token's GPG key ID in a `GPG_HW_TOKEN_KEY_IDY_ID` environment variable:
+Store the hardware token's GPG key ID in a `GPG_HW_TOKEN_KEY_IDY_ID` environment variable, while your hardware token is plugged into your computer:
 ```bash
 export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status | sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi') && echo "$GPG_HW_TOKEN_KEY_ID"
 ```
