@@ -265,9 +265,16 @@ In this page, when we use admin/user PIN code, we thus refer to the OpenPGP ones
 <pre><code class="language-bash">sudo systemctl status pcscd
 </code></pre>
 <p>If not, please (re)start it:</p>
-<pre><code class="language-bash">sudo systemctl restart pcscd
-pkill gpg-agent
+<pre><code class="language-bash">sudo systemctl restart pcscd;sleep 1;pkill gpg-agent
 </code></pre>
+<div class="mdbook-alerts mdbook-alerts-warning">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  warning
+</p>
+<p>You may have to go through the above one-liner restart command when PIN codes are mistaken or when an error occurs.<br />
+One symptom for the need to go through a restart is the following error message: <code>gpg: error getting current key info: Card error</code></p>
+</div>
 <p>If you get an error <code>gpg: selecting card failed: No such device</code> and/or <code>gpg: OpenPGP card not available: No such device</code>, edit or create a gpg config file in <code>~/.gnupg/scdaemon.conf</code> and insert the following content</p>
 <pre><code>disable-ccid
 pcsc-shared
@@ -284,14 +291,14 @@ pcsc-shared
 </code></pre>
 <p>Reset the hardware token (see <a href="#handling-pin-locks">below</a>) if necessary.</p>
 <p>Then change the user PIN:</p>
-<pre><code>passwd
+<pre><code>gpg/card&gt; passwd
 </code></pre>
 <p>And set a new user PIN (by directly typing the old PIN then the new PIN, or if the old PIN is unknown, by typing <code>admin</code> first, then selecting option 1 when the option list is displayed)</p>
 <p>Switch to admin mode by typing (at the gpg prompt):</p>
-<pre><code>admin
+<pre><code>gpg/card&gt; admin
 </code></pre>
 <p>Then change the admin PIN:</p>
-<pre><code>passwd
+<pre><code>gpg/card&gt; passwd
 </code></pre>
 <p>And set a new admin PIN with option 3.</p>
 <div class="mdbook-alerts mdbook-alerts-note">
@@ -308,29 +315,71 @@ The contraints are that the algorithm must be supported by</p>
 </ul>
 </div>
 <p>Generate a new Ed25519/Cv25519 keyset:</p>
-<p>Enter the "card edit" command line tool:</p>
+<p>Enter the "card edit" command line tool if not already in the edit card tool:</p>
 <pre><code class="language-bash">gpg --card-edit
 </code></pre>
-<p>From the card edit prompt, here is a trace of commands &amp; answers to run:</p>
-<pre><code>admin
-key-attr
-(2) ECC
-(1) Curve 25519
-# Enter the admin PIN
-(2) ECC
-(1) Curve 25519
-# Enter the admin PIN
-(2) ECC
-(1) Curve 25519
-# Enter the admin PIN
-generate
-N
+<p>From the card edit prompt, here is a trace of commands &amp; answers needed in order to select the correct crypto algorithms:</p>
+<pre><code>gpg/card&gt; admin
+Admin commands are allowed
+gpg/card&gt; key-attr
+Changing card key attribute for: Signature key
+Please select what kind of key you want:
+   (1) RSA
+   (2) ECC
+Your selection? 2
+Please select which elliptic curve you want:
+   (1) Curve 25519 *default*
+   (4) NIST P-384
+   (6) Brainpool P-256
+Your selection? 1
+# You should enter your key's admin PIN here...
+The card will now be re-configured to generate a key of type: ed25519
+Note: There is no guarantee that the card supports the requested
+      key type or size.  If the key generation does not succeed,
+      please check the documentation of your card to see which
+      key types and sizes are supported.
+Changing card key attribute for: Encryption key
+Please select what kind of key you want:
+   (1) RSA
+   (2) ECC
+Your selection? 2
+Please select which elliptic curve you want:
+   (1) Curve 25519 *default*
+   (4) NIST P-384
+   (6) Brainpool P-256
+Your selection? 1
+# You should enter your key's admin PIN here...
+The card will now be re-configured to generate a key of type: cv25519
+Changing card key attribute for: Authentication key
+Please select what kind of key you want:
+   (1) RSA
+   (2) ECC
+Your selection? 2
+Please select which elliptic curve you want:
+   (1) Curve 25519 *default*
+   (4) NIST P-384
+   (6) Brainpool P-256
+Your selection? 1
+# You should enter your key's admin PIN here...
+The card will now be re-configured to generate a key of type: ed25519
+</code></pre>
+<p>We can now generate the new keys:</p>
+<pre><code class="language-bash">gpg --card-edit
+</code></pre>
+<p>In the output of the aboev command, you will notice that the key attributes are now listed as <code>ed25519 cv25519 ed25519</code>.</p>
+<pre><code>gpg/card&gt; admin
+Admin commands are allowed
+gpg/card&gt; generate
+Make off-card backup of encryption key? (Y/n) n
 # Enter the user PIN
+Key is valid for?
 # Enter the validity (see the recommendations in the periodical check workflow, you can also use the tip below to ease the calculation)
+Key expires at ...
+Is this correct? (y/N) y
 # Enter your identity name `Firstname Lastname`
 # Enter your Email address
-# Enter a comment, for example `Hardware token`, important when you have multiple GPG keys linked to the same email
-# Enter the admin PIN+user PIN as many times as required
+# Enter a comment, for example `Hardware token xyz`, important when you have multiple GPG keys linked to the same email
+# Enter the admin PIN+user PIN as many times as required (the title of the message should specify "Admin" when you have to use your admin PIN)
 quit
 </code></pre>
 <div class="mdbook-alerts mdbook-alerts-note">
@@ -358,7 +407,7 @@ A prompt for a passphrase is only required when exporting the private key into a
 </code></pre>
 <p>In the last section, you will find the signature key's long ID (multiple 4 digit hexadecimal values separated with spaces), taken from the token internal data.
 Because gpg knows about this key, the last digits of the key (short ID) will also be displayed in the <code>General key info..</code> section, following a <code>pub ed25519/</code> header.</p>
-<p>Store the hardware token's GPG key ID in a <code>GPG_HW_TOKEN_KEY_IDY_ID</code> environment variable:</p>
+<p>Store the hardware token's GPG key ID in a <code>GPG_HW_TOKEN_KEY_IDY_ID</code> environment variable, while your hardware token is plugged into your computer:</p>
 <pre><code class="language-bash">export GPG_HW_TOKEN_KEY_ID=$(gpg --card-status | sed -n -E -e 's/^[^:]*sign[^:]*:[[:blank:]]*((:?[[:xdigit:]]{4}[[:blank:]]*){10})/\1/pi') &amp;&amp; echo "$GPG_HW_TOKEN_KEY_ID"
 </code></pre>
 <p>To export the corresponding public key, you can execute:</p>
