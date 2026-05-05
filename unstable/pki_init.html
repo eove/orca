@@ -264,6 +264,21 @@ Creating the first shares is done automatically when needed.</p>
 </ul>
 <p>These scripts should be customised according to your own PKI architecture. They should be included in that exact order.
 When signing a CSR, you should validate it as indicated in your <code>exploitation manual</code>.</p>
+<div class="mdbook-alerts mdbook-alerts-caution">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  caution
+</p>
+<p>At the end of a ceremony, the CRLs of the CA are exported and should be made available online according to the address configured in the above scripts.</p>
+</div>
+<div class="mdbook-alerts mdbook-alerts-caution">
+<p class="mdbook-alerts-title">
+  <span class="mdbook-alerts-icon"></span>
+  caution
+</p>
+<p>The CRLs are valid for a given amount of time (18 months by default in the template). The next ceremony <em>must</em> happen before that limit in order to maintain the CRLs
+up-to-date.</p>
+</div>
 
                     </main>
 
