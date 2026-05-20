@@ -1,0 +1,18 @@
+sidebar {
+	display: none;
+	visibility: hidden;
+}
+mdbook-sidebar {
+	display: none;
+	visibility: hidden;
+}
+left-buttons {
+	display: none;
+	visibility: hidden;
+}
+:root{
+	--content-max-width: 100%;
+	--inline-code-color: #e6e1cf;
+	--sidebar-width: 0;
+	--sidebar-resize-indicator-width: 0;
+}
