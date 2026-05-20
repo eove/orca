@@ -289,6 +289,10 @@ pcsc-shared
 </code></pre>
 <pre><code class="language-bash">gpg --card-edit
 </code></pre>
+<blockquote>
+<p>[Note!]<br />
+Each time you will see a <code>gpg/card</code> prompt in the instructions below, you will have to run again <code>gpg --card-edit</code> if you are not already in the card edit mode.</p>
+</blockquote>
 <p>Reset the hardware token (see <a href="#handling-pin-locks">below</a>) if necessary.</p>
 <p>Then change the user PIN:</p>
 <pre><code>gpg/card&gt; passwd
@@ -314,11 +318,8 @@ The contraints are that the algorithm must be supported by</p>
 <li>hashicorp vault's share encryption (https://developer.hashicorp.com/vault/docs/concepts/pgp-gpg-keybase#initializing-with-gnupg)</li>
 </ul>
 </div>
-<p>Generate a new Ed25519/Cv25519 keyset:</p>
-<p>Enter the "card edit" command line tool if not already in the edit card tool:</p>
-<pre><code class="language-bash">gpg --card-edit
-</code></pre>
-<p>From the card edit prompt, here is a trace of commands &amp; answers needed in order to select the correct crypto algorithms:</p>
+<p>You now have to generate a new Ed25519/Cv25519 keyset from the card edit prompt.</p>
+<p>Here is a trace of commands &amp; answers needed in order to select the correct crypto algorithms (your mileage may vary depending on the version on gpg):</p>
 <pre><code>gpg/card&gt; admin
 Admin commands are allowed
 gpg/card&gt; key-attr
@@ -363,10 +364,8 @@ Your selection? 1
 # You should enter your key's admin PIN here...
 The card will now be re-configured to generate a key of type: ed25519
 </code></pre>
-<p>We can now generate the new keys:</p>
-<pre><code class="language-bash">gpg --card-edit
-</code></pre>
-<p>In the output of the aboev command, you will notice that the key attributes are now listed as <code>ed25519 cv25519 ed25519</code>.</p>
+<p>We can now generate the new keys.</p>
+<p>In the output of the above command, you will notice that the key attributes are now listed as <code>ed25519 cv25519 ed25519</code>.</p>
 <pre><code>gpg/card&gt; admin
 Admin commands are allowed
 gpg/card&gt; generate
@@ -434,16 +433,12 @@ An example from a pristine hardware token:</p>
                     +------- user PIN attempts remaining (up to 8 characters)
 </code></pre>
 <p>To force a factory-reset (if you locked the admin PIN):</p>
-<pre><code>$ gpg --card-edit
-
-gpg/card&gt; admin
+<pre><code>gpg/card&gt; admin
 gpg/card&gt; factory-reset
 </code></pre>
 <p>(or follow https://gist.github.com/dminca/1f8b5d6169c6a6654a95f34a80983218)</p>
 <p>To reset the PIN (if you locked the user PIN), this will require to know the admin PIN:</p>
-<pre><code>$ gpg --card-edit
-
-gpg/card&gt; passwd
+<pre><code>gpg/card&gt; passwd
 gpg: OpenPGP card no. XXXXXXXXXXXXXXXXXX detected
 
 1 - change PIN
