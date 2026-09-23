@@ -33,7 +33,7 @@
             '' else ''
             echo "This is the first time O.R.CA is started so no Cvault needs to be checked"
             ''}
-              
+
             if ! test -w ${VAULT_STORAGE_PATH}
             then
               cat << EOF
@@ -60,7 +60,7 @@
             do
               sleep 1
             done
-              
+
             mount /dev/''${DEVICE} ${VAULT_STORAGE_PATH}
             systemctl start ${config.systemd.services.vault.name}
 
@@ -149,6 +149,7 @@
             pkgs.gnupg
             pkgs.coreutils
             pkgs.qrencode
+            pkgs.openssl
           ];
         };
         system.stateVersion = pkgs.lib.trivial.release;
