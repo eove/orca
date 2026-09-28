@@ -6,7 +6,7 @@ in
   set -eo pipefail
   echo 'Exporting CRLs' >&2
   PKIS=$(vault secrets list -format=json | jq -r 'to_entries[] | select(.value.type=="pki") | .key')
-  
+
   for PKI_NAME in $PKIS
   do
       PKI_NAME=''${PKI_NAME%/}
@@ -18,8 +18,9 @@ in
               PKI_AIA_DIR="${AIA_FOLDER}/''${PKI_NAME}/issuer/$ISSUER_ID"
               CRL_DIR="$PKI_AIA_DIR/crl"
               mkdir -p $CRL_DIR
-              vault read -format=raw ''${PKI_NAME}/issuer/$ISSUER_ID/der > $PKI_AIA_DIR/der
-              vault read -format=raw ''${PKI_NAME}/issuer/$ISSUER_ID/crl/der > $CRL_DIR/der
+              vault read -format=raw ''${PKI_NAME}/issuer/$ISSUER_ID/pem | openssl x509 -outform der -out $PKI_AIA_DIR/der
+              # We use `/crl/pem` instead of `/crl/der`, as the latter seems to show inconsistent behavior in its output, see https://github.com/hashicorp/vault/issues/32018
+              vault read -format=raw ''${PKI_NAME}/issuer/$ISSUER_ID/crl/pem | openssl crl -outform der -out $CRL_DIR/der
           fi
       done
   done
